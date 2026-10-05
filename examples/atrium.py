@@ -39,7 +39,7 @@ def generate(output, stock_wad=None):
     arena.room("lower-loop",(-992,-640,0),(992,-384,224),palette)
     arena.room("west-return",(-992,-640,0),(-800,-320,224),palette)
     arena.room("east-return",(800,-640,0),(992,-320,320),palette)
-    arena.detail(ramp(384,-128,768,128,-8,8,136,texture=palette.trim,top=palette.floor),
+    arena.structural(ramp(384,-128,768,128,-8,8,136,texture=palette.trim,top=palette.floor),
                  ramp(800,-640,992,-320,-8,8,136,along="y",texture=palette.trim,top=palette.floor),
                  ramp(-336,-320,-208,64,-8,8,200,along="y",texture=palette.trim,top=palette.floor),
                  box(-384,64,184,384,192,200,texture=palette.trim,top=palette.floor))

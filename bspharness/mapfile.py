@@ -60,8 +60,24 @@ class Map:
         self.airs.append(air)
         return air
 
-    def detail(self, *brushes):
+    def structural(self, *brushes):
+        """Solid geometry that participates in sealing and visibility."""
         self.details.extend(brushes)
+
+    def detail(self, *brushes, mode="detail", **keys):
+        """Compiler detail geometry, with collision controlled by its role."""
+        modes = {"detail":"func_detail", "wall":"func_detail_wall",
+                 "fence":"func_detail_fence", "illusionary":"func_detail_illusionary"}
+        if mode=="structural":
+            if keys:
+                raise ValueError("Structural brushes cannot have entity keys")
+            self.structural(*brushes)
+            return None
+        if mode not in modes:
+            raise ValueError(f"Unknown detail mode: {mode}")
+        if not brushes:
+            raise ValueError("Detail needs at least one brush")
+        return self.entity(modes[mode],brushes=brushes,**keys)
 
     def entity(self, classname, origin=None, brushes=(), **keys):
         entity = {"classname": classname, **keys}

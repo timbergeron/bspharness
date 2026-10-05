@@ -103,6 +103,11 @@ class BSP:
                  "maxs":list(struct.unpack_from("<3f",data,i*64+12))}
                 for i in range(self.count("models"))]
 
+    def metrics(self):
+        return {**{name:self.count(name) for name in ("faces","nodes","clipnodes","leaves","models")},
+                **{name+"_bytes":len(self.lump(name)) for name in ("visibility","lighting","textures")},
+                "bsp_bytes":len(self.data)}
+
     def validate(self, expected_format=None, reference=None):
         errors = []
         if expected_format and self.format != expected_format:

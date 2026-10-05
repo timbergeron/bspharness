@@ -39,6 +39,13 @@ face is oriented against an interior point, and brush construction rejects
 degenerate/nonconvex input. Valve 220 UV axes align to world directions.
 `Map.entity`, `Map.light`, and brush-entity lists handle Quake entities.
 
+`stairs`, `arch`, `column`, `beam`, and `trim_profile` supply modular
+architecture. Structural walking surfaces and partitions are explicit;
+compiler detail, wall, fence, and illusionary modes control decorative
+geometry and collision. Visible fixture lights and a daylight/bounce/AO
+recipe provide a reviewable starting point. Build budgets limit compiled
+faces and clipnodes. See [ARCHITECTURE.md](ARCHITECTURE.md).
+
 `Material` adds physical texel density or repeat sizes, shared anchors and
 phase, compatible-image families, and tangent projection for slopes.
 `Map.wall_run` unrolls vertical paths around corners. `TransitionRule` and
@@ -50,8 +57,11 @@ contracts and seam reports are hashed into build/package evidence. See
 
 Compilation uses explicit profiles and format choices. Each run retains
 logs, tool hashes, source hashes, artifact hashes, and a validation report.
-QSS-M uses a post-connect script to capture repeatable cameras and audit
-spawned entities. WAD and BSP readers catch malformed texture data before
+QSS-M uses a post-connect script to capture fixed cameras, audit spawned
+entities in XYZ, and traverse authored walking/jump probes with collision
+and health checks. Camera comparisons preserve screenshot hashes and show
+view/render differences. Ember Cloister combines these features in a stock
+architectural reference area. WAD and BSP readers catch malformed texture data before
 engine testing. Stock PAK extraction stays local.
 
 The air-volume shell seals structural geometry; arbitrary details or brush
@@ -60,23 +70,24 @@ The compiler and runtime checks remain necessary.
 
 ## Next capabilities
 
-1. **Architectural kits:** stairs, door/window frames, arches, columns,
-   vaults, beams, trim, and curved wall segments with shared dimensions and
-   material roles. Keep each kit deterministic and inspectable in `.map`.
+1. **More architectural kits:** vaults, window assemblies, and curved wall
+   segments with shared dimensions and material roles. Keep each kit
+   deterministic and inspectable in `.map`.
 2. **Layout specifications:** a room/route graph with dimensions, elevation,
    encounter/item intent, and a material/lighting theme, compiled into the
    existing Python API. Add clearance and connectivity checks before detail.
 3. **Terrain and organic spaces:** convex decomposition for rock/cliff kits,
    caves, terrain, and asymmetric exterior silhouettes. Budget BSP splits
    and clipnodes from the start.
-4. **Gameplay verification:** route traversal, standing/jump clearances,
-   teleporter/push-trigger checks, mod-specific entity expectations, and
-   multiplayer spawn/item audits. Current QA is a stock SP smoke pass.
+4. **Broader gameplay verification:** turning route sequences, connectivity
+   analysis, teleporter/push-trigger checks, mod-specific expectations, and
+   multiplayer spawn/item audits. Current movement probes cover authored
+   samples with stock SP physics.
 5. **Surgical map edits:** structured MAP parsing and exact scoped transforms
    for relighting, void safety, and geometry repairs; preserve imported
    sources and compare compiled bounds against references.
-6. **Visual iteration:** named camera comparisons, exposure variants,
-   automated asset staging, and custom skybox/mod packaging. Separate
+6. **Visual iteration:** exposure variants, automated asset staging, and
+   custom skybox/mod packaging. Separate
    automatic collection from a human visual review.
 
 The original manual supplies recipes and earlier observations for several

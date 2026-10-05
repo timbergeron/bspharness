@@ -59,7 +59,7 @@ def run_stage(command, directory, log, timeout):
 
 
 def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, lighting_dir=None,
-          reference=None, timeout=1800, threads=4, check_seams=False):
+          reference=None, timeout=1800, threads=4, check_seams=False, budgets=None):
     source = Path(source).resolve()
     if source.suffix != ".map" or not source.is_file():
         raise ValueError("Build needs an existing .map source")
@@ -67,6 +67,11 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
         raise ValueError("Map basename must contain letters, digits, underscores, or hyphens")
     if threads < 1:
         raise ValueError("Thread count must be positive")
+    budgets = budgets or {}
+    if any(key not in ("faces","nodes","clipnodes","leaves","models","visibility_bytes",
+                       "lighting_bytes","textures_bytes","bsp_bytes") or
+           not isinstance(value,int) or value<1 for key,value in budgets.items()):
+        raise ValueError("Build budgets need known metric names and positive integer limits")
     settings = json.loads((ROOT/"configs/profiles.json").read_text())[profile]
     qbsp = resolve_tool(qbsp_dir or ROOT/"tools/ericw/modern","qbsp")
     vis = resolve_tool(lighting_dir or ROOT/"tools/ericw/modern","vis")
@@ -81,7 +86,7 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
     bsp = work/(source.stem+".bsp")
     manifest = {"schema":1,"time_utc":datetime.now(timezone.utc).isoformat(),
                 "source":str(source),"source_sha256":digest(source),"profile":profile,
-                "format":bsp_format,"stages":{},"passed":False}
+                "format":bsp_format,"stages":{},"budgets":budgets,"passed":False}
     try:
         sidecar = source.with_suffix(".materials.json")
         contract = None
@@ -103,6 +108,10 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
             stage,_ = run_stage([tool,"-threads",str(threads),*settings[name],bsp],work,work/(name+".log"),timeout)
             manifest["stages"][name] = stage
         report = BSP(bsp).validate(bsp_format,BSP(reference) if reference else None)
+        manifest["metrics"] = report["metrics"] = BSP(bsp).metrics()
+        for metric,limit in budgets.items():
+            if manifest["metrics"][metric]>limit:
+                report["errors"].append(f"Build budget exceeded: {metric}={manifest['metrics'][metric]} > {limit}")
         for name in settings.get("required_bspx",[]):
             if name not in report["bspx"]:
                 report["errors"].append(f"Missing required BSPX lump: {name}")
@@ -180,6 +189,8 @@ def package(bsp, output, credits, qa_report=None):
         qa = json.loads(Path(qa_report).read_text())
         if not qa.get("passed") or qa.get("bsp_sha256") != digest(bsp):
             raise ValueError("QA report must pass and match this BSP")
+        if "artifacts" in qa and qa["artifacts"]!=manifest["artifacts"]:
+            raise ValueError("QA report must match all build artifacts, including colored lighting")
     source = bsp.parent/(bsp.stem+".map")
     if digest(source) != manifest["source_sha256"]:
         raise ValueError("Packaged source does not match build manifest")

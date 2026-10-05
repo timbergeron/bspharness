@@ -67,3 +67,53 @@ The diagnostic uses original generated artwork. It demonstrates material
 mechanics, not finished map art or playtested gameplay. Arbitrary image
 compatibility, undeclared corners, lighting seams, and full movement routes
 still need visual review and playtesting. Local artifacts remain ignored.
+
+# Architecture and movement verification — 2026-10-05
+
+- **55 tests passed** with compiler integration enabled. The ordinary run
+  passed 44 and skipped 11 compiler tests. Checks cover convex architectural
+  kits, staircase directions and dimensions, fixture faces/light origins,
+  compiler geometry roles, movement/checkpoint failures, 3D unique item
+  matching, build budgets, camera comparison hashes, and BSP/LIT-bound QA.
+  Updated role, lighting-input, and package checks also passed separately.
+- **Actual compiler collision checked in BSP29/BSP2/2PSB:** structural,
+  default detail, wall detail, and fence detail remain solid; illusionary
+  detail has no player collision. Detail entities merge into world model 0.
+  Compiled stair treads, arch headroom, and fixture geometry were queried.
+- **Bootstrap and both existing generators passed.** The atrium and material
+  demo compiled with draft profiles after the geometry-role migration.
+- **Ember Cloister final build passed** full VIS, 4x4 light sampling, RGB
+  sidecar/embedded lighting, and explicit 3,500-face/5,000-clipnode budgets.
+  It contains 2,158 faces, 2,535 clipnodes, 521 leaves, one world model, and
+  409,768 BSP bytes. Stock WAD remains local; no Makkon assets are used.
+- **Final QSS-M pass passed:** engine exit 0; six actual walking probes
+  reached their expected destinations, including 12-unit risers, the
+  upper-gallery arch, arcade, and 16-unit dais steps. All four expected
+  pickups survived the initial XYZ audit; health and grounded states passed.
+  Physics use fixed 1/72-second frames, walking collision, and no god mode
+  during probes. Teleport commands only establish each probe's start.
+- **Jump/negative controls verified in the engine:** a 40-unit ledge was
+  crossed with an observed airborne checkpoint at Z=65.1 and a safe landing.
+  Raising the barrier to 128 units stopped the player at Y=-32 and failed
+  only the destination check in the completed repeat pass (engine exit 0).
+  An earlier parallel run also exceeded its shorter shutdown timeout.
+- **All five final PNGs reviewed** by Codex image inspection: navigable
+  floors, gallery stairs, arcade silhouettes, visible pendants/wall fixtures,
+  warm nave/cool apse, sky lantern, and visible material joins. Notification
+  overlays are suppressed in the headless renderer. The tracked baseline
+  records source/artifact/engine/camera hashes and review observations.
+- **Seam scope remains explicit:** 1,728 shared edges passed, with 156
+  material-boundary warnings and 504 unwrapped wall corners. Visible
+  deliberate gold/gray/bronze contacts were inspected; unsampled artwork
+  contacts and corners still require review for each authored map.
+- **Camera comparison and release created:** `out/hall-lighting-comparison/`
+  preserves before/after images and exposes the earlier report's missing
+  camera/render metadata. `dist/reference_hall.zip` contains matching
+  BSP/LIT, source, credits, material/seam/build evidence, and reviewed QA.
+  Its ZIP integrity check passed.
+
+The hall is an architectural reference area without combat or progression.
+The probes test authored movement samples, not full connectivity, multiplayer,
+mod physics, or complete gameplay. Linux offscreen rendering was exercised;
+macOS and Windows remain unexecuted in this session. Local build products,
+engine data, texture libraries, screenshots, and packages stay untracked.

@@ -6,10 +6,11 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from bspharness import Map, Material, Palette, box
+from bspharness import Map, Material, Palette, arch, box, fixture, stairs
 from bspharness.bsp import BSP
 from bspharness.pipeline import ROOT, build, digest, package, verified_build
 from bspharness.seams import bsp_surfaces
+from bspharness.collision import EMPTY, SOLID, Hull
 from bspharness.wad import make_blockout, miptex, write_wad
 
 
@@ -36,6 +37,15 @@ class CompileTests(unittest.TestCase):
                     credits = self.root/"credits.txt"
                     credits.write_text("Original blockout; built with ericw-tools.\n")
                     package(result,self.root/"map.zip",credits)
+                    qa = self.root/"qa.json"
+                    evidence = {"passed":True,"bsp_sha256":digest(result),
+                                "artifacts":verified_build(result)["artifacts"]}
+                    qa.write_text(json.dumps(evidence))
+                    package(result,self.root/"reviewed.zip",credits,qa)
+                    evidence["artifacts"][result.with_suffix(".lit").name] = "changed-lighting"
+                    qa.write_text(json.dumps(evidence))
+                    with self.assertRaisesRegex(ValueError,"including colored lighting"):
+                        package(result,self.root/"stale-qa.zip",credits,qa)
                     result.write_bytes(result.read_bytes()+b"changed")
                     with self.assertRaisesRegex(ValueError,"successful"):
                         verified_build(result)
@@ -166,6 +176,48 @@ class CompileTests(unittest.TestCase):
                 self.assertTrue(faces)
                 self.assertTrue(all(s.size==(128,128) for s in faces))
                 self.assertTrue(all(s.density()==(1,1) for s in faces))
+
+    def test_compiler_detail_roles_preserve_selected_collision_in_all_formats(self):
+        self.map.structural(box(-144,-16,0,-112,16,64))
+        self.map.detail(box(-80,-16,0,-48,16,64))
+        self.map.detail(box(-16,-16,0,16,16,64),mode="wall")
+        self.map.detail(box(48,-16,0,80,16,64),mode="fence")
+        self.map.detail(box(112,-16,0,144,16,64),mode="illusionary",_shadow="1")
+        source = self.map.write(self.root/"roles.map",[self.wad])
+        for fmt in ("bsp29","bsp2","2psb"):
+            with self.subTest(fmt=fmt):
+                result = build(source,self.root/f"roles-{fmt}","draft",fmt)
+                bsp = BSP(result)
+                hull = Hull(bsp)
+                self.assertEqual(hull.contents((-128,0,48)),SOLID)
+                self.assertEqual(hull.contents((-64,0,48)),SOLID)
+                self.assertEqual(hull.contents((0,0,48)),SOLID)
+                self.assertEqual(hull.contents((64,0,48)),SOLID)
+                self.assertEqual(hull.contents((128,0,48)),EMPTY)
+                self.assertEqual(bsp.count("models"),1)
+                self.assertFalse(any(e["classname"].startswith("func_detail") for e in bsp.entities()))
+
+    def test_compiled_stair_surfaces_arch_clearance_and_fixture(self):
+        self.map.structural(*stairs((-192,64,0),width=96,rise=12,run=48,steps=4))
+        self.map.detail(*arch((0,0,0),width=160,spring=104,rise=64,thickness=16,wall_height=256),mode="detail")
+        fixture(self.map,(-32,240,96),(32,248,144),offset=16)
+        source = self.map.write(self.root/"kits.map",[self.wad])
+        result = build(source,self.root/"kits","draft")
+        hull = Hull(BSP(result))
+        for i in range(4):
+            self.assertEqual(hull.contents((-168+i*48,112,(i+1)*12+24.1)),EMPTY)
+            self.assertEqual(hull.contents((-168+i*48,112,(i+1)*12+10)),SOLID)
+        self.assertEqual(hull.contents((0,0,24.1)),EMPTY)
+        self.assertEqual(hull.contents((100,0,48)),SOLID)
+        self.assertEqual(hull.contents((0,0,220)),SOLID)
+
+    def test_explicit_build_budgets_fail_and_metrics_match_actual_bsp(self):
+        result = build(self.source,self.root/"budget","draft",budgets={"faces":5000,"clipnodes":5000})
+        manifest = verified_build(result)
+        self.assertEqual(manifest["metrics"],BSP(result).metrics())
+        with self.assertRaisesRegex(ValueError,"Build budget exceeded"):
+            build(self.source,self.root/"budget","draft",budgets={"faces":1})
+        self.assertFalse((result.parent/"build.json").exists())
 
 
 if __name__=="__main__":

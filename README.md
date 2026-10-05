@@ -5,8 +5,10 @@ playable spaces in Python, generate sealed Valve 220 geometry, compile with
 ericw-tools, inspect the BSP, and collect in-engine evidence with QSS-M.
 
 The aim is deliberate layouts, strong architecture, readable materials,
-expressive lighting, and reliable gameplay. The included atrium is a working
-blockout example; polished maps still need art direction and playtesting.
+expressive lighting, and reliable gameplay. The atrium provides a blockout;
+Ember Cloister provides a stock-textured architectural reference with stairs,
+arches, a gallery, fixture lighting, fixed cameras, and movement probes.
+Polished gameplay maps still need art direction and playtesting.
 
 ## First build
 
@@ -78,6 +80,24 @@ sunlight openings. Details, ramps, items, lights, and brush entities add
 intentional structure inside that shell. See [atrium.py](examples/atrium.py)
 for a complete layout with multiple routes and vertical gameplay.
 
+`stairs`, `arch`, `column`, `beam`, and `trim_profile` provide reusable
+architectural brushes. `Map.structural` defines walking surfaces and major
+partitions; `Map.detail` uses real compiler detail, with wall, fence, and
+illusionary variants. Visible `fixture` lights and `lighting_recipe` provide
+a starting point for daylight, bounce, and ambient occlusion. See
+[the architecture guide](docs/ARCHITECTURE.md), including the 0.3 change to
+`Map.detail` behavior.
+
+```sh
+python3 examples/reference_hall.py
+python3 -m bspharness build src/reference_hall.map --profile final \
+  --max-faces 3500 --max-clipnodes 5000
+```
+
+This example requires the local stock WAD. Follow
+[the reference hall guide](docs/REFERENCE_HALL.md) to test six routes,
+review five cameras, retain a baseline, and package the result.
+
 ## Align materials and their joins
 
 `Material` supports texel density, physical repeat sizes, shared anchors,
@@ -109,12 +129,17 @@ python3 -m bspharness package out/atrium/final/atrium.bsp \
 ```
 
 Use a fresh QA gamedir on every pass. QA checks player ground/health, item
-survival, engine errors, and screenshot count. Review the PNGs yourself;
+survival in XYZ with unique runtime matches, engine errors, and screenshot count.
+Add `--routes src/reference_hall.routes.json` for authored walking/jump probes:
+normal collision and health checks run before noclip cameras. Omit
+`--cameras` for movement-only checks. Review the PNGs yourself;
 automated QA does not judge map design. Packaging checks artifact hashes and
 includes the BSP, `.lit` when present, source, credits, and build/validation
 reports. QA is optional for development packages; include it for reviewed
 releases. Custom skyboxes or mod dependencies need separate asset packaging.
 Material builds also include their hash-verified contract and seam report.
+Use `compare-qa before/qa.json after/qa.json --output out/comparison-01`
+to collect hash-checked, named before/after camera views for visual review.
 
 ## Repository guide
 
@@ -127,6 +152,8 @@ Material builds also include their hash-verified contract and seam report.
 | `src/`, `out/`, `dist/` | Generated sources, compile evidence, release archives |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build/edit/verify procedures and known limits |
 | [docs/MATERIALS.md](docs/MATERIALS.md) | Physical texture scale, wall wraps, trim rules, seam checks |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Kits, geometry roles, fixture lighting, and build budgets |
+| [docs/REFERENCE_HALL.md](docs/REFERENCE_HALL.md) | Stock benchmark and camera review workflow |
 | [docs/DESIGN.md](docs/DESIGN.md) | Quality goals, architecture, and next capabilities |
 | [docs/operator-manual.md](docs/operator-manual.md) | Original `mapharness.md` field notes |
 

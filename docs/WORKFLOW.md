@@ -86,18 +86,81 @@ do not symlink the entire read-only id1 directory.
 
 QSS-M reads `configs/connect.cfg` after signon. That script executes
 `shots.cfg`; putting a frame-wait chain into startup `+exec` can stall signon.
-QA waits for the player to land, dumps edicts, then enables god/noclip for
-camera screenshots. `host_maxfps 72` and 100-frame gaps help avoid filename
-collisions and allow light settling. Pass `--timeout 240` for a slow software
+QA waits for the player to land, dumps edicts, and runs optional movement
+probes before enabling god/noclip for screenshots. A fixed 1/72-second
+step, `host_maxfps 72`, and 100-frame camera gaps make collection repeatable.
+`host_timescale 0` lets QSS-M honor `host_framerate`; setting timescale to 1
+would override the fixed step. Pass `--timeout 360` for a slow software
 renderer. On Linux, a compatible SDL/Mesa setup may use
 `SDL_VIDEODRIVER=offscreen LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=2`.
 
 The stock SP audit checks a live player with full health and `FL_ONGROUND`,
-and checks item/weapon classnames near expected XY positions. It skips
-entities flagged out of SP. It is a smoke test: dynamic items, SP-only pickups,
-mods, multiplayer spawn logic, and movement routes need further checks.
+and checks item/weapon classnames near expected XYZ positions. Each expected
+item needs a distinct runtime edict, so one pickup cannot stand in for two.
+The 24-unit tolerance accounts for stock origin shifts and items falling
+onto floors. Entities excluded from SP or normal skill are skipped.
+Dynamic items, custom mods, multiplayer spawn logic, and unsampled routes
+need further checks.
 The report explicitly leaves visual review pending. Review every screenshot
 for darkness, blocked passages, material alignment, sky, and z-fighting.
+
+## Probe movement with collision
+
+```python
+import json
+from bspharness import Bounds, Move, WalkRoute
+
+route = WalkRoute("hall-walk",(0,0,24),(0,0,0),(Move(72),),
+                  Bounds((160,-16,20),(240,16,32)))
+with open("src/my_map.routes.json","w") as stream:
+    json.dump([route.metadata()],stream,indent=2)
+```
+
+```sh
+python3 -m bspharness qa out/my_map/draft/my_map.bsp \
+  --routes src/my_map.routes.json --cameras src/my_map.cameras.json \
+  --engine /path/to/QSS-M --basedir /path/to/quake --gamedir movement_pass1
+```
+
+`WalkRoute` defines a starting XYZ origin, pitch/yaw/roll, a sequence of
+`Move` actions, and expected finish bounds. Speed defaults to 200 units/s,
+not running speed. Each action holds its buttons for a fixed frame count:
+forward, back, moveleft, moveright, and jump. Empty buttons let momentum
+settle. Add `expect=Bounds(...)` to an action for an intermediate checkpoint,
+such as airborne jump height. Quake acceleration and stopping momentum
+mean distance is not simply speed times duration. Facing remains fixed;
+use separate probes for different legs or directions.
+
+The engine positions the player, explicitly disables the noclip that QSS-M's
+numeric `setpos` enables, settles, and verifies the start. Relocation while
+unsticking is caught by the default 8-unit start tolerance. Start/end must
+be grounded, every checkpoint must use walking collision, and health must
+stay at least 100 unless a different `min_health` is authored. God mode
+invalidates a probe. Position/health observations and route specifications
+remain in the report. Teleport placement only establishes each probe's
+start; route traversal uses actual player input and collision.
+
+`examples/movement_checks.py` generates two regression maps and their routes.
+Build both with the draft profile. Run movement-only QA by omitting
+`--cameras`: `movement_open` should jump a 40-unit ledge and pass;
+`movement_blocked` deliberately raises it to 128 and must return a failed
+QA report and exit 1. Preserve this negative control when changing QA.
+These probes supplement movement/combat playtesting; they do not prove
+every possible route or mod's physics.
+
+## Compare camera passes
+
+```sh
+python3 -m bspharness compare-qa baseline/qa.json new-pass/qa.json \
+  --output out/comparison-01
+```
+
+Open `index.html` and inspect each named pair. Screenshot hashes must match
+the input reports. Camera/render differences are reported; image collection
+does not judge art quality. New QA reports pin 1280x720, FOV 90 with aspect
+adaptation, gamma/contrast 1, trilinear textures, normal lightmaps, and a
+hidden weapon/HUD, and retain camera coordinates and engine hashes.
+Keep the approved QA directory as a local baseline.
 
 ## Package
 
@@ -108,7 +171,9 @@ python3 -m bspharness package out/atrium/final/atrium.bsp \
 ```
 
 Source and artifact hashes must match the successful build; a supplied QA
-report must pass and match the same BSP. The ZIP includes BSP, optional LIT,
+report must pass and match the same BSP. New reports also bind the LIT and
+every other build artifact, so changing colored light requires fresh QA.
+The ZIP includes BSP, optional LIT,
 source, credits, build/validation reports, and optional QA report.
 Material contracts and seam reports are included when present, and their
 hashes must match the build. Review credits for the actual texture variant.

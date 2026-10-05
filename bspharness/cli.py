@@ -3,7 +3,8 @@ import json
 from pathlib import Path
 import sys
 
-from . import bsp, pak, pipeline, qa, seams, wad
+from . import bsp, pak, pipeline, qa, review, seams, wad
+from .routes import routes_from_json
 
 
 def main(argv=None):
@@ -32,6 +33,8 @@ def main(argv=None):
     compiler.add_argument("--threads",type=int,default=4)
     compiler.add_argument("--timeout",type=int,default=1800)
     compiler.add_argument("--check-seams",action="store_true",help="Require UV seam checks even for maps without a material contract")
+    compiler.add_argument("--max-faces",type=int)
+    compiler.add_argument("--max-clipnodes",type=int)
     inspect = commands.add_parser("inspect",help="Validate BSP format, textures, lumps, and entity bounds")
     inspect.add_argument("path",type=Path)
     inspect.add_argument("--format",choices=("bsp29","bsp2","2psb"))
@@ -43,13 +46,18 @@ def main(argv=None):
     extract = commands.add_parser("extract-wad",help="Recover embedded textures from a BSP")
     extract.add_argument("path",type=Path)
     extract.add_argument("output",type=Path)
-    cameras = commands.add_parser("qa",help="Run isolated QSS-M cameras and a runtime spawn/item audit")
+    cameras = commands.add_parser("qa",help="Run isolated QSS-M movement, cameras, and runtime entity audits")
     cameras.add_argument("bsp",type=Path)
-    cameras.add_argument("--cameras",type=Path,required=True)
+    cameras.add_argument("--cameras",type=Path)
+    cameras.add_argument("--routes",type=Path,help="Authored walking/jump probes, executed before noclip cameras")
     cameras.add_argument("--basedir",type=Path,required=True)
     cameras.add_argument("--engine",type=Path,required=True)
     cameras.add_argument("--gamedir",default="bspharness_qa")
     cameras.add_argument("--timeout",type=int,default=90)
+    comparison = commands.add_parser("compare-qa",help="Create a portable before/after camera review")
+    comparison.add_argument("before",type=Path)
+    comparison.add_argument("after",type=Path)
+    comparison.add_argument("--output",type=Path,required=True)
     release = commands.add_parser("package",help="Package a verified BSP, lighting, source, and credits")
     release.add_argument("bsp",type=Path)
     release.add_argument("--output",type=Path,required=True)
@@ -67,7 +75,8 @@ def main(argv=None):
             print(wad.preview(args.path,args.palette,args.output))
         elif args.command=="build":
             print(pipeline.build(args.source,args.out,args.profile,args.format,args.qbsp_dir,args.lighting_dir,
-                                 args.reference,args.timeout,args.threads,args.check_seams))
+                                 args.reference,args.timeout,args.threads,args.check_seams,
+                                 {k:v for k,v in (("faces",args.max_faces),("clipnodes",args.max_clipnodes)) if v is not None}))
         elif args.command=="inspect":
             report = bsp.BSP(args.path).validate(args.format,bsp.BSP(args.reference) if args.reference else None)
             print(json.dumps(report,indent=2))
@@ -88,11 +97,15 @@ def main(argv=None):
         elif args.command=="extract-wad":
             print(bsp.BSP(args.path).extract_wad(args.output))
         elif args.command=="qa":
-            path,report = qa.run(args.bsp,json.loads(args.cameras.read_text()),args.basedir,args.engine,args.gamedir,args.timeout)
+            routes = routes_from_json(json.loads(args.routes.read_text())) if args.routes else ()
+            path,report = qa.run(args.bsp,json.loads(args.cameras.read_text()) if args.cameras else [],
+                                 args.basedir,args.engine,args.gamedir,args.timeout,routes)
             print(path)
             if not report["passed"]:
                 print("\n".join(report["errors"]),file=sys.stderr)
                 return 1
+        elif args.command=="compare-qa":
+            print(review.compare(args.before,args.after,args.output))
         elif args.command=="package":
             print(pipeline.package(args.bsp,args.output,args.credits,args.qa_report))
     except (ValueError,OSError,KeyError,json.JSONDecodeError) as exc:

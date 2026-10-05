@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "map": "reference_hall",
+  "title": "Ember Cloister",
+  "review_date": "2026-10-05",
+  "reviewed_by": "Codex image inspection",
+  "scope": "Architectural and lighting reference; sampled movement, no combat or progression approval",
+  "profile": "final",
+  "source_sha256": "b00d4189ff5ef6fe7ee565f121e56dcbd76af4003c18d8cee48f908cc283c994",
+  "generator_sha256": "85e851eabfb4ebed904a5b66cbc6a03e0bf93465c02de9463aab79c05fd08b3a",
+  "artifacts": {
+    "reference_hall.bsp": "ea452d070074e4a6d2f89e17f8cd0f778c5b7c35e41fcbaf09fe668f3eb6c315",
+    "reference_hall.lit": "c787d92aee8aee9fdd724b158eb68775122784d4474ae2892a846b4cb091aac9"
+  },
+  "metrics": {
+    "faces": 2158,
+    "nodes": 878,
+    "clipnodes": 2535,
+    "leaves": 521,
+    "models": 1,
+    "visibility_bytes": 3229,
+    "lighting_bytes": 29940,
+    "textures_bytes": 77880,
+    "bsp_bytes": 409768
+  },
+  "budgets": {
+    "faces": 3500,
+    "clipnodes": 5000
+  },
+  "engine_sha256": "fdcaea200f1dbb2a05ffca8edeccab41988ea6d2d218dd72243ef272bb1b8d3d",
+  "render": {
+    "width": 1280,
+    "height": 720,
+    "fov": 90,
+    "fov_adapt": 1,
+    "gamma": 1,
+    "contrast": 1,
+    "gl_texturemode": "GL_LINEAR_MIPMAP_LINEAR",
+    "viewsize": 120,
+    "crosshair": 0,
+    "r_drawviewmodel": 0,
+    "r_fullbright": 0,
+    "r_drawflat": 0,
+    "r_lightmap": 0,
+    "gl_overbright": 1
+  },
+  "physics": {
+    "fps": 72,
+    "fixed_frame_seconds": 0.013888888888888888,
+    "mode": "stock single-player"
+  },
+  "local_qa_directory": "out/engine-qa/hall-final-v1",
+  "qa_report_sha256": "6c4951b874af20c1b5a4eb8f1d61217bf71f115d13a17fe270d8c8883b4a1df0",
+  "cameras": [
+    {
+      "name": "entry-arch",
+      "view": {
+        "name": "entry-arch",
+        "origin": [
+          80,
+          -600,
+          128
+        ],
+        "angles": [
+          0,
+          90,
+          0
+        ]
+      },
+      "screenshot": "qssm_reference_hall_10-05-2026-212126.png",
+      "sha256": "b6c127c54e5f1708edb396ab4a0d71e280b0f41b938925fe593929fe84869682",
+      "observation": "Gold arch frames the nave; entrance remains dim while the destination floor and gallery are readable."
+    },
+    {
+      "name": "nave",
+      "view": {
+        "name": "nave",
+        "origin": [
+          -432,
+          -288,
+          176
+        ],
+        "angles": [
+          8,
+          32,
+          0
+        ]
+      },
+      "screenshot": "qssm_reference_hall_10-05-2026-212422.png",
+      "sha256": "980d4efea4694b6db82c7bfbb90adf307f3f25b0865a0d3d72f23f0b3cd79321",
+      "observation": "Stair treads, landing, arcade, transverse arches, roof beams, sky opening, and pendant sources read clearly."
+    },
+    {
+      "name": "gallery",
+      "view": {
+        "name": "gallery",
+        "origin": [
+          -160,
+          328,
+          288
+        ],
+        "angles": [
+          10,
+          -12,
+          0
+        ]
+      },
+      "screenshot": "qssm_reference_hall_10-05-2026-212433.png",
+      "sha256": "0c17cbf99f1f94f79115248cf54ea9af2372290affc98cd5e93411f4cec43947",
+      "observation": "Upper walkway and rail cap are visible; the gallery passes through the transverse arch with readable headroom."
+    },
+    {
+      "name": "arcade",
+      "view": {
+        "name": "arcade",
+        "origin": [
+          336,
+          128,
+          96
+        ],
+        "angles": [
+          3,
+          155,
+          0
+        ]
+      },
+      "screenshot": "qssm_reference_hall_10-05-2026-212448.png",
+      "sha256": "49bd1e8685dc82026a2cc3c0f17b8eb9537ef2fb11d04b39376f2c829629a7e0",
+      "observation": "Column/ring silhouettes and the floor remain readable; deeper recesses retain shadow contrast."
+    },
+    {
+      "name": "apse",
+      "view": {
+        "name": "apse",
+        "origin": [
+          448,
+          -128,
+          176
+        ],
+        "angles": [
+          8,
+          35,
+          0
+        ]
+      },
+      "screenshot": "qssm_reference_hall_10-05-2026-212505.png",
+      "sha256": "871d49de36810d81ebb170af3a514733e13e74c56f0b9dc1d03cf9c2f39ebb43",
+      "observation": "Cool wall panels separate the stepped dais from the warm nave; steps remain visible."
+    }
+  ],
+  "movement": [
+    {
+      "name": "entry-arch",
+      "passed": true,
+      "finish_origin": "0.0 -216.9  24.0"
+    },
+    {
+      "name": "gallery-stairs",
+      "passed": true,
+      "finish_origin": "-123.6 144.0 216.0"
+    },
+    {
+      "name": "stair-landing",
+      "passed": true,
+      "finish_origin": "-128.0 333.7 216.0"
+    },
+    {
+      "name": "upper-gallery",
+      "passed": true,
+      "finish_origin": "411.1 304.0 216.0"
+    },
+    {
+      "name": "arcade-opening",
+      "passed": true,
+      "finish_origin": "112.0 367.1  24.0"
+    },
+    {
+      "name": "apse-dais",
+      "passed": true,
+      "finish_origin": "675.7   0.0  56.0"
+    }
+  ],
+  "seams": {
+    "passed": true,
+    "checked_edges": 1728,
+    "material_boundary_warnings": 156,
+    "unchecked_wall_corners": 504,
+    "review_scope": "Visible gold/gray/bronze contacts inspected in fixed views; warnings retained. Unsampled corners and artwork contacts still need map-specific review."
+  }
+}
