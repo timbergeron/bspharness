@@ -1,0 +1,27 @@
+{
+  "draft": {
+    "description": "Fast layout iteration, with collision and fast VIS",
+    "qbsp": ["-leaktest"],
+    "vis": ["-fast"],
+    "light": ["-lit", "-bspxlit"]
+  },
+  "final": {
+    "description": "Full VIS, 4x4 supersampling, external and embedded RGB",
+    "qbsp": ["-leaktest"],
+    "vis": [],
+    "light": ["-extra4", "-lit", "-bspxlit"]
+  },
+  "showcase": {
+    "description": "Final lighting plus 8u luxels, HDR, and dynamic-entity lightgrid",
+    "qbsp": ["-leaktest"],
+    "vis": [],
+    "light": ["-extra4", "-world_units_per_luxel", "8", "-lightgrid", "-bspxhdr", "-lit", "-bspxlit"],
+    "required_bspx": ["DECOUPLED_LM", "LIGHTGRID_OCTREE", "LIGHTING_E5BGR9", "RGBLIGHTING"]
+  },
+  "mono": {
+    "description": "Full VIS and standard grayscale BSP lighting; omit colored sidecars",
+    "qbsp": ["-leaktest"],
+    "vis": [],
+    "light": ["-extra4"]
+  }
+}

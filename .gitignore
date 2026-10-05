@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+tools/cache/
+tools/ericw/
+assets/**/*.wad
+assets/**/*.pak
+assets/**/*.lmp
+assets/**/*.zip
+assets/**/*.7z
+assets/**/*.tga
+assets/**/*.png
+src/
+out/
+dist/
+.DS_Store

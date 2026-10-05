@@ -1,0 +1,36 @@
+{
+  "modern": {
+    "version": "2.0.0-alpha11",
+    "platforms": {
+      "Linux": {
+        "url": "https://github.com/ericwa/ericw-tools/releases/download/2.0.0-alpha11/ericw-tools-2.0.0-alpha11-Linux.zip",
+        "sha256": "166109ab47657d291142992070bcb661e3029708916e152c690473dfb0f74f15"
+      },
+      "Darwin": {
+        "url": "https://github.com/ericwa/ericw-tools/releases/download/2.0.0-alpha11/ericw-tools-2.0.0-alpha11-Darwin.zip",
+        "sha256": "bc5b66fb00234e3697373f38d65130fd0d14fc9eaa549277f6c93eabd4504531"
+      },
+      "win64": {
+        "url": "https://github.com/ericwa/ericw-tools/releases/download/2.0.0-alpha11/ericw-tools-2.0.0-alpha11-win64.zip",
+        "sha256": "4e5ea11be2194a1c4acac6d6da9d5b5b9f65324fda2d67efa0731d1fd8e0745f"
+      }
+    }
+  },
+  "stable": {
+    "version": "v0.18.2-rc1",
+    "platforms": {
+      "Linux": {
+        "url": "https://github.com/ericwa/ericw-tools/releases/download/v0.18.2-rc1/ericw-tools-v0.18.1-32-g6660c5f-Linux.zip",
+        "sha256": "458f9dc8317101a74a9e7fdd5db2d124c8243f29869356015d98c3f23d2ef8a2"
+      },
+      "Darwin": {
+        "url": "https://github.com/ericwa/ericw-tools/releases/download/v0.18.2-rc1/ericw-tools-v0.18.1-32-g6660c5f-Darwin.zip",
+        "sha256": "872a63c2273185e272fa0d161952e9338222469ba28fb42a69511db4f84beb68"
+      },
+      "win64": {
+        "url": "https://github.com/ericwa/ericw-tools/releases/download/v0.18.2-rc1/ericw-tools-v0.18.1-32-g6660c5f-win64.zip",
+        "sha256": "bff3b7847b1d7a89034abec7eb9851a02cd83aa9bb5a394dbc432cf110ccf508"
+      }
+    }
+  }
+}
