@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import sys
 
-from . import bsp, pak, pipeline, qa, wad
+from . import bsp, pak, pipeline, qa, seams, wad
 
 
 def main(argv=None):
@@ -31,10 +31,15 @@ def main(argv=None):
     compiler.add_argument("--reference",type=Path,help="Compare clipnodes against an existing BSP")
     compiler.add_argument("--threads",type=int,default=4)
     compiler.add_argument("--timeout",type=int,default=1800)
+    compiler.add_argument("--check-seams",action="store_true",help="Require UV seam checks even for maps without a material contract")
     inspect = commands.add_parser("inspect",help="Validate BSP format, textures, lumps, and entity bounds")
     inspect.add_argument("path",type=Path)
     inspect.add_argument("--format",choices=("bsp29","bsp2","2psb"))
     inspect.add_argument("--reference",type=Path)
+    seam_check = commands.add_parser("seams",help="Check compiled shared-edge UV continuity and material boundaries")
+    seam_check.add_argument("path",type=Path)
+    seam_check.add_argument("--materials",type=Path,help="Alignment families, wall runs, and transition rules")
+    seam_check.add_argument("--output",type=Path)
     extract = commands.add_parser("extract-wad",help="Recover embedded textures from a BSP")
     extract.add_argument("path",type=Path)
     extract.add_argument("output",type=Path)
@@ -62,10 +67,23 @@ def main(argv=None):
             print(wad.preview(args.path,args.palette,args.output))
         elif args.command=="build":
             print(pipeline.build(args.source,args.out,args.profile,args.format,args.qbsp_dir,args.lighting_dir,
-                                 args.reference,args.timeout,args.threads))
+                                 args.reference,args.timeout,args.threads,args.check_seams))
         elif args.command=="inspect":
             report = bsp.BSP(args.path).validate(args.format,bsp.BSP(args.reference) if args.reference else None)
             print(json.dumps(report,indent=2))
+            return 0 if report["passed"] else 1
+        elif args.command=="seams":
+            contract_path = args.materials or args.path.with_suffix(".materials.json")
+            if args.materials and not contract_path.is_file():
+                raise ValueError(f"Material contract does not exist: {contract_path}")
+            contract = json.loads(contract_path.read_text()) if contract_path.exists() else None
+            report = seams.check_bsp(bsp.BSP(args.path),contract)
+            if args.output:
+                args.output.parent.mkdir(parents=True,exist_ok=True)
+                pipeline.write_json(args.output,report)
+                print(args.output)
+            else:
+                print(json.dumps(report,indent=2))
             return 0 if report["passed"] else 1
         elif args.command=="extract-wad":
             print(bsp.BSP(args.path).extract_wad(args.output))

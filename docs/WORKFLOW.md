@@ -24,6 +24,13 @@ geometry references, entity census, and brush-model bounds. Showcase builds
 must contain all four requested BSPX lighting lumps. This is a focused
 validator, not a proof of every binary or gameplay property.
 
+Generators using `Material`, wall runs, or transitions also write a
+source-bound `.materials.json`. Regenerate it with the MAP after changes.
+Builds audit final BSP texture coordinates and keep `seams.json`; strict
+material builds fail on errors. Failed runs retain the report in their
+`run-*` directory. Legacy maps can opt in with `--check-seams`. See
+[MATERIALS.md](MATERIALS.md) for scale, anchors, corners, and trim rules.
+
 ## Compile an imported map
 
 Preserve original sources/BSPs in a local reference directory. Patch a copy
@@ -38,7 +45,7 @@ python3 -m bspharness build src/patched.map --profile final --format bsp2 \
 ```
 
 Update the copied map's worldspawn `wad` list with absolute forward-slash
-paths. Put a validated recovered WAD first when old texture names have been
+paths. Put a validated recovered WAD last when old texture names have been
 retired. Compiler warnings identify unresolved names. BSP2 stays BSP2;
 monochrome maps use `--profile mono` unless a lighting upgrade is requested.
 
@@ -54,6 +61,7 @@ some extended engines tolerate more, but that is not the vanilla contract.
 python3 -m bspharness wad-preview assets/wads/id1.wad \
   --palette assets/palette.lmp --output out/textures/id1
 python3 -m bspharness inspect out/atrium/final/atrium.bsp
+python3 -m bspharness seams out/materials_demo/final/materials_demo.bsp
 ```
 
 Select materials from the contact sheet. Keep scale consistent within a
@@ -101,8 +109,10 @@ python3 -m bspharness package out/atrium/final/atrium.bsp \
 
 Source and artifact hashes must match the successful build; a supplied QA
 report must pass and match the same BSP. The ZIP includes BSP, optional LIT,
-source, credits, build/validation reports, and optional QA report. Review
-credits for the actual texture variant. External skyboxes and mod files are
+source, credits, build/validation reports, and optional QA report.
+Material contracts and seam reports are included when present, and their
+hashes must match the build. Review credits for the actual texture variant.
+External skyboxes and mod files are
 not currently included automatically; stage those dependencies separately
 and test the complete release install before publishing it.
 

@@ -1,7 +1,9 @@
 """Convex brushes and an axis-aligned air-volume complement."""
 
 from dataclasses import dataclass, replace
-from math import isfinite
+from functools import cached_property
+from itertools import combinations
+from math import isfinite, sqrt
 import re
 
 EPS = 1e-6
@@ -23,6 +25,22 @@ def cross(a, b):
 
 def dot(a, b):
     return sum(x*y for x, y in zip(a, b))
+
+
+def normalize(value):
+    length = sqrt(dot(value, value))
+    if length < EPS:
+        raise ValueError("Cannot normalize a zero vector")
+    return tuple(x/length for x in value)
+
+
+def world_axes(normal):
+    ax, ay, az = map(abs, normal)
+    if az >= ax and az >= ay:
+        return (1, 0, 0), (0, -1, 0)
+    if ax >= ay:
+        return (0, 1, 0), (0, 0, -1)
+    return (1, 0, 0), (0, 0, -1)
 
 
 def texture_name(name):
@@ -94,8 +112,18 @@ class Face:
     scale: float = 1.0
     uoff: float = 0
     voff: float = 0
+    uaxis: tuple = None
+    vaxis: tuple = None
+    vscale: float = None
+    material: object = None
 
     def __post_init__(self):
+        if not isinstance(self.texture, str):
+            from .materials import Material
+            if not isinstance(self.texture, Material):
+                raise ValueError("Face texture must be a name or Material")
+            object.__setattr__(self, "material", self.texture)
+            object.__setattr__(self, "texture", self.texture.texture)
         texture_name(self.texture)
         if not isfinite(self.scale) or self.scale <= 0:
             raise ValueError("Texture scale must be positive")
@@ -105,6 +133,18 @@ class Face:
             raise ValueError("Face coordinates must be finite")
         if dot(self.normal, self.normal) < EPS:
             raise ValueError("Degenerate face")
+        if self.vscale is not None and (not isfinite(self.vscale) or self.vscale <= 0):
+            raise ValueError("V texture scale must be positive")
+        if not all(isfinite(x) for x in (self.uoff, self.voff)):
+            raise ValueError("Texture offsets must be finite")
+        if (self.uaxis is None) != (self.vaxis is None):
+            raise ValueError("Supply both texture axes")
+        if self.uaxis is not None:
+            for axis in (self.uaxis, self.vaxis):
+                if len(axis) != 3 or not all(isfinite(x) for x in axis) or dot(axis,axis) < EPS:
+                    raise ValueError("Texture axes must be finite nonzero 3D vectors")
+            if dot(cross(self.uaxis, self.vaxis), cross(self.uaxis, self.vaxis)) < EPS:
+                raise ValueError("Texture axes must be independent")
 
     @property
     def normal(self):
@@ -119,17 +159,21 @@ class Face:
             return replace(self, points=self.points[::-1])
         return self
 
+    @property
+    def axes(self):
+        return (self.uaxis, self.vaxis) if self.uaxis is not None else world_axes(self.normal)
+
+    def uv(self, point):
+        u, v = self.axes
+        return dot(u,point)/self.scale+self.uoff, dot(v,point)/(self.vscale or self.scale)+self.voff
+
     def line(self):
-        ax, ay, az = map(abs, self.normal)
-        if az >= ax and az >= ay:
-            u, v = (1, 0, 0), (0, -1, 0)
-        elif ax >= ay:
-            u, v = (0, 1, 0), (0, 0, -1)
-        else:
-            u, v = (1, 0, 0), (0, 0, -1)
+        if self.material is not None and self.uaxis is None:
+            raise ValueError("Resolve Material faces through Map.write or Material.map_face before emitting MAP text")
+        u, v = self.axes
         points = " ".join("( " + " ".join(map(number, p)) + " )" for p in self.points)
-        return (f"{points} {self.texture} [ {' '.join(map(str, u))} {number(self.uoff)} ] "
-                f"[ {' '.join(map(str, v))} {number(self.voff)} ] 0 {number(self.scale)} {number(self.scale)}")
+        return (f"{points} {self.texture} [ {' '.join(map(number, u))} {number(self.uoff)} ] "
+                f"[ {' '.join(map(number, v))} {number(self.voff)} ] 0 {number(self.scale)} {number(self.vscale or self.scale)}")
 
 
 class Brush:
@@ -144,6 +188,27 @@ class Brush:
                 for point in other.points:
                     if dot(face.normal, vector(point, face.points[1])) > EPS:
                         raise ValueError("Brush is not convex or its interior is outside")
+
+    @cached_property
+    def vertices(self):
+        """Intersect planes, rather than treating MAP plane points as bounds."""
+        planes = [(normalize(f.normal), f.points[1]) for f in self.faces]
+        vertices = {}
+        for (a,pa),(b,pb),(c,pc) in combinations(planes,3):
+            determinant = dot(a,cross(b,c))
+            if abs(determinant) < 1e-8:
+                continue
+            terms = [(dot(a,pa),cross(b,c)),(dot(b,pb),cross(c,a)),(dot(c,pc),cross(a,b))]
+            point = tuple(sum(distance*axis[i] for distance,axis in terms)/determinant for i in range(3))
+            if all(dot(normal,vector(point,origin)) <= 1e-4 for normal,origin in planes):
+                vertices[tuple(round(x,6) for x in point)] = point
+        if len(vertices) < 4:
+            raise ValueError("Brush has no bounded convex volume")
+        return tuple(vertices.values())
+
+    def face_vertices(self, face):
+        normal = normalize(face.normal)
+        return tuple(p for p in self.vertices if abs(dot(normal,vector(p,face.points[1]))) < 1e-4)
 
     def text(self):
         return "{\n" + "\n".join(f.line() for f in self.faces) + "\n}"

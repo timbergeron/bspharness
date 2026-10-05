@@ -1,9 +1,15 @@
 """Room palettes, sealed worlds, entities, and Valve 220 output."""
 
 from dataclasses import dataclass, replace
+from copy import copy
+import hashlib
+from itertools import combinations
+import json
 from pathlib import Path
 
 from .geometry import Bounds, box, number
+from .materials import Material, TextureLibrary, WallRun
+from .transitions import Portal, TransitionRule, name
 
 
 def quoted(value):
@@ -41,6 +47,9 @@ class Map:
         self.details = []
         self.entities = []
         self.cameras = []
+        self.wall_runs = []
+        self.transition_rules = []
+        self.transitions = []
 
     def room(self, name, mins, maxs, palette=None, kind="room"):
         if kind not in ("room", "sky", "window"):
@@ -72,6 +81,53 @@ class Map:
             raise ValueError("Camera needs XYZ and pitch/yaw/roll")
         self.cameras.append({"name":name, "origin":list(origin), "angles":list(angles)})
 
+    def wall_run(self, material, path, z_anchor=None, start=0):
+        run = WallRun(material,tuple(path),material.anchor[2] if z_anchor is None else z_anchor,start)
+        self.wall_runs.append(run)
+        return run
+
+    def transition_rule(self, rule):
+        if not isinstance(rule,TransitionRule):
+            raise ValueError("Register a TransitionRule")
+        self.transition_rules.append(rule)
+
+    def transition(self, a, b, trim, **options):
+        if a==b:
+            raise ValueError("A transition needs two different rooms")
+        self.transitions.append((a,b,TransitionRule((a,b),trim,**options)))
+
+    def portals(self):
+        rooms = {a.name:a for a in self.airs if a.kind=="room"}
+        portals = {}
+        for a,b,rule in self.transitions:
+            if a not in rooms or b not in rooms:
+                raise ValueError(f"Transition references an unknown room: {a}/{b}")
+            portal = Portal.between(rooms[a],rooms[b],rule)
+            if portal is None:
+                raise ValueError(f"Transition rooms must share a vertical opening: {a}/{b}")
+            key = frozenset((a,b))
+            if key in portals:
+                raise ValueError(f"Duplicate transition for {a}/{b}")
+            portals[key] = portal
+        for a,b in combinations(rooms.values(),2):
+            key = frozenset((a.name,b.name))
+            if key in portals:
+                continue
+            matched = [r for r in self.transition_rules if r.matches(a,b)]
+            candidates = [p for r in matched if (p:=Portal.between(a,b,r)) is not None]
+            if len(candidates)>1:
+                raise ValueError(f"Multiple transition rules match {a.name}/{b.name}; declare a room transition")
+            if candidates:
+                portals[key] = candidates[0]
+        result = list(portals.values())
+        for a,b in combinations(result,2):
+            if (a.band is not None and b.band is not None and abs(a.low[2]-b.low[2])<1e-6
+                    and name(a.rule.trim).casefold()!=name(b.rule.trim).casefold()
+                    and all(min(a.band.maxs[i],b.band.maxs[i])-max(a.band.mins[i],b.band.mins[i])>1e-6
+                            for i in (0,1))):
+                raise ValueError(f"Conflicting floor trim bands at {a.rooms}/{b.rooms}")
+        return result
+
     def world_brushes(self):
         if not self.airs:
             raise ValueError("Declare at least one air volume")
@@ -80,10 +136,13 @@ class Map:
         solids = [Bounds(lo,hi)]
         for air in self.airs:
             solids = [piece for solid in solids for piece in solid.subtract(air.bounds)]
+        portals = self.portals()
+        bands = [p.band for p in portals if p.band is not None]
         # Split along palette boundaries so a plane shared by two rooms or a
         # sky well can receive different materials on each rectangular patch.
         for axis in range(3):
             cuts = sorted({v for a in self.airs for v in (a.bounds.mins[axis],a.bounds.maxs[axis])})
+            cuts = sorted(set(cuts)|{v for b in bands for v in (b.mins[axis],b.maxs[axis])})
             for cut in cuts:
                 solids = [piece for solid in solids for piece in solid.split(axis,cut)]
                 if len(solids) > 50000:
@@ -117,24 +176,79 @@ class Map:
                         tex = palette.floor if side == "top" else palette.ceiling if side == "bottom" else palette.wall
                     sides[side] = tex
                     scales[side] = palette.scale
+            for portal in portals:
+                if portal.covers_floor(solid):
+                    # Retexture a partition of the existing floor. No
+                    # coplanar overlay, raised step, or extra collision slab.
+                    sides["top"] = portal.rule.trim
+                    scales["top"] = 1.0
             # Scale is global for a brush. Set per-face scales after construction.
-            brush = box(*solid.mins,*solid.maxs,**sides)
+            brush = box(*solid.mins,*solid.maxs,texture=self.airs[0].palette.wall,**sides)
             brush.faces = tuple(replace(face,scale=scales.get(side,1.0)) for face,side in zip(brush.faces,directions))
             brushes.append(brush)
+        for portal in portals:
+            brushes.extend(portal.frame_brushes())
         return brushes
 
-    def write(self, path, wads):
+    def write(self, path, wads, check_seams=None):
         path = Path(path)
-        brushes = self.world_brushes() + self.details
+        wads = list(wads)
+        brushes = self.world_brushes() + [copy(b) for b in self.details]
+        entities = [(keys,tuple(copy(b) for b in entity_brushes)) for keys,entity_brushes in self.entities]
         worldspawn = {**self.worldspawn,"wad":";".join(Path(w).resolve().as_posix() for w in wads)}
         if worldspawn["classname"] != "worldspawn":
             raise ValueError("World classname must be worldspawn")
+        all_brushes = brushes+[b for _,entity_brushes in entities for b in entity_brushes]
+        materials = {f.material for b in all_brushes for f in b.faces if f.material is not None}
+        materials.update(run.material for run in self.wall_runs)
+        enabled = bool(materials or self.transitions or self.transition_rules or self.wall_runs)
+        contract = None
+        if enabled or check_seams:
+            library = TextureLibrary(wads)
+            run_matches = [0]*len(self.wall_runs)
+            for brush in all_brushes:
+                faces = []
+                for face in brush.faces:
+                    mapped = face.material.map_face(face,library) if face.material is not None else face
+                    matches = []
+                    for index,run in enumerate(self.wall_runs):
+                        if run.material.texture.casefold()==face.texture.casefold():
+                            value = run.map_face(face,brush.face_vertices(face),library)
+                            if value is not None:
+                                matches.append(value)
+                                run_matches[index] += 1
+                    if len(matches)>1:
+                        raise ValueError(f"Overlapping wall runs at {face.points[1]}")
+                    faces.append(matches[0] if matches else mapped)
+                brush.faces = tuple(faces)
+            if any(count==0 for count in run_matches):
+                raise ValueError("A wall run matched no faces; check its texture, path, and face extents")
+            portals = self.portals()
+            # Only declared trim contacts are intentionally exempt from the
+            # generic material-boundary warning. UV checks still run.
+            allowed = set()
+            for portal in portals:
+                for room in self.airs:
+                    if room.name in portal.rooms:
+                        for role in ("wall","floor","ceiling"):
+                            allowed.add(tuple(sorted((name(getattr(room.palette,role)),name(portal.rule.trim)))))
+            contract = {"schema":1,"strict":True if check_seams is None else bool(check_seams),
+                        "materials":[m.metadata(library) for m in sorted(materials,key=repr)],
+                        "wall_runs":[r.metadata() for r in self.wall_runs],
+                        "transitions":[p.metadata() for p in portals],
+                        "allowed_pairs":[list(p) for p in sorted(allowed)]}
         sections = []
-        for keys, entity_brushes in [(worldspawn,brushes),*self.entities]:
+        for keys, entity_brushes in [(worldspawn,brushes),*entities]:
             lines = ["{",*(f"{quoted(k)} {quoted(v)}" for k,v in keys.items())]
             lines.extend(b.text() for b in entity_brushes)
             lines.append("}")
             sections.append("\n".join(lines))
         path.parent.mkdir(parents=True,exist_ok=True)
         path.write_text("// Game: Quake\n// Format: Valve\n"+"\n".join(sections)+"\n",encoding="ascii")
+        sidecar = path.with_suffix(".materials.json")
+        if contract is not None:
+            contract["map_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+            sidecar.write_text(json.dumps(contract,indent=2)+"\n",encoding="utf-8")
+        elif sidecar.exists():
+            sidecar.unlink()
         return path

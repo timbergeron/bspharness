@@ -14,6 +14,7 @@ import time
 import zipfile
 
 from .bsp import BSP
+from .seams import check_bsp
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -58,7 +59,7 @@ def run_stage(command, directory, log, timeout):
 
 
 def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, lighting_dir=None,
-          reference=None, timeout=1800, threads=4):
+          reference=None, timeout=1800, threads=4, check_seams=False):
     source = Path(source).resolve()
     if source.suffix != ".map" or not source.is_file():
         raise ValueError("Build needs an existing .map source")
@@ -82,6 +83,13 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
                 "source":str(source),"source_sha256":digest(source),"profile":profile,
                 "format":bsp_format,"stages":{},"passed":False}
     try:
+        sidecar = source.with_suffix(".materials.json")
+        contract = None
+        if sidecar.exists():
+            contract = json.loads(sidecar.read_text())
+            if contract.get("schema")!=1 or contract.get("map_sha256")!=manifest["source_sha256"]:
+                raise ValueError("Material contract is stale; regenerate the MAP and its .materials.json together")
+            shutil.copy2(sidecar,work/sidecar.name)
         formats = {"bsp29":[],"bsp2":["-bsp2"],"2psb":["-2psb"]}
         command = [qbsp,*settings["qbsp"],*formats[bsp_format],source,bsp]
         stage,output_text = run_stage(command,work,work/"qbsp.log",timeout)
@@ -107,11 +115,22 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
             if not lit.exists() or lit.read_bytes()[:8] != b"QLIT\x01\x00\x00\x00":
                 report["errors"].append("Missing or invalid classic QLIT sidecar")
         report["passed"] = not report["errors"]
+        if report["passed"] and (contract is not None or check_seams):
+            seam_report = check_bsp(BSP(bsp),contract)
+            write_json(work/"seams.json",seam_report)
+            if (check_seams or contract.get("strict",True)) and not seam_report["passed"]:
+                report["errors"].append(f"Texture seam checks failed ({len(seam_report['errors'])} errors); see seams.json")
+            report["passed"] = not report["errors"]
         write_json(work/"validation.json",report)
         if not report["passed"]:
             raise ValueError("BSP validation failed: "+"; ".join(report["errors"]))
+        if digest(source)!=manifest["source_sha256"]:
+            raise ValueError("Source changed during compilation; rebuild the map")
+        if contract is not None and digest(sidecar)!=digest(work/sidecar.name):
+            raise ValueError("Material contract changed during compilation; rebuild the map")
         shutil.copy2(source,work/source.name)
         manifest["artifacts"] = {p.name:digest(p) for p in [bsp,lit] if p.exists()}
+        manifest["evidence"] = {p.name:digest(p) for p in (work/"seams.json",work/sidecar.name) if p.exists()}
         manifest["passed"] = True
         # Logs and hashes refer to the actual run directory, which is retained.
         manifest["run_directory"] = str(work)
@@ -121,6 +140,10 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
         for extension in (".lit",".lux",".pts"):
             old = destination/(source.stem+extension)
             if old.exists() and not (work/old.name).exists():
+                old.unlink()
+        for filename in ("seams.json",sidecar.name):
+            old = destination/filename
+            if old.exists() and not (work/filename).exists():
                 old.unlink()
         write_json(manifest_path,manifest)
         return destination/bsp.name
@@ -141,6 +164,9 @@ def verified_build(bsp):
     for filename,sha in manifest["artifacts"].items():
         if digest(bsp.parent/filename) != sha:
             raise ValueError(f"Modified build artifact: {filename}")
+    for filename,sha in manifest.get("evidence",{}).items():
+        if digest(bsp.parent/filename)!=sha:
+            raise ValueError(f"Modified material/seam evidence: {filename}")
     return manifest
 
 
@@ -166,6 +192,8 @@ def package(bsp, output, credits, qa_report=None):
         archive.write(credits,"README.txt")
         archive.write(bsp.parent/"build.json","build.json")
         archive.write(bsp.parent/"validation.json","validation.json")
+        for filename in manifest.get("evidence",{}):
+            archive.write(bsp.parent/filename,"source/"+filename if filename.endswith(".materials.json") else filename)
         if qa_report:
             archive.write(qa_report,"qa.json")
     return output

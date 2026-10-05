@@ -66,3 +66,6 @@ Use Quake WAD2, not Half-Life WAD3. Names must fit 15 ASCII bytes plus their
 terminator; dimensions must be positive multiples of 16, up to 1024 here,
 with four complete mip levels. Choose texture scale for the material's
 resolution; no single scale is correct for every WAD.
+Use [Material](MATERIALS.md) for texel density, shared physical repeat sizes,
+and alignment anchors. Duplicate names resolve from the last WAD in the
+MAP's list with the pinned ericw compilers.

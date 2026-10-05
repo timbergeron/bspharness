@@ -78,6 +78,25 @@ sunlight openings. Details, ramps, items, lights, and brush entities add
 intentional structure inside that shell. See [atrium.py](examples/atrium.py)
 for a complete layout with multiple routes and vertical gameplay.
 
+## Align materials and their joins
+
+`Material` supports texel density, physical repeat sizes, shared anchors,
+and compatible texture families. Declared wall paths wrap patterns around
+corners. Transition rules add doorway frames and flush floor borders
+between different room materials. Builds check the compiled BSP's shared
+edges and reject UV discontinuities or conflicting repeat sizes.
+
+```sh
+python3 examples/materials.py
+python3 -m bspharness build src/materials_demo.map --profile final
+python3 -m bspharness seams out/materials_demo/final/materials_demo.bsp
+```
+
+The diagnostic uses original generated textures, including matching 64px
+and 128px tile images. See [the material guide](docs/MATERIALS.md) for API
+examples, wall wrapping, trim rules, and the checks' scope. Artwork
+compatibility and undeclared corners still require visual review.
+
 ## Engine QA and packaging
 
 ```sh
@@ -95,6 +114,7 @@ automated QA does not judge map design. Packaging checks artifact hashes and
 includes the BSP, `.lit` when present, source, credits, and build/validation
 reports. QA is optional for development packages; include it for reviewed
 releases. Custom skyboxes or mod dependencies need separate asset packaging.
+Material builds also include their hash-verified contract and seam report.
 
 ## Repository guide
 
@@ -106,6 +126,7 @@ releases. Custom skyboxes or mod dependencies need separate asset packaging.
 | `assets/wads/` | Local, untracked texture libraries |
 | `src/`, `out/`, `dist/` | Generated sources, compile evidence, release archives |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build/edit/verify procedures and known limits |
+| [docs/MATERIALS.md](docs/MATERIALS.md) | Physical texture scale, wall wraps, trim rules, seam checks |
 | [docs/DESIGN.md](docs/DESIGN.md) | Quality goals, architecture, and next capabilities |
 | [docs/operator-manual.md](docs/operator-manual.md) | Original `mapharness.md` field notes |
 
@@ -120,3 +141,5 @@ Integration checks use the pinned compilers to build BSP29, BSP2, and 2PSB,
 exercise the stable-qbsp/modern-light combination, reject leaks and missing
 textures, and verify package hashes. No game PAKs or third-party textures are
 needed by CI.
+Material checks also compile mixed resolutions and wrapped corners, reject
+misalignments, and verify WAD precedence and material-evidence hashes.

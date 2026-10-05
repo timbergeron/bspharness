@@ -39,6 +39,15 @@ face is oriented against an interior point, and brush construction rejects
 degenerate/nonconvex input. Valve 220 UV axes align to world directions.
 `Map.entity`, `Map.light`, and brush-entity lists handle Quake entities.
 
+`Material` adds physical texel density or repeat sizes, shared anchors and
+phase, compatible-image families, and tangent projection for slopes.
+`Map.wall_run` unrolls vertical paths around corners. `TransitionRule` and
+explicit room transitions generate doorway frames and flush floor trim.
+The final BSP is checked for shared-edge phase, repeat density, declared
+corner wraps, and the expected WAD dimensions. Source-bound material
+contracts and seam reports are hashed into build/package evidence. See
+[MATERIALS.md](MATERIALS.md) for usage and limits.
+
 Compilation uses explicit profiles and format choices. Each run retains
 logs, tool hashes, source hashes, artifact hashes, and a validation report.
 QSS-M uses a post-connect script to capture repeatable cameras and audit
