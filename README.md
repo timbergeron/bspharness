@@ -117,6 +117,26 @@ and 128px tile images. See [the material guide](docs/MATERIALS.md) for API
 examples, wall wrapping, trim rules, and the checks' scope. Artwork
 compatibility and undeclared corners still require visual review.
 
+## Author particle effects
+
+Original FTE particle scripts and PNG sprites can accompany a map through
+source-bound asset manifests. The harness snapshots and verifies their hashes,
+stages them for engine QA, checks sprite upload dimensions, and includes the
+runtime files in release packages. Use a QSS-M or FTE build with native particle
+support. See [the particle guide](docs/PARTICLES.md) for authoring and verification.
+
+The [Awoken jump-pad recipe](maps/awoken/PARTICLES.md) generates electric-blue
+filaments, moving white hot spots, rising arcs, and sparse lightning from
+original 512px sprites. Its entity-only helper adds visual anchors to a verified
+BSP copy while preserving collision, VIS, BSP format, and lighting. Subsequent
+sprite/config tuning can use `bind-assets` in a fresh build directory without
+repeating the geometry or lighting bake.
+
+Review effects in motion as well as in stills. Camera `settle_frames` controls
+warmup; allow for complete paths and staggered emissions. Some unsupported
+particle fields are silently ignored, so successful loading alone does not
+establish that every layer or moving accent works.
+
 ## Engine QA and packaging
 
 [Awoken](maps/awoken/README.md) is the first complete imported arena recipe:
@@ -144,7 +164,9 @@ normal collision and health checks run before noclip cameras. Omit
 automated QA does not judge map design. Packaging checks artifact hashes and
 includes the BSP, `.lit` when present, source, credits, and build/validation
 reports. QA is optional for development packages; include it for reviewed
-releases. Custom skyboxes or mod dependencies need separate asset packaging.
+releases. Declared runtime PNGs, including skyboxes, and FTE particle scripts
+are included in the package. Engine binaries and mod dependencies require
+separate installation.
 Material builds also include their hash-verified contract and seam report.
 Use `compare-qa before/qa.json after/qa.json --output out/comparison-01`
 to collect hash-checked, named before/after camera views for visual review.
