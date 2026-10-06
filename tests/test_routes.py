@@ -71,6 +71,12 @@ class RouteTests(unittest.TestCase):
         self.assertEqual(audit_log(log+'Unknown command "sv_edgefriction"\n',[]),
                          ["Engine rejected QA command: sv_edgefriction"])
 
+    def test_camera_drawing_resumes_after_physics_settles(self):
+        config=camera_config([{"name":"court","origin":[0,0,64],"angles":[0,0,0]}])
+        self.assertLess(config.index("r_norefresh 1"),config.index("BSPHARNESS_AUDIT_BEGIN"))
+        self.assertLess(config.index("BSPHARNESS_AUDIT_END"),config.index("r_norefresh 0",config.index("r_norefresh 1")))
+        self.assertLess(config.index("r_norefresh 0",config.index("r_norefresh 1")),config.index("screenshot png"))
+
     def test_item_checks_use_height_and_distinct_runtime_edicts(self):
         log = player_dump("BSPHARNESS_AUDIT","0 0 24")
         log = log.replace("BSPHARNESS_AUDIT_END", "EDICT 2:\nclassname weapon_rocketlauncher\norigin '128 0 6'\nBSPHARNESS_AUDIT_END")

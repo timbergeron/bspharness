@@ -2,6 +2,7 @@
 
 import argparse
 from collections import Counter
+from dataclasses import replace
 from math import sqrt
 import json
 from pathlib import Path
@@ -15,7 +16,7 @@ from bspharness.geometry import normalize, dot, vector
 from bspharness.pipeline import digest, resolve_tool, run_stage, write_json
 from bspharness.source import read
 from bspharness.wad import make_blockout
-from maps.awoken.materials import make_materials
+from maps.awoken.materials import make_materials, bind_runtime
 from maps.awoken.polish import carvings
 from maps.awoken.geometry import profiles
 
@@ -45,17 +46,18 @@ def generate(reference, stock_wad, output, style="video"):
         # Smooth the 22.5-degree support facets while keeping 45-degree
         # frame chamfers and recessed architectural joints sharp.
         arena.worldspawn.update(_phong_angle="30",_phong_angle_concave="1")
+        arena.worldspawn["sky"] = "awoken"
     wall = Material("aw_stone",repeat=(256,256)) if video else Material("city4_2",repeat=(128,128))
     stone = Material("aw_trim",repeat=(128,128)) if video else Material("stone1_7",repeat=(128,128))
     rock = stone if video else Material("rock3_7",repeat=(128,128))
     floor = Material("aw_pave",repeat=(128,128)) if video else Material("ground1_6",repeat=(128,128))
     trim = Material("aw_trim",repeat=(128,128)) if video else Material("metalt2_3",repeat=(64,64))
-    light = Material("tlight02",repeat=(64,64))
+    light = Material("aw_light",repeat=(128,32)) if video else Material("tlight02",repeat=(64,64))
     materials = {
         "1und/grudbr1a":wall,"1und/rtnick2d":stone,"1und/rtbrockbm":rock,
         "1und/flo3":floor,"1und/flo4b":floor,"stark/brickfloor2":floor,
         "1und/hrudgb":trim,"1und/grudsign2":Material("aw_panel",repeat=(64,128)) if video else Material("rune2_3",repeat=(64,64)),
-        "1und/grud1ctr":stone,"1und/gnotiley31":Material("afloor1_4",repeat=(128,128)),
+        "1und/grud1ctr":stone,"1und/gnotiley31":Material("aw_metal",repeat=(128,128)) if video else Material("afloor1_4",repeat=(128,128)),
         "1und/rtgnobr":stone,"1und/grud1atr":wall,"1und/pieaseds":trim,
         "1und/grud-br1":wall,"1und/rtgnobotd":stone,"1und/flo2a":floor,
         "mosswall/mossfloor02":floor,"1und/rtgriff":stone,"1und/ttzutilgr":light,
@@ -69,7 +71,7 @@ def generate(reference, stock_wad, output, style="video"):
         if f.texture not in materials:raise ValueError(f"Unmapped source texture: {f.texture}")
         return materials[f.texture]
     changes = Counter()
-    emitters, solids, cornices = [], [], []
+    emitters, solids, cornices, reskin_regions = [], [], [], []
     for entity in entities:
         name = entity.keys["classname"]
         brushes = []
@@ -79,7 +81,7 @@ def generate(reference, stock_wad, output, style="video"):
                 continue
             if all(f.contents&268435456 and not f.contents&32 for f in source.faces):
                 if video and any(f.texture in ("stark/vine06","stark/dk_vines") for f in source.faces):
-                    vine = source.mapped(lambda f:Material("{aw_vine",repeat=(256,256),anchor=(0,0,-192))
+                    vine = source.mapped(lambda f:Material("{aw_vines" if f.texture=="stark/dk_vines" else "{aw_vine",repeat=(256,256),anchor=(0,0,-192))
                                          if f.texture in ("stark/vine06","stark/dk_vines") else "skip")
                     arena.detail(vine,mode="illusionary",_shadow="1")
                     changes["nonblocking vine brushes restored"]+=1
@@ -95,6 +97,11 @@ def generate(reference, stock_wad, output, style="video"):
                 changes["flowing waterfall brushes made translucent"]+=1
                 continue
             brush = source.mapped(material)
+            if video and any(f.texture in ("1und/rtbrockbm","e2u3/lead1_2") for f in source.faces):
+                # Preserve the previous stone-role selection during profiling;
+                # apply the final cliff/metal art to its descendants afterwards.
+                name_skin = "aw_cliff" if any(f.texture=="1und/rtbrockbm" for f in source.faces) else "aw_metal"
+                reskin_regions.append((name_skin,[(normalize(f.normal),f.points[1]) for f in brush.faces]))
             if video and name=="worldspawn" and any(f.texture=="1und/hrudgb" for f in source.faces):
                 cornices.append(brush)
             if name=="worldspawn":
@@ -208,7 +215,7 @@ def generate(reference, stock_wad, output, style="video"):
         # neutral stone instead of making every doorway blue metal.
         for x,y,z in ((1408,1908,-720),(768,844,-720),(684,1696,-720),(1904,1008,-700)):
             arena.detail(box(x-40,y-40,z-16,x+40,y+40,z-15.5,texture=trim,
-                             top=Material("aw_pad",repeat=(128,128),anchor=(x-64,y+64,z))),
+                             top=Material("aw_pad",repeat=(80,80),anchor=(x-40,y+40,z))),
                          mode="illusionary")
             arena.light((x,y,z+88),200,(105,155,255),delay="2",wait="0.8")
         arena.light((1652,1152,-652),250,(90,150,255),delay="2",wait="0.6")
@@ -276,8 +283,45 @@ def generate(reference, stock_wad, output, style="video"):
         for keys,_ in arena.entities:
             if keys["classname"]=="light":
                 keys["light"] = str(round(float(keys["light"])*0.45))
+        # Finish geometry first so its stone profile selection remains stable.
+        # Coherent damp courts use whole-surface variants with common world UVs.
+        # The wet wall master has no masonry joints: reserve it for a separate
+        # future water alcove instead of blending it into the ashlar family.
+        material_counts=Counter()
+        for brush in [*arena.details,*(b for _,bs in arena.entities for b in bs)]:
+            center=brush.interior
+            skin=next((n for n,planes in reskin_regions if
+                       all(dot(normal,vector(center,p))<=0.001 for normal,p in planes)),None)
+            damp=center[0]<1000 or center[1]>1750
+            wet=center[0]>2100 and center[1]<1400 and center[2]<-540
+            faces=[]
+            for face in brush.faces:
+                name=face.texture
+                if name=="aw_trim" and skin:
+                    face=replace(face,texture=Material(skin,repeat=(256,256) if skin=="aw_cliff" else (128,128)))
+                elif name=="aw_stone" and damp:
+                    face=replace(face,texture=Material("aw_wmoss",repeat=(256,256)))
+                elif name=="aw_pave" and (damp or wet):
+                    face=replace(face,texture=Material("aw_fwet" if wet else "aw_fmoss",repeat=(128,128)))
+                elif name=="aw_panel" and abs(normalize(face.normal)[2])<0.001:
+                    verts=brush.face_vertices(face)
+                    across=1 if abs(normalize(face.normal)[0])>0.99 else 0
+                    lo=min(p[across] for p in verts);hi=max(p[across] for p in verts)
+                    bottom=min(p[2] for p in verts);top=max(p[2] for p in verts)
+                    if hi-lo>=16 and top-bottom>=32:
+                        square=0.8<(hi-lo)/(top-bottom)<1.25
+                        width=top-bottom if square else (top-bottom)/2
+                        anchor=list(center);anchor[across]=(lo+hi-width)/2;anchor[2]=top
+                        face=replace(face,texture=Material("aw_plaque" if square else "aw_panel",
+                                                          repeat=(width,top-bottom),anchor=tuple(anchor)))
+                material_counts[face.texture]+=1
+                faces.append(face)
+            brush.faces=tuple(faces)
     output=arena.write(output,[stock_wad,make_blockout(ROOT/"assets/wads/blockout.wad"),
                                *([art_wad] if art_wad else [])])
+    runtime_assets=bind_runtime(output) if video else {}
+    if not video:
+        output.with_suffix(".assets.json").unlink(missing_ok=True)
     write_json(output.with_suffix(".cameras.json"),arena.cameras)
     write_json(output.with_suffix(".routes.json"),[r.metadata() for r in routes])
     write_json(output.with_suffix(".conversion.json"),{
@@ -285,6 +329,8 @@ def generate(reference, stock_wad, output, style="video"):
         "source_brushes":sum(len(e.brushes) for e in entities),"world_brushes":len(arena.details),
         "entity_brushes":sum(len(b) for _,b in arena.entities),"generator_sha256":digest(__file__),
         "style":style,"carved_reliefs":ornaments,
+        "runtime_assets":runtime_assets,
+        "materials":dict(material_counts) if video else {},
         "geometry":geometry,
         "geometry_sha256":digest(ROOT/"maps/awoken/geometry.py") if video else None,
         "art_wad_sha256":digest(art_wad) if art_wad else None,

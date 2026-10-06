@@ -88,6 +88,19 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
                 "source":str(source),"source_sha256":digest(source),"profile":profile,
                 "format":bsp_format,"stages":{},"budgets":budgets,"passed":False}
     try:
+        asset_sidecar = source.with_suffix(".assets.json")
+        asset_records = {}
+        if asset_sidecar.exists():
+            from .assets import stage
+            asset_data = json.loads(asset_sidecar.read_text())
+            if asset_data.get("schema") != 1 or asset_data.get("map_sha256") != manifest["source_sha256"]:
+                raise ValueError("Runtime asset manifest is stale; regenerate the map")
+            asset_records = asset_data["files"]
+            asset_root = asset_sidecar.parent/asset_data["root"]
+            manifest["runtime_assets"] = asset_records
+            manifest["assets_manifest_sha256"] = digest(asset_sidecar)
+            stage(asset_root, asset_records, work/"runtime")
+            shutil.copy2(asset_sidecar, work/asset_sidecar.name)
         sidecar = source.with_suffix(".materials.json")
         contract = None
         if sidecar.exists():
@@ -137,6 +150,12 @@ def build(source, output, profile="final", bsp_format="bsp29", qbsp_dir=None, li
             raise ValueError("Source changed during compilation; rebuild the map")
         if contract is not None and digest(sidecar)!=digest(work/sidecar.name):
             raise ValueError("Material contract changed during compilation; rebuild the map")
+        if asset_records:
+            if digest(asset_sidecar) != manifest["assets_manifest_sha256"]:
+                raise ValueError("Runtime asset manifest changed during compilation")
+            from .assets import files, stage
+            files(asset_root, asset_records)
+            stage(work/"runtime", asset_records, destination/"runtime")
         shutil.copy2(source,work/source.name)
         manifest["artifacts"] = {p.name:digest(p) for p in [bsp,lit] if p.exists()}
         manifest["evidence"] = {p.name:digest(p) for p in (work/"seams.json",work/sidecar.name) if p.exists()}
@@ -176,6 +195,9 @@ def verified_build(bsp):
     for filename,sha in manifest.get("evidence",{}).items():
         if digest(bsp.parent/filename)!=sha:
             raise ValueError(f"Modified material/seam evidence: {filename}")
+    if manifest.get("runtime_assets"):
+        from .assets import files
+        files(bsp.parent/"runtime", manifest["runtime_assets"])
     return manifest
 
 
@@ -191,6 +213,8 @@ def package(bsp, output, credits, qa_report=None):
             raise ValueError("QA report must pass and match this BSP")
         if "artifacts" in qa and qa["artifacts"]!=manifest["artifacts"]:
             raise ValueError("QA report must match all build artifacts, including colored lighting")
+        if qa.get("runtime_assets", {}) != manifest.get("runtime_assets", {}):
+            raise ValueError("QA report must match the external runtime textures")
     source = bsp.parent/(bsp.stem+".map")
     if digest(source) != manifest["source_sha256"]:
         raise ValueError("Packaged source does not match build manifest")
@@ -199,6 +223,8 @@ def package(bsp, output, credits, qa_report=None):
     with zipfile.ZipFile(output,"w",compression=zipfile.ZIP_DEFLATED) as archive:
         for filename in manifest["artifacts"]:
             archive.write(bsp.parent/filename,"maps/"+filename)
+        for filename in manifest.get("runtime_assets", {}):
+            archive.write(bsp.parent/"runtime"/filename, filename)
         archive.write(source,"source/"+source.name)
         archive.write(credits,"README.txt")
         archive.write(bsp.parent/"build.json","build.json")

@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import sys
 
-from . import bsp, pak, pipeline, qa, review, seams, wad
+from . import assets, bsp, pak, pipeline, qa, review, seams, wad
 from .routes import routes_from_json
 
 
@@ -64,6 +64,10 @@ def main(argv=None):
     release.add_argument("--output",type=Path,required=True)
     release.add_argument("--credits",type=Path,required=True)
     release.add_argument("--qa-report",type=Path)
+    variant = commands.add_parser("bind-assets",help="Bind a texture variant to an unchanged verified MAP/BSP/LIT")
+    variant.add_argument("bsp",type=Path)
+    variant.add_argument("manifest",type=Path)
+    variant.add_argument("--out",type=Path,required=True)
     args = parser.parse_args(argv)
     try:
         if args.command=="blockout-wad":
@@ -109,6 +113,8 @@ def main(argv=None):
             print(review.compare(args.before,args.after,args.output))
         elif args.command=="package":
             print(pipeline.package(args.bsp,args.output,args.credits,args.qa_report))
+        elif args.command=="bind-assets":
+            print(assets.bind(args.bsp,args.manifest,args.out))
     except (ValueError,OSError,KeyError,json.JSONDecodeError) as exc:
         print(f"bspharness: {exc}",file=sys.stderr)
         return 1

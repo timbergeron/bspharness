@@ -33,6 +33,9 @@ def release(bsp, movement, deathmatch, cameras, review, output):
                 digest(ROOT/"maps/awoken/geometry.py")!=conversion["geometry_sha256"]):
             raise ValueError("Modified polish geometry or texture WAD; regenerate and rebuild")
         texture_manifest=json.loads((ROOT/"assets/wads/awoken.json").read_text())
+        if any(r.get("runtime_generator_sha256")!=digest(ROOT/"maps/awoken/runtime.py")
+               for r in texture_manifest["runtime_files"].values()):
+            raise ValueError("Runtime texture compatibility generator evidence is stale")
         if (texture_manifest["generator_sha256"]!=digest(ROOT/"maps/awoken/materials.py") or
                 texture_manifest["wad_sha256"]!=conversion["art_wad_sha256"]):
             raise ValueError("Texture generator evidence is stale")
@@ -42,6 +45,10 @@ def release(bsp, movement, deathmatch, cameras, review, output):
         if (not report.get("passed") or report.get("bsp_sha256")!=digest(bsp)
                 or report.get("artifacts")!=manifest["artifacts"]):
             raise ValueError(f"{name} QA must pass and match the BSP and LIT")
+        if report.get("runtime_assets",{})!=manifest.get("runtime_assets",{}):
+            raise ValueError(f"{name} QA must match every external runtime texture")
+    if conversion.get("runtime_assets",{})!=manifest.get("runtime_assets",{}):
+        raise ValueError("Current runtime texture recipe differs from the build")
     expected={r["name"]:r for r in json.loads((ROOT/"src/awoken.routes.json").read_text())}
     actual={r["name"]:r for r in reports["movement"]["routes"]}
     if set(actual)!=set(expected) or any(not actual[n]["passed"] or actual[n]["specification"]!=s
@@ -56,6 +63,8 @@ def release(bsp, movement, deathmatch, cameras, review, output):
             or any(s["view"]!=views[s["camera"]] for s in shots)):
         raise ValueError("Camera pass must contain all current Awoken views")
     reviewed=json.loads(Path(review).read_text())
+    if reviewed.get("runtime_assets",{})!=manifest.get("runtime_assets",{}):
+        raise ValueError("Visual review must match the external runtime textures")
     if reviewed.get("artifacts")!=manifest["artifacts"] or any(
             not reviewed.get("cameras",{}).get(n,{}).get("accepted") for n in names):
         raise ValueError("Review must accept every camera for these exact artifacts")
@@ -69,11 +78,12 @@ def release(bsp, movement, deathmatch, cameras, review, output):
         z.write(paths["deathmatch"],"qa/deathmatch.json")
         z.write(review,"qa/visual-review.json")
         z.write(ROOT/"maps/awoken/reference.json","reference.json")
-        for suffix in ("routes.json","cameras.json","conversion.json"):
+        for suffix in ("routes.json","cameras.json","conversion.json","assets.json"):
+            if not (ROOT/f"src/awoken.{suffix}").exists():continue
             z.write(ROOT/f"src/awoken.{suffix}",f"source/awoken.{suffix}")
         for shot in shots:z.write(shot["file"],f"screenshots/{shot['camera']}.png")
-        for filename in ("build.py","materials.py","polish.py","geometry.py","review.py","package.py",
-                         "art.json","baseline.json","README.md","POLISH.md","GEOMETRY.md"):
+        for filename in ("build.py","materials.py","runtime.py","polish.py","geometry.py","review.py","package.py",
+                         "art.json","art-v1.json","baseline.json","README.md","POLISH.md","GEOMETRY.md","TEXTURES.md","TEXTURE_BRIEF.md"):
             z.write(ROOT/"maps/awoken"/filename,"source/recipe/"+filename)
         for baseline in sorted((ROOT/"maps/awoken/baselines").glob("*.json")):
             z.write(baseline,"source/recipe/baselines/"+baseline.name)
@@ -84,7 +94,14 @@ def release(bsp, movement, deathmatch, cameras, review, output):
             z.write(ROOT/"assets/wads/awoken.json","source/wads/awoken.json")
     # Also provide directly usable files next to the archive.
     folder=archive.with_suffix("");folder.mkdir(parents=True,exist_ok=True)
-    for suffix in (".bsp",".lit"):shutil.copy2(bsp.with_suffix(suffix),folder/("awoken"+suffix))
+    (folder/"maps").mkdir(exist_ok=True)
+    for suffix in (".bsp",".lit"):
+        shutil.copy2(bsp.with_suffix(suffix),folder/"maps"/("awoken"+suffix))
+        # Earlier releases used loose map files; remove the obsolete copies.
+        (folder/("awoken"+suffix)).unlink(missing_ok=True)
+    from bspharness.assets import stage
+    if manifest.get("runtime_assets"):
+        stage(bsp.parent/"runtime",manifest["runtime_assets"],folder)
     shutil.copy2(ROOT/"maps/awoken/credits.txt",folder/"README.txt")
     print(archive)
 

@@ -1,23 +1,190 @@
 {
-  "schema": 1,
-  "method": "Built-in imagegen; original art inspired by the user-provided Awoken footage, without copying captured texture pixels",
+  "schema": 2,
+  "method": "User-supplied generated textures from textures_gen, following TEXTURE_BRIEF.md; originals retained byte for byte.",
   "sources": {
-    "stone": {
-      "file": "stone-v1.png",
-      "sha256": "a63bd51e758abe29a439bfa545dc717a5f648f15d504d9dfa1cfc16526c0a1ca",
-      "prompt": "Use case: stylized-concept. Asset type: a single seamless diffuse texture tile for a Quake 1 BSP stone wall. Create original art inspired by ancient overgrown arena masonry: pale green-gray weathered limestone ashlar, broad rectangular blocks in two offset courses, shallow dark mortar seams, gently chamfered chipped edges, restrained soft moss in some joints, fine mineral grain. The blocks should feel massive and readable, with restrained low-frequency wear and clean planar centers. Orthographic straight-on wall surface filling the entire square, no perspective, no objects. Neutral flat albedo lighting, no baked dramatic shadows, no ambient scene illumination. This must tile seamlessly on both axes, matching the edge pattern and colors, with no outer border. Color palette: desaturated gray limestone with a slight olive tint, mid-to-light value, darker muted green-gray seams, no yellow/gold or brown brick, no blue metal. Intended to be reduced to a 128x128 indexed retro game texture, so keep the details strong and sparse. No text, logo, decorative symbols, watermark, vegetation silhouettes or surrounding scenery. Deliver one square texture image only."
+    "aw_bark": {
+      "file": "aw_bark.png",
+      "sha256": "b60b9b92e2364c2bcdda10993de36e9c5206750708675a26b92a00365d2bed5b",
+      "width": 887,
+      "height": 1774,
+      "channels": "RGB"
     },
-    "slab": {
-      "file": "slab-v1.png",
-      "sha256": "cbeb9341ad73a8c34da6998fdc8811daaabd1cbf52d375f9b6e772209fa19bfe",
-      "prompt": "Use case: stylized-concept. Asset type: one seamless stone diffuse texture for a Quake 1 ancient ruin BSP. Produce a square flat albedo material sample of smooth pale gray limestone with a subtle muted olive cast. Very restrained weathering and fine mineral grain; scattered sparse fine hairline cracks and tiny edge chips, with extremely subtle moss staining. This is one continuous unjointed stone surface used on massive beveled door frames, architectural cornices and plain flagstones. No blocks, mortar grid, divisions, outer border, symbols, text or perspective. Orthographic straight-on closeup filling the square. Neutral even lighting with no directional shadows or highlights. Perfectly seamless on both axes. Mid-to-light values, keep broad clean smooth areas so it remains readable after reduction to a 128x128 Quake palette image. Avoid high-frequency noise, dark stains, gold, brown, blue, metal, panels, vegetation silhouettes, watermark. One texture image only."
+    "aw_canopy": {
+      "file": "aw_canopy.png",
+      "sha256": "876e7908764253473f48708a2b11035f72e01f169c81a95db3d1845ac6193213",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGBA"
     },
-    "vines": {
-      "file": "vines-v1.png",
-      "sha256": "84bb0a6afc3cf1a6f0f110324693ea6e8ef2d0a62d3349cf5bea1929c4b8151b",
-      "prompt": "Use case: stylized-concept. Asset type: a single original transparent foliage cutout for a Quake 1 ruined stone arena. Show a loose hanging curtain of several thin woody ivy/root strands with sparse clusters of small muted olive and sage green leaves, some dried brown twigs. Strands hang from the upper edge and taper irregularly toward the bottom, with generous transparent gaps between them. Frontal view, flat diffuse illumination, no perspective, shadows, background wall, ground, pot or scene. Natural realistic game texture, restrained saturation, broad readable leaf shapes suitable for reduction to 128x128 indexed pixels. The silhouette should occupy the upper and middle portions with a few long thin tendrils, and remain irregular near both side edges. Preserve a genuinely transparent background. No text, symbols, frame, watermark, flowers or fruit. One square foliage asset only."
+    "aw_cliff": {
+      "file": "aw_cliff.png",
+      "sha256": "62a9b635bacc89007a314afbd77f4bf14ca9728a17e95a13994567ace6eafb2f",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_earth": {
+      "file": "aw_earth.png",
+      "sha256": "d79ca94d4a3ef0628da283c7c1fabe22dcacc980be04c1708f92eb3858014483",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_fall": {
+      "file": "aw_fall.png",
+      "sha256": "d3c1b20c1b60ddbef195d8f1dcb8d18aa2fb53648df4233f5b2e530e72f13a8f",
+      "width": 887,
+      "height": 1774,
+      "channels": "RGB"
+    },
+    "aw_floor_base": {
+      "file": "aw_floor_base.png",
+      "sha256": "50a8ac406913a4168b0367c7a672a161f78f05eb8be50ebc87e80c1633592440",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_floor_moss": {
+      "file": "aw_floor_moss.png",
+      "sha256": "7b809a912495e802e30e3f2666710d597db691958c9fffd2a1d7eb2ddfdec2cd",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_floor_wet": {
+      "file": "aw_floor_wet.png",
+      "sha256": "0ad1336caeda67e3573cd33622b9b1c5e80897fa56751ef763439428aad2bce7",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_grass": {
+      "file": "aw_grass.png",
+      "sha256": "b8174be0116aad80b83e3bbc705a8cc4946ddd5bc3afeffa82694175500d1fc3",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGBA"
+    },
+    "aw_grate": {
+      "file": "aw_grate.png",
+      "sha256": "bdcf654a6d5e9fda42c7f761abb6d81d01da1809cf5a14d61a7f404e554ec345",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGBA"
+    },
+    "aw_light": {
+      "file": "aw_light.png",
+      "sha256": "c27ecfddc6038af9f03e2bc34d4330a7d02c29bfe445d0c7012cf2b4f1290f0c",
+      "width": 2508,
+      "height": 627,
+      "channels": "RGB"
+    },
+    "aw_metal": {
+      "file": "aw_metal.png",
+      "sha256": "7ba414f0bf24a8abcadf7afa89df8cba96db5a1ee0656c4e4b4445f088a9a63c",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_pad": {
+      "file": "aw_pad.png",
+      "sha256": "7f1e7521b63a405df2891086748f39e72d127b64bbcc4db98ada65bce10b9714",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_relief_a": {
+      "file": "aw_relief_a.png",
+      "sha256": "b8a1e33bce9b87cc70680c2440f50f80ed4734e21eb3cc3cdbcb7b6e3552dfb2",
+      "width": 887,
+      "height": 1774,
+      "channels": "RGB"
+    },
+    "aw_relief_b": {
+      "file": "aw_relief_b.png",
+      "sha256": "2b5de85adc2d23a49c83f30d5a2e46066beca4986b8fe270c4fdfda5710575a3",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_roots": {
+      "file": "aw_roots.png",
+      "sha256": "cf03fb113553fb27b53780a15bbda1a6db4488421d5517e1a350f9b86d4fd278",
+      "width": 887,
+      "height": 1774,
+      "channels": "RGBA"
+    },
+    "aw_sky": {
+      "file": "aw_sky.png",
+      "sha256": "69b9280a3d529d25a0f14db18f3132717e65ce6ccb05a00d0e079938459ca519",
+      "width": 1774,
+      "height": 887,
+      "channels": "RGB"
+    },
+    "aw_stone_plain": {
+      "file": "aw_stone_plain.png",
+      "sha256": "f40933339c8143469cd5918c01620f1050bc28883f7faed3021a565d968eb09c",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_stone_worn": {
+      "file": "aw_stone_worn.png",
+      "sha256": "b693c51f10f776d9db27e439428e188e6dd7453879a1a4759af3cedbb4f48427",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_trim_carved": {
+      "file": "aw_trim_carved.png",
+      "sha256": "0fc05f18942352f7e6a59780e07ec6cf069852b586dd80bdabd0b5171f52bb8b",
+      "width": 2172,
+      "height": 724,
+      "channels": "RGB"
+    },
+    "aw_vine_dense": {
+      "file": "aw_vine_dense.png",
+      "sha256": "23d889a40a571d113324504f72dbbf3ba33c3738ab80abb261933e081d00e74c",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGBA"
+    },
+    "aw_vine_sparse": {
+      "file": "aw_vine_sparse.png",
+      "sha256": "75afdb733f09caab14afbe0127917125ff8b034451455736184defc6a5cb75b1",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGBA"
+    },
+    "aw_wall_base": {
+      "file": "aw_wall_base.png",
+      "sha256": "c46da8e13ab3308505448e08912e8be0ec1f0b7f4f3439cca5b22d72a5003d2c",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_wall_moss": {
+      "file": "aw_wall_moss.png",
+      "sha256": "db82985f933b11334a54d06a91e16b3998cc6f3470b769be4128bb38d1b84aa1",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_wall_wet": {
+      "file": "aw_wall_wet.png",
+      "sha256": "38d56e5cc7c6babd3eae1f388d4966fd899f60772b8c7aa202962251e1ca732a",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
+    },
+    "aw_water": {
+      "file": "aw_water.png",
+      "sha256": "93dda1f0447f9068a3e0ab6ccb8873ec609611cc5e741adda928da36b03cec42",
+      "width": 1254,
+      "height": 1254,
+      "channels": "RGB"
     }
   },
-  "storage": "PNG sources in local assets/awoken; packaged with the map source. Raster files stay out of Git.",
-  "compilation": "materials.py resamples to 128x128, converts stone to a neutral Quake palette ramp, and authors periodic joints, carved motifs and pad markings. Vines use indexed transparency. No Makkon."
+  "storage": "Native PNG masters in assets/awoken, excluded from Git and included in source/art in release archive.",
+  "compilation": "Native full-color masters preserved. Runtime PNGs only upscale to powers of two to avoid QSS-M odd-width mipmap skew; no source axis is reduced. Indexed BSP fallbacks remain compact. Sky projection and waterfall animation are derived assets. No Makkon."
 }

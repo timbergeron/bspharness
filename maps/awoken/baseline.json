@@ -1,34 +1,34 @@
 {
-  "schema": 1,
+  "schema": 2,
   "style": "video",
-  "reviewed_at_utc": "2026-10-06T04:49:58.120458+00:00",
+  "reviewed_at_utc": "2026-10-06T07:51:47.777592+00:00",
   "reference_sha256": "17451ce49877375e4e0efdc4ba306be1044275fc7ec3c909c7cf76730f9bf251",
-  "generator_sha256": "d73986e91e1830eaba5206c363f2ff97acd6b133234a0448c0c6312a1ebccede",
-  "material_generator_sha256": "8e0d281007c2b00b43abfa6d41b293953ef60b9a18bb65a42ea78d32d20d59cb",
+  "generator_sha256": "599ba2586695b624b1618ed9ac051c011362006b79bcc10b46adff5bda8c0cf9",
+  "material_generator_sha256": "f3323f36570c1506939dc3386b4fb7a5b96983b7c35dc068d59893dd69a44ae0",
   "polish_sha256": "b60565245eb87fc01533519140c2768784471f151c41eace7068ceca110508b8",
-  "art_wad_sha256": "58310d1f6e7ca939033f33cd21b43c8a663c27d065560824a3e1031f8fb77841",
+  "art_wad_sha256": "fd69bfa0fa5fadca9f8d593d50285be91043c138801cca7878009b012e775f53",
   "video_sha256": "6db82695784c8c568929092609c36ad6f95110a6e3a0400b7cb2aad8dd30eb9c",
-  "source_sha256": "1d15c659a70c1d579f913df84e374bcb4b9aee9a87641c307e49ddc9c2dd51fc",
+  "source_sha256": "f4fc8b778ea15d5b2157013575386adda3ac69a41f638ce05398e7bd76771934",
   "profile": "final",
   "format": "bsp29",
   "artifacts": {
-    "awoken.bsp": "87e2973c819592b32a1fa9ff7e9ee4f0b98f142b9ee8aab6ca5ad3b919687d8c",
-    "awoken.lit": "292be3df78524a6ca2edff14afcde393b0f734d373af25665aab85bd8b7201df"
+    "awoken.bsp": "cab6184a564637be5e8b10b9ebfee9084d8a90f53b3abe46a18114dedd3fa047",
+    "awoken.lit": "05a13056e66fcd3cafd69a62fcd1077977b10c7fb5893da6bf0a5176f008fcf4"
   },
   "metrics": {
-    "faces": 12273,
+    "faces": 12231,
     "nodes": 8301,
     "clipnodes": 6393,
     "leaves": 6472,
     "models": 13,
     "visibility_bytes": 580881,
-    "lighting_bytes": 283420,
-    "textures_bytes": 381728,
-    "bsp_bytes": 3359124
+    "lighting_bytes": 271820,
+    "textures_bytes": 757396,
+    "bsp_bytes": 3687996
   },
   "evidence": {
-    "seams.json": "2ec5687f6f1f3ae2a1545d59b679c63a4cb6a4b266a38ceff0b9bf72c46844fb",
-    "awoken.materials.json": "821b8773578b22c029c7d77314f621278fbbc9595c5fe611e33841effedc2e93"
+    "seams.json": "39206429ef3ed98f7297ab15cd9e62ac78d7fbef897f832acc85809bd0fd1a9a",
+    "awoken.materials.json": "d28f93d744aa929caae57b91b1e056672635e93dd90a910673209bcdd4117da7"
   },
   "compiler_sha256": {
     "qbsp": "0cb519a210c89c57f230cf684f2e5c7d05503bb4fd09822977de59df8d696ecd",
@@ -93,50 +93,50 @@
     "cameras": {
       "central-courtyard": {
         "accepted": true,
-        "sha256": "f90cc919b116e9f889b40e07c0794fb4d1523a8c3601829d45f07ae243a6d199",
-        "notes": "Layered cornices and framed reliefs read across the court. Flat masonry faces and slender support profiles stay distinct; the water court and both tiers remain visible. No missing surfaces, opaque vine backdrops or new joint gaps observed."
+        "sha256": "bc4af6a4bb4acdfab9cdf0bf7a6b4df21317d31eef28f4cc74d2974e80871671",
+        "notes": "Masonry courses, complete scroll motifs, hanging ivy and pond read clearly. No diagonal mipmap smearing or missing faces observed; right covered route remains darker than the open court."
       },
       "rocket-terrace": {
         "accepted": true,
-        "sha256": "43d4772f8ee30e065551aa472fe88fd91d9395dbfd16b24db9dc7866eb41e164",
-        "notes": "The layered angular opening retains its proportions and clear width. Jamb faces meet the sloped header without nicked corners; the broad floor remains planar and pickups are visible in the retained roof shadows."
+        "sha256": "8559dc61eaf54b612ba7765461a4668f03a3b7e9b21554f5116b652f936ef02b",
+        "notes": "Floor slabs and arch stone retain sharp detail and consistent proportions. The terrace route is readable; no texture smearing or torn chamfers observed."
       },
       "lower-arena": {
         "accepted": true,
-        "sha256": "a628d983aa1a80150d9c6cc23a212c3e443475ef93f2bfc64c0419dc0bff77f1",
-        "notes": "The lower stone frame has clean corner transitions and readable depth. Green pond water leads to the blue-lit destination; weapons and ammunition remain visible. No missing faces or newly blocked opening observed."
+        "sha256": "4715a41bf6878a39d1173b9ea5c5ed20e869e7887df7a90e4bbc99f140d93e06",
+        "notes": "Wet lower court, framed opening and distant waterfall remain distinct. Pond pattern is coherent and masonry joints retain their phase through this view."
       },
       "mega-balcony": {
         "accepted": true,
-        "sha256": "f2b122730a22bad24fdba64f2e8f6e75992346d1e4110b7860bba7e970d3c877",
-        "notes": "Upper and lower walking ledges retain continuous caps and readable separation. Recessed relief and masked vines remain visible. Bright cloud sky and stock pickup models are retained; no missing map surfaces or new joint gaps observed."
+        "sha256": "9d5012bf13495be3bf058c32fba6cfff861e70684cbad2f92e0cd61a43b6e3ea",
+        "notes": "Moss court, relief and nonblocking ivy are legible around the landing. Waterfall and pond remain distinct. Inherited sky opening and brighter void background are retained."
       },
       "bridge": {
         "accepted": true,
-        "sha256": "80d7f8f03bb382b4cfa75930c250678e24d95ad126579ebb7cb55a08202297fb",
-        "notes": "The bridge floor, adjacent wall courses and pickup ledge remain readable. Exposed ledge corners have clean profiles and the blue-lit lower gateway remains visible. No missing faces, blocked view or visible intersection artifacts observed."
+        "sha256": "003d44b11d4325316c7315445c398adc3730b74e37c57da5e9b1b4e22aef75f4",
+        "notes": "Floor slab detail and portal light strips are clear. Metal/frame proportions remain intact; no missing surfaces or diagonal mip artifacts observed."
       },
       "cornice-close": {
         "accepted": true,
-        "sha256": "58520d3f58a3825f04c46a4344c8cc7cf6a145ba605fc91072833a9d45ec6946",
-        "notes": "The upper beam now has stepped lips and a recessed fascia with continuous shade bands. Slender supports and the lower reveal meet cleanly. Vines mask parts of the profile as intended; no gaps at the visible cornice joints observed."
+        "sha256": "b100550e430c809fc3d51e4e60a926234e8ae362ff5c82a392869f9e19cd74bf",
+        "notes": "Carved central fascia is visible behind hanging ivy; shaped stone bands and quiet cap surfaces stay readable. Cloud sky has no visible cube-face seam in this view."
       },
       "relief-close": {
         "accepted": true,
-        "sha256": "f32b6de2f8385127642a6b599ceb02c09d9715865b8f491a453a6cbe6b574e9e",
-        "notes": "The carving sits behind a four-piece stone rim with visible side depth and a clean eased silhouette. The translucent waterfall shows vertical streaks and background stone, replacing the opaque green sheet. No frame gaps or missing faces observed."
+        "sha256": "288d1707c3a42cbb4fc2fece91162358ec34ed752ae4e1ddc9b48d5d002df199",
+        "notes": "Complete vertical scroll carving fills its modeled recess at the supplied aspect ratio. Fine stone grain is preserved; the previous diagonal mipmap skew is absent."
       },
       "rocket-arch-close": {
         "accepted": true,
-        "sha256": "baeaccc7127fadae5eb099fda2f2f06a3d5e9bbf4933ec2b543164ee9de16e1a",
-        "notes": "The nested trapezoidal headers and straight jambs preserve the angular reference silhouette. Exposed chamfers read clearly while their structural joints stay intact. No nicked header/jamb junctions, missing faces or blocked opening observed."
+        "sha256": "e8bc79265ee013b9444e0565d1422f6c462fb022889d8410bd9d3084cdd0e82a",
+        "notes": "Trim stone and masonry meet the retained chamfered arch without missing faces. Floor paths remain visible under the covered roof; grain and slab joints do not smear."
       }
     },
     "specification_sha256": "b2399d0bb783258bfedf4c2fac6f6a31b2bf3e54fe1c03073e988cf698e69f49"
   },
   "harness_tests": {
     "integration": true,
-    "count": 68,
+    "count": 74,
     "passed": true
   },
   "changes": {
@@ -186,20 +186,13 @@
     "phong_angle_concave": 1
   },
   "scope": "Eight inspected fixed views, 26 scripted movement probes and an initial actual stock DM spawn/item audit. A populated match remains necessary for combat timing and balance. This is a Q1 adaptation of the Q2 layout, with profile dimensions inferred from the supplied QC footage, rather than a measured reconstruction of the original.",
-  "geometry_sha256": "d535317061e1669db16c7fa912e2976f573542243535c9bb9459af9087a2f3ea",
-  "qa_generator_sha256": "3046e66e07e7e174a828985f989b3eee134fc6ec642961aa7cf881820cb50e82",
+  "geometry_sha256": "641e90cdb2e5701277954cd231af2748f4f9281a96c055d2aa8d47b6effc6a11",
+  "qa_generator_sha256": "053daa088bf2a2042520f7e8571229a2f95da92fcba3fb4db4b80d5041269b73",
   "budgets": {
     "faces": 16000,
     "clipnodes": 8500
   },
   "engine_version": "QSS-M 1.6.9",
-  "qa_controls": {
-    "open_passed": true,
-    "blocked_rejected": true,
-    "blocked_errors": [
-      "Route jump-ledge: FINISH: origin (0.0, -32.0, 24.0) is outside expected bounds"
-    ]
-  },
   "geometry": {
     "eased_brushes": 245,
     "eased_edges": 464,
@@ -213,65 +206,493 @@
   },
   "verification_reports": {
     "movement": {
-      "file": "out/engine-qa/awoken-geometry-final-movement-v2/qa.json",
-      "sha256": "eb6e5d28c231ed13308bc41a9e53256a8b7e8c3a57279d4b2822ef043b39885c"
+      "file": "out/engine-qa/awoken-textures-final-movement/qa.json",
+      "sha256": "84d980a7cc79d7f739b0f4ee7488e998c2338d381315989fd4617a60ed3e1581"
     },
     "deathmatch": {
-      "file": "out/engine-qa/awoken-geometry-final-dm-v3/qa.json",
-      "sha256": "ab47cc4c0f6acab4281639af1825f1468ffaea657affb53ae2a1141166ccae7b"
+      "file": "out/engine-qa/awoken-textures-final-dm/qa.json",
+      "sha256": "5cf32b7b4c8e9c936b8c9203b2bc5379fff217f98e95364abd3ec7721474860f"
     },
     "cameras": {
-      "file": "out/engine-qa/awoken-geometry-final-cameras-v2/qa.json",
-      "sha256": "7cb4da7e7834febee0b3561cea5e302e1dfbe464f6aa0c9f3392e8473536d2e8"
+      "file": "out/engine-qa/awoken-textures-final-cameras/qa.json",
+      "sha256": "763e57d43c7dec4b6ae9bc2ffec2ced353e2e585dbcac5065dd2bf04b072b434"
     },
     "before_cameras": {
-      "file": "out/engine-qa/awoken-geometry-before-cameras-v3/qa.json",
-      "sha256": "261af2085eb840fb5aad48c67ec9be778eff31a02ad9b2f210c19960e1c84fb3"
+      "file": "out/engine-qa/awoken-textures-before-cameras-v2/qa.json",
+      "sha256": "52bb24bbab06ca749aca8a53cae87ed3d55ed328fc82243a8a3d96c148321820"
     },
     "visual_review": {
       "file": "out/awoken/visual-review.json",
-      "sha256": "211996f1fb4184244c9b3fec4d84309fd49d7b5e485f7feffe87a68d6f67d060"
-    },
-    "control_open": {
-      "file": "out/engine-qa/awoken-geometry-qa-control-open/qa.json",
-      "sha256": "e0f71bf3e41bd675dd9b515a565a521e1d4726a131dd4916548a578e7a5b6a53"
-    },
-    "control_blocked": {
-      "file": "out/engine-qa/awoken-geometry-qa-control-blocked/qa.json",
-      "sha256": "3dedc89be6d635f77578dd5ad8601de9b655425fc73130ac6bb198812e3da834"
+      "sha256": "58af7bc94479831199a0ccece68f869d1f4e431e0277bf6f462592580fd246ad"
     },
     "unit_tests": {
-      "file": "out/awoken-geometry-unit-tests.log",
-      "sha256": "050f1dd5d6cf9d839882f084ca43a1836653814e8d970c0033ef97d188aa7425"
+      "file": "out/awoken-textures-unit-tests.log",
+      "sha256": "fbbdbd44ef5ff6cfa4d1d4dbfd863289f7b7d7bdcfcca97cb27cf18dc579bf19"
     },
     "integration_tests": {
-      "file": "out/awoken-geometry-integration-tests.log",
-      "sha256": "fa49e3b51fc2500fd0424f25b2b274c968f1a16c30c24c291674e1f668cf18ff"
+      "file": "out/awoken-textures-integration-tests.log",
+      "sha256": "fdc60c0412245a5e26ca96428522adfbcddfd0a53c40497fdc385d04162a53ef"
     },
     "build": {
       "file": "out/awoken/final/build.json",
-      "sha256": "d3508064e6789bbb8ff1695c6014ca7a5bb11cf1762f87394965c3784db32e66"
+      "sha256": "04cc4360eab9dc78fb2870bbb8b6ded377ef229c2417bac649ceb15a8af6657e"
+    },
+    "reproduction": {
+      "file": "out/awoken-textures-compatible-reproduction/verification.json",
+      "sha256": "cf1e1e9681168380e26400f0cc489252ea768083a5ca6c57aa70c2bced7faf30"
     }
   },
   "comparison": {
     "file": "dist/awoken-review.html",
-    "sha256": "ee968014c76e8dfb39d5a7701783f55d053ae98258bb1ee81d990bfd1e2dfc73",
+    "sha256": "85bf43c355e7d593c24f12f94e671b106e412d9c2fe0cbff00ab1e255c78708a",
     "cameras": 8,
-    "embedded_video_frames": 10,
+    "embedded_video_frames": 16,
     "before_artifacts": {
-      "awoken.bsp": "5fa588c31584d847e4a9e47a9623184cccc38c33aa002523f55466aafe9aff76",
-      "awoken.lit": "862802ac997bdf928ba528c188629bfe9b4ee30455d02a14f85c92bccce7785d"
+      "awoken.bsp": "87e2973c819592b32a1fa9ff7e9ee4f0b98f142b9ee8aab6ca5ad3b919687d8c",
+      "awoken.lit": "292be3df78524a6ca2edff14afcde393b0f734d373af25665aab85bd8b7201df"
     }
   },
-  "previous_baseline_sha256": "e4c4b87a08fa3eabcf9df983a35e63392d63ddc578439b568ef80d8e60c017cb",
+  "previous_baseline_sha256": "5c4ec0e7cc1a7b8b4ffb2a13e07d3e324ef427ec290ff5a8d77227ea02189320",
   "material_audit": {
     "passed": true,
-    "checked_edges": 8020,
+    "checked_edges": 7869,
     "errors": 0,
     "warning_counts": {
-      "material_boundary": 507
+      "material_boundary": 639
     },
-    "unchecked_wall_corners": 3464,
-    "scope": "Same-material shared-edge phase/density checks. Undeclared material transitions and corner wraps require visual review."
+    "unchecked_wall_corners": 3327,
+    "scope": "Compiled shared-edge UV continuity; artwork compatibility and undeclared corners require visual review"
+  },
+  "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+  "runtime_assets": {
+    "textures/awoken/aw_stone.png": {
+      "sha256": "f46290c4f753ca146fcaca8aae8f0fdddbd1506f74208356701d65eaa56207c0",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_stone",
+      "source": "aw_wall_base",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "c46da8e13ab3308505448e08912e8be0ec1f0b7f4f3439cca5b22d72a5003d2c",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_stone"
+    },
+    "textures/awoken/aw_wmoss.png": {
+      "sha256": "8f0d275896ee59840c5dde8af147cfdfb926d67decbcb109af881a3296d45821",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_wmoss",
+      "source": "aw_wall_moss",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "db82985f933b11334a54d06a91e16b3998cc6f3470b769be4128bb38d1b84aa1",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_wmoss"
+    },
+    "textures/awoken/aw_trim.png": {
+      "sha256": "90abed0b63e3a3c6ec27437ff845d9104b058eb1d8eb0949b590bd1cfce5ed16",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_trim",
+      "source": "aw_stone_plain",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "f40933339c8143469cd5918c01620f1050bc28883f7faed3021a565d968eb09c",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_trim"
+    },
+    "textures/awoken/aw_pave.png": {
+      "sha256": "1ee2b723a25803ca6b6f3e15ce9d0a05d105787c140d855ebf9a1098f5bbff78",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_pave",
+      "source": "aw_floor_base",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "50a8ac406913a4168b0367c7a672a161f78f05eb8be50ebc87e80c1633592440",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_pave"
+    },
+    "textures/awoken/aw_fmoss.png": {
+      "sha256": "ee2f819ac39fbaf54cacb0a6d8bfd312bfa6d51f7b4b0b132a4ada82078c88b8",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_fmoss",
+      "source": "aw_floor_moss",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "7b809a912495e802e30e3f2666710d597db691958c9fffd2a1d7eb2ddfdec2cd",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_fmoss"
+    },
+    "textures/awoken/aw_fwet.png": {
+      "sha256": "461bdb5f43b967b06919ec4e8f65548f04b8dc2a85505d10b047b58ab754ac40",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_fwet",
+      "source": "aw_floor_wet",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "0ad1336caeda67e3573cd33622b9b1c5e80897fa56751ef763439428aad2bce7",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_fwet"
+    },
+    "textures/awoken/aw_panel.png": {
+      "sha256": "6d6d00c3b5889af54ac3be16a2bd7f87cd375c7ab0c74e7926f462ffad8d670b",
+      "width": 1024,
+      "height": 2048,
+      "texture": "aw_panel",
+      "source": "aw_relief_a",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "b8a1e33bce9b87cc70680c2440f50f80ed4734e21eb3cc3cdbcb7b6e3552dfb2",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_panel"
+    },
+    "textures/awoken/aw_plaque.png": {
+      "sha256": "7b23643baaa984c2782fe12c268b1f015e5ec5e1ed9e48699feb5bd9dd900d15",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_plaque",
+      "source": "aw_relief_b",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "2b5de85adc2d23a49c83f30d5a2e46066beca4986b8fe270c4fdfda5710575a3",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_plaque"
+    },
+    "textures/awoken/aw_band.png": {
+      "sha256": "775311251fdc61c2fc5893fb4739a19527639dec9d5a8270892d3810a6981c6f",
+      "width": 4096,
+      "height": 1024,
+      "texture": "aw_band",
+      "source": "aw_trim_carved",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 2172,
+      "native_height": 724,
+      "native_sha256": "0fc05f18942352f7e6a59780e07ec6cf069852b586dd80bdabd0b5171f52bb8b",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_band"
+    },
+    "textures/awoken/aw_pad.png": {
+      "sha256": "654335a8e596a6b91e9c407263283865b9c6894ec0a7bd7fa76fda7ddfd5ffb4",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_pad",
+      "source": "aw_pad",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "7f1e7521b63a405df2891086748f39e72d127b64bbcc4db98ada65bce10b9714",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_pad"
+    },
+    "textures/awoken/aw_light.png": {
+      "sha256": "7361c8b689aed3d5e5125f6d927ca5cbd5eb18496b1f632ac2544d3f4d2bd033",
+      "width": 4096,
+      "height": 1024,
+      "texture": "aw_light",
+      "source": "aw_light",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 2508,
+      "native_height": 627,
+      "native_sha256": "c27ecfddc6038af9f03e2bc34d4330a7d02c29bfe445d0c7012cf2b4f1290f0c",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_light"
+    },
+    "textures/awoken/aw_metal.png": {
+      "sha256": "5965e8181e20897831b0b9ba286545a9934e2e45b64574b4d3eb57e8a94ad760",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_metal",
+      "source": "aw_metal",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "7ba414f0bf24a8abcadf7afa89df8cba96db5a1ee0656c4e4b4445f088a9a63c",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_metal"
+    },
+    "textures/awoken/{aw_vine.png": {
+      "sha256": "f0c58417d7612d6100578f47cdfbbcab2320c3bc3a6cef05fc896bedcbf7ede4",
+      "width": 2048,
+      "height": 2048,
+      "texture": "{aw_vine",
+      "source": "aw_vine_dense",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "23d889a40a571d113324504f72dbbf3ba33c3738ab80abb261933e081d00e74c",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/{aw_vine"
+    },
+    "textures/awoken/{aw_vines.png": {
+      "sha256": "7cc6959c62cc23873b15558e0793cba91a8c5eeeb68a5de0cdbaca71cd3db332",
+      "width": 2048,
+      "height": 2048,
+      "texture": "{aw_vines",
+      "source": "aw_vine_sparse",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "75afdb733f09caab14afbe0127917125ff8b034451455736184defc6a5cb75b1",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/{aw_vines"
+    },
+    "textures/awoken/aw_cliff.png": {
+      "sha256": "af14afb237bb661a951641dc99558ab3dbf617843c20e15765a2785c59378813",
+      "width": 2048,
+      "height": 2048,
+      "texture": "aw_cliff",
+      "source": "aw_cliff",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "62a9b635bacc89007a314afbd77f4bf14ca9728a17e95a13994567ace6eafb2f",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/aw_cliff"
+    },
+    "textures/awoken/#aw_water.png": {
+      "sha256": "1508ae545d82d40750be36dff075a5ac49216ee9b0b07b6918c3dafd438d5c56",
+      "width": 2048,
+      "height": 2048,
+      "texture": "*aw_water",
+      "source": "aw_water",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 1254,
+      "native_height": 1254,
+      "native_sha256": "93dda1f0447f9068a3e0ab6ccb8873ec609611cc5e741adda928da36b03cec42",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/#aw_water"
+    },
+    "textures/awoken/+0aw_fall.png": {
+      "sha256": "940e5f95757c9ae2e060aa325dd3a23b2a892f64059d72be44dcdb0442cf81a2",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+0aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "aea2d77b8eea1d91d68f78ee561a08182de41ae05cd2e6444ab46866adecbf33",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+0aw_fall"
+    },
+    "textures/awoken/+1aw_fall.png": {
+      "sha256": "01c48306c0d8fe656f3dd1a3cf523ec8ebcb4fb624577dc0a4d2e3095a1cb637",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+1aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "35d39c98ea742a8c1a635b33930db2f2c81b485953b845968d7d558f83a2a8f7",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+1aw_fall"
+    },
+    "textures/awoken/+2aw_fall.png": {
+      "sha256": "17a09904b6299c0e2ec964a324108dd4ccf9c340bf3ee0eafab53682bd3d1012",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+2aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "2575bd80594f3803a6682c1d1743488d77708928fab86dcc095d22cb988c61f4",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+2aw_fall"
+    },
+    "textures/awoken/+3aw_fall.png": {
+      "sha256": "5d773dc07a922a6d041ef716045771959646fc169c0e3455f43cbd0e32bd4c83",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+3aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "cccbb3b0485d2b411169d30eafc0eec9200311e20edc1f221896c04a01ffa524",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+3aw_fall"
+    },
+    "textures/awoken/+4aw_fall.png": {
+      "sha256": "04ddccfc1aca5bb05fdc101a669a0d5465becff5aae1654e895b220d4ec2c921",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+4aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "3595284172dffcf84b5062ec3f2c9561c94d64af023da3a5b6d7ca785d44cca6",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+4aw_fall"
+    },
+    "textures/awoken/+5aw_fall.png": {
+      "sha256": "d88abb1b85d8c840d6e7be3adef8788517159d963d3e23fe31a59089ff4edbb8",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+5aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "ff399fed1a678ae1a6a1f0d195cd8639cce80fd410290e53cd26e320cd1eede1",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+5aw_fall"
+    },
+    "textures/awoken/+6aw_fall.png": {
+      "sha256": "2e820f20edbe7be2471c0e11bb79b9cb1acd5cf5737277495cf84874e92739ca",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+6aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "27429648774aac61407360054abd22e7e1cd45e5f0c5c32cc34849518c801664",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+6aw_fall"
+    },
+    "textures/awoken/+7aw_fall.png": {
+      "sha256": "6bbb0830b607172a12281fc19200cea8750b8220b3cee80b3267ef7dc4f0171b",
+      "width": 1024,
+      "height": 2048,
+      "texture": "+7aw_fall",
+      "source": "aw_fall",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 887,
+      "native_height": 1774,
+      "native_sha256": "7c8b90a782da5a3bfb30edf9fed3d742d4e2d5157cc24efe7f44c7e491b1b168",
+      "processing": "Lanczos upsample for QSS-M mipmap compatibility",
+      "engine_name": "textures/awoken/+7aw_fall"
+    },
+    "gfx/env/awokenrt.png": {
+      "sha256": "24a3d084192a02f3bcee819574f9f3f44601e121343aaf76b3aedfa2128145da",
+      "width": 512,
+      "height": 512,
+      "texture": null,
+      "source": "aw_sky",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 512,
+      "native_height": 512,
+      "native_sha256": "24a3d084192a02f3bcee819574f9f3f44601e121343aaf76b3aedfa2128145da",
+      "processing": "byte copy",
+      "engine_name": "gfx/env/awokenrt"
+    },
+    "gfx/env/awokenlf.png": {
+      "sha256": "8cd9cd23263af650878c7fd49351af70cc55cbee6e9545b8a45faf9687dd49f9",
+      "width": 512,
+      "height": 512,
+      "texture": null,
+      "source": "aw_sky",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 512,
+      "native_height": 512,
+      "native_sha256": "8cd9cd23263af650878c7fd49351af70cc55cbee6e9545b8a45faf9687dd49f9",
+      "processing": "byte copy",
+      "engine_name": "gfx/env/awokenlf"
+    },
+    "gfx/env/awokenbk.png": {
+      "sha256": "aa3efc0aaf49c1f667f579bfd4ed14f8804e8322cfe3f6ef0049466abf4de316",
+      "width": 512,
+      "height": 512,
+      "texture": null,
+      "source": "aw_sky",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 512,
+      "native_height": 512,
+      "native_sha256": "aa3efc0aaf49c1f667f579bfd4ed14f8804e8322cfe3f6ef0049466abf4de316",
+      "processing": "byte copy",
+      "engine_name": "gfx/env/awokenbk"
+    },
+    "gfx/env/awokenft.png": {
+      "sha256": "28fd20fbeb3f1908028ab788c03cb48ca99d5c3a79474722b28c7dbfe8ab6d07",
+      "width": 512,
+      "height": 512,
+      "texture": null,
+      "source": "aw_sky",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 512,
+      "native_height": 512,
+      "native_sha256": "28fd20fbeb3f1908028ab788c03cb48ca99d5c3a79474722b28c7dbfe8ab6d07",
+      "processing": "byte copy",
+      "engine_name": "gfx/env/awokenft"
+    },
+    "gfx/env/awokenup.png": {
+      "sha256": "436ec1f7ad7b29ee8d1521cc991173820cbcca7fd1947cf4a465ce9c7585d05e",
+      "width": 512,
+      "height": 512,
+      "texture": null,
+      "source": "aw_sky",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 512,
+      "native_height": 512,
+      "native_sha256": "436ec1f7ad7b29ee8d1521cc991173820cbcca7fd1947cf4a465ce9c7585d05e",
+      "processing": "byte copy",
+      "engine_name": "gfx/env/awokenup"
+    },
+    "gfx/env/awokendn.png": {
+      "sha256": "c5944a38d18881db225786a690fcf16cae1fd1f5ea035b83b3751793abb1aa21",
+      "width": 512,
+      "height": 512,
+      "texture": null,
+      "source": "aw_sky",
+      "runtime_generator_sha256": "611a2da4cba5e08d059fd5646af84a4f2b48a00bdd20013a35d955422459053f",
+      "native_width": 512,
+      "native_height": 512,
+      "native_sha256": "c5944a38d18881db225786a690fcf16cae1fd1f5ea035b83b3751793abb1aa21",
+      "processing": "byte copy",
+      "engine_name": "gfx/env/awokendn"
+    }
+  },
+  "runtime_binding": {
+    "time_utc": "2026-10-06T07:37:41.344150+00:00",
+    "from_build": "/home/tim/codedev/bspharness/out/awoken/final",
+    "previous_assets_manifest_sha256": "a0d78cd85946b3bc3249e91edabbf8c70c17bd4c85d6a0857e8104b2ad11602a",
+    "scope": "External PNG variant only; identical compiled BSP, LIT, MAP and seam evidence",
+    "preserved_native_build": "/home/tim/codedev/bspharness/out/awoken-textures-native/awoken/final"
+  },
+  "build_seconds": {
+    "qbsp": 55.237,
+    "vis": 1820.742,
+    "light": 512.75
+  },
+  "textures": {
+    "native_masters": 26,
+    "placed_sources": 18,
+    "reserved_sources": 8,
+    "runtime_png_files": 30,
+    "master_metadata_sha256": "4f8111e1de7a4d621fd49ddd0833b09ac6f759c5484236fdc66231ad8f1d94b6",
+    "processing": "Native masters unchanged; runtime surfaces only upscale to powers of two for QSS-M mipmap compatibility; sky projection and waterfall animation derived.",
+    "runtime_dimensions": [
+      [
+        512,
+        512
+      ],
+      [
+        1024,
+        2048
+      ],
+      [
+        2048,
+        2048
+      ],
+      [
+        4096,
+        1024
+      ]
+    ],
+    "runtime_bytes": 132202676
   }
 }

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import zipfile
 
 from bspharness import Map, Material, Palette, arch, box, fixture, stairs
 from bspharness.bsp import BSP
@@ -12,7 +13,7 @@ from bspharness.pipeline import ROOT, build, digest, package, verified_build
 from bspharness.seams import bsp_surfaces
 from bspharness.collision import EMPTY, SOLID, Hull
 from bspharness.source import read
-from bspharness.wad import make_blockout, miptex, write_wad
+from bspharness.wad import make_blockout, miptex, write_wad, png
 
 
 @unittest.skipUnless(os.environ.get("BSPHARNESS_INTEGRATION")=="1","set BSPHARNESS_INTEGRATION=1 after bootstrap")
@@ -54,6 +55,55 @@ class CompileTests(unittest.TestCase):
     def test_stable_qbsp_with_modern_vis_and_light(self):
         result = build(self.source,self.root/"stable","draft",qbsp_dir=ROOT/"tools/ericw/stable")
         self.assertTrue(BSP(result).validate()["passed"])
+
+    def test_runtime_assets_are_bound_snapshotted_and_packaged(self):
+        relative="textures/room/bh_wall.png"
+        original=self.root/"art"/relative
+        original.parent.mkdir(parents=True)
+        png(original,62,62,bytes([100,110,120])*62*62)
+        records={relative:{"sha256":digest(original),"width":62,"height":62,
+                           "engine_name":"textures/room/bh_wall"}}
+        sidecar=self.source.with_suffix(".assets.json")
+        sidecar.write_text(json.dumps({"schema":1,"map_sha256":digest(self.source),
+                                       "root":"art","files":records}))
+        result=build(self.source,self.root/"native","draft")
+        manifest=verified_build(result)
+        self.assertEqual(manifest["runtime_assets"],records)
+        # A mutable incoming directory cannot alter the compiled snapshot.
+        original.write_bytes(b"replaced after compile")
+        verified_build(result)
+        credits=self.root/"credits.txt";credits.write_text("Original test art")
+        qa=self.root/"qa.json"
+        report={"passed":True,"bsp_sha256":digest(result),"artifacts":manifest["artifacts"]}
+        qa.write_text(json.dumps(report))
+        with self.assertRaisesRegex(ValueError,"external runtime textures"):
+            package(result,self.root/"wrong.zip",credits,qa)
+        report["runtime_assets"]=records;qa.write_text(json.dumps(report))
+        archive=package(result,self.root/"native.zip",credits,qa)
+        with zipfile.ZipFile(archive) as z:
+            self.assertEqual(z.read(relative),(result.parent/"runtime"/relative).read_bytes())
+        # Bind a new external texture set without altering compiled geometry,
+        # collision, lighting, or the preserved original runtime snapshot.
+        from bspharness.assets import bind
+        png(original,128,128,bytes([90,110,100])*128*128)
+        updated={relative:{**records[relative],"sha256":digest(original),"width":128,"height":128}}
+        sidecar.write_text(json.dumps({"schema":1,"map_sha256":digest(self.source),
+                                       "root":"art","files":updated}))
+        variant=bind(result,sidecar,self.root/"variant")
+        self.assertEqual(verified_build(variant)["artifacts"],manifest["artifacts"])
+        self.assertEqual(verified_build(variant)["runtime_assets"],updated)
+        self.assertEqual(verified_build(result)["runtime_assets"],records)
+        with self.assertRaisesRegex(ValueError,"external runtime textures"):
+            package(variant,self.root/"wrong-variant.zip",credits,qa)
+        (result.parent/"runtime"/relative).write_bytes(b"changed in build")
+        with self.assertRaisesRegex(ValueError,"Modified or missing"):
+            verified_build(result)
+        stale=json.loads(sidecar.read_text());stale["map_sha256"]="0"*64
+        sidecar.write_text(json.dumps(stale))
+        with self.assertRaisesRegex(ValueError,"manifest is stale"):
+            build(self.source,self.root/"stale-native","draft")
+        with self.assertRaisesRegex(ValueError,"compiled MAP hash"):
+            bind(variant,sidecar,self.root/"stale-variant")
 
     def test_lighting_profile_contracts(self):
         for profile in ("mono","showcase"):

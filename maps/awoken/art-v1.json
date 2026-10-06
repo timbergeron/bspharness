@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "method": "Built-in imagegen; original art inspired by the user-provided Awoken footage, without copying captured texture pixels",
+  "sources": {
+    "stone": {
+      "file": "stone-v1.png",
+      "sha256": "a63bd51e758abe29a439bfa545dc717a5f648f15d504d9dfa1cfc16526c0a1ca",
+      "prompt": "Use case: stylized-concept. Asset type: a single seamless diffuse texture tile for a Quake 1 BSP stone wall. Create original art inspired by ancient overgrown arena masonry: pale green-gray weathered limestone ashlar, broad rectangular blocks in two offset courses, shallow dark mortar seams, gently chamfered chipped edges, restrained soft moss in some joints, fine mineral grain. The blocks should feel massive and readable, with restrained low-frequency wear and clean planar centers. Orthographic straight-on wall surface filling the entire square, no perspective, no objects. Neutral flat albedo lighting, no baked dramatic shadows, no ambient scene illumination. This must tile seamlessly on both axes, matching the edge pattern and colors, with no outer border. Color palette: desaturated gray limestone with a slight olive tint, mid-to-light value, darker muted green-gray seams, no yellow/gold or brown brick, no blue metal. Intended to be reduced to a 128x128 indexed retro game texture, so keep the details strong and sparse. No text, logo, decorative symbols, watermark, vegetation silhouettes or surrounding scenery. Deliver one square texture image only."
+    },
+    "slab": {
+      "file": "slab-v1.png",
+      "sha256": "cbeb9341ad73a8c34da6998fdc8811daaabd1cbf52d375f9b6e772209fa19bfe",
+      "prompt": "Use case: stylized-concept. Asset type: one seamless stone diffuse texture for a Quake 1 ancient ruin BSP. Produce a square flat albedo material sample of smooth pale gray limestone with a subtle muted olive cast. Very restrained weathering and fine mineral grain; scattered sparse fine hairline cracks and tiny edge chips, with extremely subtle moss staining. This is one continuous unjointed stone surface used on massive beveled door frames, architectural cornices and plain flagstones. No blocks, mortar grid, divisions, outer border, symbols, text or perspective. Orthographic straight-on closeup filling the square. Neutral even lighting with no directional shadows or highlights. Perfectly seamless on both axes. Mid-to-light values, keep broad clean smooth areas so it remains readable after reduction to a 128x128 Quake palette image. Avoid high-frequency noise, dark stains, gold, brown, blue, metal, panels, vegetation silhouettes, watermark. One texture image only."
+    },
+    "vines": {
+      "file": "vines-v1.png",
+      "sha256": "84bb0a6afc3cf1a6f0f110324693ea6e8ef2d0a62d3349cf5bea1929c4b8151b",
+      "prompt": "Use case: stylized-concept. Asset type: a single original transparent foliage cutout for a Quake 1 ruined stone arena. Show a loose hanging curtain of several thin woody ivy/root strands with sparse clusters of small muted olive and sage green leaves, some dried brown twigs. Strands hang from the upper edge and taper irregularly toward the bottom, with generous transparent gaps between them. Frontal view, flat diffuse illumination, no perspective, shadows, background wall, ground, pot or scene. Natural realistic game texture, restrained saturation, broad readable leaf shapes suitable for reduction to 128x128 indexed pixels. The silhouette should occupy the upper and middle portions with a few long thin tendrils, and remain irregular near both side edges. Preserve a genuinely transparent background. No text, symbols, frame, watermark, flowers or fruit. One square foliage asset only."
+    }
+  },
+  "storage": "PNG sources in local assets/awoken; packaged with the map source. Raster files stay out of Git.",
+  "compilation": "materials.py resamples to 128x128, converts stone to a neutral Quake palette ramp, and authors periodic joints, carved motifs and pad markings. Vines use indexed transparency. No Makkon."
+}

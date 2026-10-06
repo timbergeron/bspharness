@@ -218,3 +218,33 @@ and test the complete release install before publishing it.
 
 The atrium example is a blockout, not a release-quality gameplay map. Engine
 loading and automated item checks supplement movement/combat playtesting.
+
+## Native external PNG textures
+
+A generated MAP may declare a `<map>.assets.json` sidecar with `schema: 1`,
+`map_sha256`, a source `root` relative to the sidecar, and `files` mapping
+relative `textures/...png` or `gfx/...png` paths to `sha256`, `width` and
+`height`. A record may specify an `engine_name` for QA's native upload check.
+Paths cannot escape the root. Missing files, modified bytes, stale MAP hashes
+and mismatched PNG dimensions fail before compilation.
+
+Builds snapshot the declared files into `runtime/`. `verified_build`, engine
+QA and packaging verify those hashes; QA stages the snapshot instead of
+consulting a mutable asset directory. The engine's `imagelist` must show the
+required runtime dimensions. Set replacement cvars before `+map`, since image
+loading happens during map startup. Packaging includes the PNG paths and
+rejects QA evidence for another texture bundle. Embedded miptex dimensions
+still govern MAP UV and lightmap scale; external images can have larger native
+non-power-of-two dimensions without changing the BSP format.
+
+Entity and route settling runs with scene drawing disabled. Camera captures
+restore drawing and wait ten fixed frames before each image. Physics timing,
+stock item audits and the published screenshot resolution remain pinned.
+
+To change only external PNGs after compilation, use `bind-assets` with a
+source-bound manifest and a fresh output directory. It verifies the exact
+compiled MAP hash and preserves the original BSP/LIT/build. The new variant
+needs its own QA and visual review. Native upload dimensions are not a proof
+of correct mipmaps: inspect close and distant views, especially with odd
+image widths. Awoken keeps original masters but upsamples runtime surfaces
+to powers of two to avoid the observed QSS-M mipmap row-skew defect.

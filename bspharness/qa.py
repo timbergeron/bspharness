@@ -17,6 +17,7 @@ RENDER = {"width":1280,"height":720,"fov":90,"fov_adapt":1,
           "gamma":1,"contrast":1,"gl_texturemode":"GL_LINEAR_MIPMAP_LINEAR",
           "viewsize":120,"crosshair":0,"r_drawviewmodel":0,
           "r_fullbright":0,"r_drawflat":0,"r_lightmap":0,"gl_overbright":1}
+RENDER.update(gl_load24bit=1, gl_max_size=0, gl_picmip=0, r_fastturb=0, r_fastsky=0, r_norefresh=0)
 PHYSICS = {"sv_gravity":800,"sv_maxspeed":320,"sv_accelerate":10,
            "sv_friction":4,"sv_stopspeed":100,"edgefriction":2}
 
@@ -54,8 +55,12 @@ def camera_config(cameras, routes=(), mode="sp"):
              *(f"{key} {value}" for key,value in RENDER.items() if key not in ("width","height")),
              "con_notifytime 0","con_notifylines 0",'alias bh_w "wait;wait;wait;wait;wait;wait;wait;wait;wait;wait"',
              'alias bh_ww "bh_w;bh_w;bh_w;bh_w;bh_w"',
+             # Physics/entity settling does not need expensive scene drawing.
+             # Restore drawing before cameras; their render settings stay fixed.
+             "r_norefresh 1",
              "bh_ww;bh_ww;bh_ww;bh_ww",
              "echo BSPHARNESS_AUDIT_BEGIN","edicts","echo BSPHARNESS_AUDIT_END"]
+    lines.extend(["echo BSPHARNESS_IMAGES_BEGIN", "imagelist", "echo BSPHARNESS_IMAGES_END"])
     releases = ["-"+button for button in BUTTONS]
     lines.extend(releases)
     for index,route in enumerate(routes):
@@ -71,17 +76,17 @@ def camera_config(cameras, routes=(), mode="sp"):
                           *releases,*dump(prefix+f"_STEP_{step}")])
         lines.extend([*waits(route.settle),*dump(prefix+"_FINISH")])
     if cameras:
-        lines.extend(["god 1","noclip 1"])
+        lines.extend(["god 1","noclip 1","r_norefresh 0"])
     for camera in cameras:
         values = (*camera["origin"],*camera["angles"])
-        lines.extend(["setpos "+" ".join(map(number,values)),"bh_ww;bh_ww","screenshot png"])
-    lines.extend(["bh_ww;bh_ww","echo BSPHARNESS_QA_COMPLETE","quit"])
+        lines.extend(["setpos "+" ".join(map(number,values)),"bh_w","screenshot png"])
+    lines.extend(["bh_w","echo BSPHARNESS_QA_COMPLETE","quit"])
     return "\n".join(lines)+"\n"
 
 
 def prepare(bsp, cameras, basedir, gamedir="bspharness_qa", routes=(), mode="sp"):
     bsp = Path(bsp).resolve()
-    verified_build(bsp)
+    manifest = verified_build(bsp)
     if not re.fullmatch(r"[A-Za-z0-9_-]+",gamedir) or gamedir.casefold()=="id1":
         raise ValueError("Use a separate QA gamedir, not id1")
     basedir = Path(basedir).resolve()
@@ -95,6 +100,9 @@ def prepare(bsp, cameras, basedir, gamedir="bspharness_qa", routes=(), mode="sp"
     config = camera_config(cameras,routes,mode)
     (game/"maps").mkdir(parents=True)
     (game/"configs").mkdir()
+    if manifest.get("runtime_assets"):
+        from .assets import stage
+        stage(bsp.parent/"runtime", manifest["runtime_assets"], game)
     for suffix in (".bsp",".lit"):
         source = bsp.with_suffix(suffix)
         if source.exists():
@@ -248,7 +256,9 @@ def run(bsp, cameras, basedir, engine, gamedir="bspharness_qa", timeout=90, rout
     width,height = (RENDER["width"],RENDER["height"]) if cameras else (320,200)
     command = [str(engine),"-basedir",str(Path(basedir).resolve()),"-game",gamedir,
                "-window","-width",str(width),"-height",str(height),"-condebug","-nomouse",
-               "-nosound","+deathmatch","1" if mode=="dm" else "0","+skill","1","+map",Path(bsp).stem]
+               "-nosound",*(arg for key in ("gl_load24bit", "gl_max_size", "gl_picmip", "r_fastturb", "r_fastsky")
+                            for arg in ("+"+key, str(RENDER[key]))),
+               "+deathmatch","1" if mode=="dm" else "0","+skill","1","+map",Path(bsp).stem]
     errors,code = [],None
     start = time.monotonic()
     with (game/"engine.log").open("w") as log:
@@ -267,19 +277,30 @@ def run(bsp, cameras, basedir, engine, gamedir="bspharness_qa", timeout=90, rout
         if marker.casefold() in text.casefold():
             errors.append("Engine reported "+marker)
     errors.extend(audit_log(text,BSP(tested_bsp).entities(),deathmatch=mode=="dm"))
+    from .assets import audit_images, files
+    records = manifest.get("runtime_assets", {})
+    image_errors, loaded_images = audit_images(text, records)
+    errors.extend(image_errors)
+    try:
+        files(game, records)
+    except ValueError as exc:
+        errors.append(str(exc))
     route_results = audit_routes(text,routes)
     errors.extend(f"Route {r['name']}: {error}" for r in route_results for error in r["errors"])
-    shots = sorted((game/"screenshots").glob("*.png"))
+    # Timestamped filenames with same-second suffixes need not sort in the
+    # order they were captured. Preserve the engine's file write sequence.
+    shots = sorted((game/"screenshots").glob("*.png"),key=lambda p:(p.stat().st_mtime_ns,p.name))
     if len(shots) != len(cameras):
         errors.append(f"Expected {len(cameras)} screenshots, found {len(shots)}")
     report = {"schema":1,"passed":not errors,"errors":errors,"bsp_sha256":digest(tested_bsp),
               "artifacts":manifest["artifacts"],"routes":route_results,
+              "runtime_assets":records,"loaded_images":loaded_images,
               "physics":{"fps":72,"fixed_frame_seconds":1/72,**PHYSICS,
                          "mode":"stock deathmatch" if mode=="dm" else "stock single-player"},
               "game_paks":{p.name:digest(p) for p in sorted((Path(basedir)/"id1").glob("*.pak"))},
               "engine_sha256":digest(engine),"command":command,"exit_code":code,
               "seconds":round(time.monotonic()-start,3),"gamedir":str(game),
-              "render":{**RENDER,"width":width,"height":height},
+              "render":{**RENDER,"width":width,"height":height,"r_norefresh":0 if cameras else 1},
               "screenshots":[{"camera":c["name"],"view":c,"file":str(s),"sha256":digest(s)} for c,s in zip(cameras,shots)],
               "visual_review":"pending; open the screenshots to review lighting and geometry",
               "scope":("Initial stock deathmatch spawn/item audit; use a separate SP pass for movement and cameras" if mode=="dm" else

@@ -175,7 +175,11 @@ def cornice(brush, world):
             slope = (d1-d0)/(high-low)
             normal = normalize((n[0],n[1],slope))
             p = tuple(face.points[1][i]-n[i]*d0 if i!=2 else low for i in range(3))
-            faces.append(plane(normal,p,trim))
+            # The long central fascia receives the native 3:1 carved strip.
+            # Keep all profile planes and collision exactly as before.
+            fascia = Material("aw_band",repeat=(3*(high-low),high-low),
+                              anchor=(0,0,high)) if z0==46 and z1==height-24 else trim
+            faces.append(plane(normal,p,fascia))
         # Co-planar cap/outer planes are replaced, not duplicated.
         unique = {}
         for f in faces:

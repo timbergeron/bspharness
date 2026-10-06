@@ -8,11 +8,14 @@ Reference mirror: http://q2.packetflinger.com/dl/baseq2/maps/awoken.bsp
 Quake 1 conversion, material mapping, lighting and movement checks:
 bspharness (https://github.com/timbergeron/bspharness).
 Textures and stock gameplay: original Quake, id Software; extracted locally
-from the owner's pak0.pak/pak1.pak. Video polish adds original imagegen
-stone/slab/vine sources and deterministic indexed masonry, paving, carved
-panels, lift markings, water and cloud sky. Prompts and source hashes are
-in source/recipe/art.json; original PNGs and the local WAD accompany the
-editable source. No captured video texture pixels or Makkon assets are used.
+from the owner's pak0.pak/pak1.pak. The native texture pass imports the 26
+user-supplied PNGs recorded in source/recipe/art.json. All native
+masters retain original dimensions and bytes. Runtime surface PNGs upscale
+to powers of two to avoid QSS-M odd-width mipmap row skew; neither axis is
+reduced. The skybox is
+projected from the supplied panorama; waterfall frames are lossless row
+scrolls. Indexed BSP textures are portable fallbacks. Original PNGs and
+local WAD accompany the editable source. No Makkon assets are used.
 Compilation: ericw-tools, pinned 2.0.0-alpha11.
 
 Xowoken r1 by AriosJentu was inspected as a secondary visual/source
@@ -20,11 +23,15 @@ reference. No Xowoken geometry, models, or textures are imported.
 Release page: https://forums.xonotic.org/showthread.php?tid=10192
 
 INSTALL
-Copy maps/awoken.bsp and maps/awoken.lit into your Quake game directory's
-maps/ folder. Keep the two files together. A modern Quake engine such as
-QSS-M or an engine with masked fence texture support is recommended for
-the hanging vines. No custom QuakeC or external texture WAD is needed
-to play this compiled BSP. A normal local Quake installation is required.
+Extract maps/, textures/, and gfx/ into the SAME Quake game directory.
+Keep awoken.bsp and awoken.lit together in its maps/ folder. The textures/
+and gfx/ folders supply the high-resolution appearance. In QSS-M set
+"gl_load24bit 1", "gl_max_size 0", "gl_picmip 0", "r_fastturb 0", and
+"r_fastsky 0" before loading the map. Do not put the PNGs in maps/.
+BSP/LIT alone remain playable with small indexed fallback textures.
+No custom QuakeC or external texture WAD is required to play. A normal
+local Quake installation and a modern engine with masked textures and
+high-resolution external PNG support are recommended.
 
 For deathmatch, enter "deathmatch 1" then "map awoken" in the console, or
 select awoken when hosting a game. For an exploration pass use
@@ -45,7 +52,7 @@ nonblocking details; trees, bushes, grass, alpha decals and mist stay omitted.
 Eleven recessed relief assemblies have modeled stone surrounds and no
 collision. The geometry pass eases exposed stone corners and shapes
 seventeen upper cornices; their player collision is rebuilt from those
-visible profiles. The inherited waterfall uses original eight-frame
+visible profiles. The inherited waterfall uses the supplied art in eight-frame
 animation and nonblocking translucent brush models. Geometry notes and the exact recipe accompany the source. Neutral stone,
 green water, daylight and cool landmark lighting follow the user's supplied
 Awoken video reference. The original stock release is retained separately.
