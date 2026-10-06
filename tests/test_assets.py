@@ -57,5 +57,39 @@ class RuntimeAssetsTests(unittest.TestCase):
         for line in (' 1024 x1024 textures/arena/wall',' 128 x 128 maps/arena.bsp:wall',''):
             self.assertTrue(audit_images(log(line),record)[0])
 
+    def test_particle_config_and_sprite_are_staged_and_hash_checked(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);records=self.fixture(root/'source')
+            sprite='particles/arena/haze.png'
+            original=root/'source/textures/arena/wall.png'
+            target=root/'source'/sprite;target.parent.mkdir(parents=True)
+            target.write_bytes(original.read_bytes())
+            records[sprite]={**next(iter(records.values())), 'engine_name':'particles/arena/haze'}
+            name='particles/map_arena.cfg'
+            path=root/'source'/name;path.write_text('r_part haze\n{\n type normal\n}\n')
+            records[name]={'sha256':digest(path),'kind':'fte_particles'}
+            stage(root/'source',records,root/'game')
+            self.assertEqual((root/'game'/name).read_bytes(),path.read_bytes())
+            self.assertEqual(len(files(root/'game',records)),3)
+            self.assertEqual(audit_images('',{name:records[name]})[0],[])
+            (root/'game'/name).write_text('modified script')
+            with self.assertRaisesRegex(ValueError,'Modified or missing'):
+                files(root/'game',records)
+
+    def test_particle_allowlist_rejects_general_configs_and_bad_records(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            record={'sha256':'0'*64,'kind':'fte_particles'}
+            for name in ('autoexec.cfg','configs/connect.cfg','particles/effect.dat',
+                         'particles/../autoexec.cfg'):
+                with self.subTest(name=name),self.assertRaises(ValueError):
+                    files(root,{name:record})
+            name='particles/map_arena.cfg';path=root/name;path.parent.mkdir()
+            path.write_text('// effect\n');record['sha256']=digest(path)
+            for bad in ({'sha256':record['sha256']},
+                        {**record,'engine_name':'misreported-as-an-image'}):
+                with self.assertRaisesRegex(ValueError,'Invalid runtime asset'):
+                    files(root,{name:bad})
+
 
 if __name__=='__main__':unittest.main()

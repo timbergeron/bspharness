@@ -19,6 +19,22 @@ def player_dump(marker,origin,mode="MOVETYPE_WALK",health=100,ground=True):
 
 
 class RouteTests(unittest.TestCase):
+    def test_partial_particle_parser_failure_invalidates_completed_qa(self):
+        for diagnostic in ('Unknown particle command "bogus"',
+                           'warning: assoc on particle chain vortex overridden',
+                           'Too many duplicate names, gave up'):
+            errors=audit_log(self.log+'\n'+diagnostic+'\nBSPHARNESS_QA_COMPLETE\n',[])
+            self.assertTrue(any('particle configuration' in e for e in errors))
+
+    def test_camera_settling_allows_particle_warmup_and_rejects_bad_values(self):
+        camera=dict(name='vapor',origin=(0,0,64),angles=(30,0,0),settle_frames=72)
+        script=camera_config([camera])
+        segment=script.split('setpos 0 0 64 30 0 0\n')[1].split('screenshot png')[0]
+        self.assertEqual(sum(50 if line=='bh_ww' else 1 for line in segment.splitlines()),72)
+        for value in (0,-1,7201,True,1.5,'72;quit'):
+            with self.subTest(value=value),self.assertRaisesRegex(ValueError,'settle_frames'):
+                camera_config([{**camera,'settle_frames':value}])
+
     def setUp(self):
         self.route = WalkRoute("test",(0,0,24),(0,0,0),(Move(72),),Bounds((160,-16,20),(224,16,32)))
         self.log = (player_dump("BSPHARNESS_ROUTE_0_START","0 0 24")+

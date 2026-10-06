@@ -164,6 +164,7 @@ run a separate SP pass to check collision and collect fixed views.
 | `src/`, `out/`, `dist/` | Generated sources, compile evidence, release archives |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build/edit/verify procedures and known limits |
 | [docs/MATERIALS.md](docs/MATERIALS.md) | Physical texture scale, wall wraps, trim rules, seam checks |
+| [docs/PARTICLES.md](docs/PARTICLES.md) | Native FTE effects, safe map variants, motion and particle QA |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Kits, geometry roles, fixture lighting, and build budgets |
 | [docs/REFERENCE_HALL.md](docs/REFERENCE_HALL.md) | Stock benchmark and camera review workflow |
 | [docs/DESIGN.md](docs/DESIGN.md) | Quality goals, architecture, and next capabilities |

@@ -1,4 +1,4 @@
-"""Hash-checked external map assets; no image-library dependencies."""
+"""Hash-checked external PNGs and FTE particle scripts; no dependencies."""
 
 from pathlib import Path, PurePosixPath
 import re
@@ -15,23 +15,29 @@ def files(root, records):
         path = PurePosixPath(name)
         if (not name or "\\" in name or path.is_absolute() or
                 any(p in ("..", ".", "") for p in name.split("/")) or
-                path.parts[0] not in ("textures", "gfx") or path.suffix != ".png"):
+                not ((path.parts[0] in ("textures", "gfx", "particles") and path.suffix == ".png") or
+                     (path.parts[0] == "particles" and path.suffix == ".cfg"))):
             raise ValueError(f"Unsafe runtime asset path: {name}")
         source = root.joinpath(*path.parts)
         if not source.resolve().is_relative_to(root):
             raise ValueError(f"Runtime asset escapes its root: {name}")
         if (not isinstance(record, dict) or
                 not re.fullmatch(r"[0-9a-f]{64}", record.get("sha256", "")) or
-                any(type(record.get(k)) is not int or record[k] < 1 for k in ("width", "height"))):
+                (path.suffix == ".png" and
+                 any(type(record.get(k)) is not int or record[k] < 1 for k in ("width", "height"))) or
+                (path.suffix == ".cfg" and
+                 (record.get("kind") != "fte_particles" or record.get("engine_name")))):
             raise ValueError(f"Invalid runtime asset record: {name}")
         if not source.is_file() or digest(source) != record["sha256"]:
             raise ValueError(f"Modified or missing runtime asset: {name}")
+        result[name] = source
+        if path.suffix == ".cfg":
+            continue
         header = source.read_bytes()[:24]
         if (header[:8] != b"\x89PNG\r\n\x1a\n" or
                 int.from_bytes(header[16:20], "big") != record["width"] or
                 int.from_bytes(header[20:24], "big") != record["height"]):
             raise ValueError(f"Runtime PNG dimensions disagree: {name}")
-        result[name] = source
     return result
 
 
@@ -63,7 +69,7 @@ def audit_images(text, records):
 
 
 def bind(bsp, sidecar, destination):
-    """Create a separate verified texture variant of an unchanged BSP/LIT."""
+    """Create a separate verified runtime asset variant of an unchanged BSP/LIT."""
     import json
     from datetime import datetime, timezone
     from .pipeline import digest, verified_build, write_json
@@ -88,7 +94,7 @@ def bind(bsp, sidecar, destination):
     manifest["assets_manifest_sha256"]=digest(sidecar)
     manifest["runtime_binding"]={"time_utc":datetime.now(timezone.utc).isoformat(),
                                  "from_build":str(bsp.parent),"previous_assets_manifest_sha256":previous,
-                                 "scope":"External PNG variant only; identical compiled BSP, LIT, MAP and seam evidence"}
+                                 "scope":"External runtime assets only; identical compiled BSP, LIT, MAP and seam evidence"}
     write_json(destination/"build.json",manifest)
     result=destination/bsp.name
     verified_build(result)

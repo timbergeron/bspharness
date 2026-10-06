@@ -56,6 +56,42 @@ class CompileTests(unittest.TestCase):
         result = build(self.source,self.root/"stable","draft",qbsp_dir=ROOT/"tools/ericw/stable")
         self.assertTrue(BSP(result).validate()["passed"])
 
+    def test_particle_entity_update_preserves_all_geometry_and_lighting_formats(self):
+        from maps.awoken.particle_build import build as particle_build
+        from maps.awoken.particles import PADS
+        from bspharness.bsp import NAMES
+        arena=Map('Entity copy',_minlight='16')
+        arena.room('room',(-256,-256,0),(256,256,256),
+                   Palette(wall=Material('bh_wall',repeat=(64,64))))
+        arena.entity('info_player_start',(0,0,24));arena.light((64,64,160),300)
+        original=arena.write(self.root/'original.map',[self.wad])
+        variant=self.root/'variant.map'
+        anchors='\n'.join('{\n"classname" "light_globe"\n"origin" "'+
+                          ' '.join(map(str,p))+'"\n"light" "1"\n}\n' for p in PADS.values())
+        variant.write_bytes(original.read_bytes()+b'\n'+anchors.encode('ascii'))
+        contract=json.loads(original.with_suffix('.materials.json').read_text())
+        contract['map_sha256']=digest(variant)
+        variant.with_suffix('.materials.json').write_text(json.dumps(contract))
+        variant.with_suffix('.assets.json').write_text(json.dumps(dict(schema=1,
+                      map_sha256=digest(variant),root='.',files={})))
+        variant.with_suffix('.particles.json').write_text(json.dumps(dict(
+                      source_sha256=digest(original),map_sha256=digest(variant))))
+        for fmt in ('bsp29','bsp2','2psb'):
+            with self.subTest(fmt=fmt):
+                reference=build(original,self.root/fmt,'final',fmt)
+                saved=digest(reference)
+                result=particle_build(reference,variant,self.root/('entity-'+fmt))
+                a,b=BSP(reference),BSP(result)
+                self.assertEqual(a.format,b.format)
+                self.assertTrue(all(a.lump(n)==b.lump(n) for n in NAMES[1:]))
+                self.assertEqual(digest(reference.with_suffix('.lit')),digest(result.with_suffix('.lit')))
+                self.assertEqual(digest(reference),saved)
+                self.assertEqual(len(b.entities()),len(a.entities())+4)
+                verified_build(result)
+        variant.write_bytes(variant.read_bytes().replace(b'info_player_start',b'info_player_deathmatch'))
+        with self.assertRaisesRegex(ValueError,'exact original MAP'):
+            particle_build(reference,variant,self.root/'unsafe-entity-update')
+
     def test_runtime_assets_are_bound_snapshotted_and_packaged(self):
         relative="textures/room/bh_wall.png"
         original=self.root/"art"/relative
@@ -63,6 +99,10 @@ class CompileTests(unittest.TestCase):
         png(original,62,62,bytes([100,110,120])*62*62)
         records={relative:{"sha256":digest(original),"width":62,"height":62,
                            "engine_name":"textures/room/bh_wall"}}
+        effect="particles/map_room.cfg"
+        script=self.root/"art"/effect;script.parent.mkdir()
+        script.write_text('r_part vapor\n{\n type normal\n}\n')
+        records[effect]={"sha256":digest(script),"kind":"fte_particles"}
         sidecar=self.source.with_suffix(".assets.json")
         sidecar.write_text(json.dumps({"schema":1,"map_sha256":digest(self.source),
                                        "root":"art","files":records}))
@@ -82,6 +122,7 @@ class CompileTests(unittest.TestCase):
         archive=package(result,self.root/"native.zip",credits,qa)
         with zipfile.ZipFile(archive) as z:
             self.assertEqual(z.read(relative),(result.parent/"runtime"/relative).read_bytes())
+            self.assertEqual(z.read(effect),script.read_bytes())
         # Bind a new external texture set without altering compiled geometry,
         # collision, lighting, or the preserved original runtime snapshot.
         from bspharness.assets import bind

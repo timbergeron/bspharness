@@ -148,6 +148,12 @@ with source, credits and evidence, plus directly usable files in
 directory for the high-resolution presentation. BSP/LIT alone remain an
 indexed fallback. No custom game code is required.
 
+An optional [FTE jump-pad vortex variant](PARTICLES.md) adds electric-blue
+filaments, moving white hot spots, rising arcs and sparse lightning at the four
+pad bases. Its generator preserves this baseline and creates a separately
+named map with original procedural sprites. General implementation and QA
+lessons are in [the harness particle guide](../../docs/PARTICLES.md).
+
 The evidence covers sampled collision/routes, stock entities and reviewed
 views. A populated match is the next test for combat timing and item balance.
 Generated geometry, textures, engine captures and build products are local

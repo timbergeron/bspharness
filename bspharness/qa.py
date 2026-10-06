@@ -50,6 +50,9 @@ def camera_config(cameras, routes=(), mode="sp"):
             raise ValueError("Camera requires XYZ and pitch/yaw/roll")
         for value in (*camera["origin"],*camera["angles"]):
             number(value)
+        settle = camera.get("settle_frames",10)
+        if type(settle) is not int or not 1 <= settle <= 7200:
+            raise ValueError("Camera settle_frames must be an integer from 1 to 7200")
     lines = ["host_maxfps 72","host_framerate 0.013888889","host_timescale 0","cl_alwaysrun 0",
              *(f"{key} {value}" for key,value in PHYSICS.items()),
              *(f"{key} {value}" for key,value in RENDER.items() if key not in ("width","height")),
@@ -79,7 +82,8 @@ def camera_config(cameras, routes=(), mode="sp"):
         lines.extend(["god 1","noclip 1","r_norefresh 0"])
     for camera in cameras:
         values = (*camera["origin"],*camera["angles"])
-        lines.extend(["setpos "+" ".join(map(number,values)),"bh_w","screenshot png"])
+        settling = ["bh_w"] if camera.get("settle_frames",10)==10 else waits(camera["settle_frames"])
+        lines.extend(["setpos "+" ".join(map(number,values)),*settling,"screenshot png"])
     lines.extend(["bh_w","echo BSPHARNESS_QA_COMPLETE","quit"])
     return "\n".join(lines)+"\n"
 
@@ -144,6 +148,10 @@ def audit_log(text, entities, skill=1, deathmatch=False):
     # even when the rest of the script reaches its completion marker.
     for command in sorted(set(re.findall(r'Unknown command\s+"([^"\n]+)"',text,re.I))):
         errors.append("Engine rejected QA command: "+command)
+    for marker in ("Unknown particle command", "Too many duplicate names",
+                   "assoc on particle chain", "uses unknown spawn type", "uses unknown render type"):
+        if marker.casefold() in text.casefold():
+            errors.append("Engine rejected particle configuration: "+marker)
     if "BSPHARNESS_QA_COMPLETE" not in text:
         errors.append("Engine did not complete the QA script")
     live = edicts(text)

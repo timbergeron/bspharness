@@ -228,6 +228,20 @@ relative `textures/...png` or `gfx/...png` paths to `sha256`, `width` and
 Paths cannot escape the root. Missing files, modified bytes, stale MAP hashes
 and mismatched PNG dimensions fail before compilation.
 
+Original FTE effects may also declare `particles/...png` sprites and
+`particles/...cfg` scripts. Script records use `sha256` and
+`"kind": "fte_particles"`, with no image dimensions or `engine_name`.
+They receive the same snapshot, staging and package hash checks as images.
+General engine configs and game binaries remain outside this asset allowlist.
+
+For moving effects, camera JSON may set `settle_frames` (1–7200). The default
+remains 10; Awoken's particle views use 72 for about one second of warmup.
+Long paths and staggered emissions can require additional settling and later
+motion samples. This setting is retained in the shot's view evidence.
+See [the particle guide](PARTICLES.md) for native count syntax, explicit effect
+chains, velocity-aligned strokes, finite successors, and visual checks that
+catch silently ignored fields.
+
 Builds snapshot the declared files into `runtime/`. `verified_build`, engine
 QA and packaging verify those hashes; QA stages the snapshot instead of
 consulting a mutable asset directory. The engine's `imagelist` must show the
