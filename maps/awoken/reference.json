@@ -124,5 +124,151 @@
         "sha256": "954b86bc02a7b60450018aaec5e117f312244e7bb483350be96df1b780b2c327"
       }
     ]
-  }
+  },
+  "additional_video_references": [
+    {
+      "file": "Quake Champions - Awoken - Clutch Dash Reference - QuickTime_20261005214745.mp4",
+      "bytes": 9119700,
+      "sha256": "737d704a8c4e06f919159a89683b5dd4aadfecf13f3f2f9335096e210a462c3c",
+      "duration_seconds": 103.839637,
+      "width": 640,
+      "height": 360,
+      "fps": 30,
+      "frames": [
+        {
+          "seconds": 0,
+          "file": "clutch-video/frame-000.png",
+          "sha256": "cc10fe4d4c1dcfc6bbd60b88d4635ba6116f93486ddf35773cd161022f048ea5"
+        },
+        {
+          "seconds": 5,
+          "file": "clutch-video/frame-005.png",
+          "sha256": "d028b59b97303115257e86cc6c8c51b41b5543976b3b7a4157e3f6d618ff2a07"
+        },
+        {
+          "seconds": 10,
+          "file": "clutch-video/frame-010.png",
+          "sha256": "bfa679cef8e8a4867be7bd139f691c90382e34975ef01a8103b02067f7c51d8d"
+        },
+        {
+          "seconds": 15,
+          "file": "clutch-video/frame-015.png",
+          "sha256": "db68dc5c999df0bb06af519d8256491f3a81666017a43b1f59b4c7298ca1b8de"
+        },
+        {
+          "seconds": 20,
+          "file": "clutch-video/frame-020.png",
+          "sha256": "c55a3fb83fecbef2ae2ad0055a58152ec029358c381a3b9f1cb3c6914e809f75"
+        },
+        {
+          "seconds": 25,
+          "file": "clutch-video/frame-025.png",
+          "sha256": "1f995e2655aba5082c34e2c28b6620c9929956bd937bc5f5661dc3a19c483d6c"
+        },
+        {
+          "seconds": 30,
+          "file": "clutch-video/frame-030.png",
+          "sha256": "c40595c0730ee2e8383e85e4953623109b5656f9f9083ce3f08cfc800f22c72c"
+        },
+        {
+          "seconds": 35,
+          "file": "clutch-video/frame-035.png",
+          "sha256": "c282129ad8c5cc106ba9dd091808a109e432a7e1c9d965cee613f0aa1e67916a"
+        },
+        {
+          "seconds": 40,
+          "file": "clutch-video/frame-040.png",
+          "sha256": "b3889e7bfed9a5a80c8383467f1944d669a4dae7b02fc6a66051009caaec4b41"
+        },
+        {
+          "seconds": 45,
+          "file": "clutch-video/frame-045.png",
+          "sha256": "8a5aa53160dda91aa64793b8a8f4b286adb510b8813561c85a9a1ece8bb31bcd"
+        },
+        {
+          "seconds": 50,
+          "file": "clutch-video/frame-050.png",
+          "sha256": "4dfceba5cffacce8b5b40eeb43b48ab97635451703b93ff5095e63ba7db85d6b"
+        },
+        {
+          "seconds": 55,
+          "file": "clutch-video/frame-055.png",
+          "sha256": "1c3c047b16e09ca6b5998d9ca70809dc55800bb28f5c4405f51ddc72808f9696"
+        },
+        {
+          "seconds": 60,
+          "file": "clutch-video/frame-060.png",
+          "sha256": "c7671e4d25a1c7c02cbfb4820e66bb6d20dd9b611b7f759c36c890523dde554c"
+        },
+        {
+          "seconds": 65,
+          "file": "clutch-video/frame-065.png",
+          "sha256": "57ced891817698a008aac43d18f0de05868c1d90b042a5af26a4438643ab7738"
+        },
+        {
+          "seconds": 70,
+          "file": "clutch-video/frame-070.png",
+          "sha256": "c00e7cf58ce2960281eecbcb85f18f613a312fde8d1725fd066a6654347519eb"
+        },
+        {
+          "seconds": 75,
+          "file": "clutch-video/frame-075.png",
+          "sha256": "8a8d63179c9f4f3eaed984463409bf5e8588b3dd0e73650bc6d2ed7cfa7a649e"
+        },
+        {
+          "seconds": 80,
+          "file": "clutch-video/frame-080.png",
+          "sha256": "cac548a1a63db8d8bedb8212b2c6116b8dc2f7015a6274a428ddba66b561a291"
+        },
+        {
+          "seconds": 85,
+          "file": "clutch-video/frame-085.png",
+          "sha256": "d238cb592993fd67446c8b40a3619cf99acbddf51954db59d825b5c258d13d0f"
+        },
+        {
+          "seconds": 90,
+          "file": "clutch-video/frame-090.png",
+          "sha256": "5d55951760fd72162dafcd6e3bd8c7ad5f12eb064f5c80d8f7ca2e32b6803464"
+        },
+        {
+          "seconds": 95,
+          "file": "clutch-video/frame-095.png",
+          "sha256": "9c3789cb7701b191e0e26e0524ae8ce0f4a5983e5ea4f4912e95433eb0ed059f"
+        },
+        {
+          "seconds": 100,
+          "file": "clutch-video/frame-100.png",
+          "sha256": "e71321012342d832842817af436afbcd37e6ddd4a1d3f7664147c07f1959c782"
+        }
+      ],
+      "schema": 1,
+      "use": "Additional user-supplied visual and movement reference. Twenty-one native frames at five-second intervals were inspected as a contact sheet; selected native close-ups informed TEXTURE_BRIEF.md. This clip has not yet driven a new BSP/LIT build. No captured pixels are used as texture artwork.",
+      "observations": [
+        {
+          "seconds": 5,
+          "detail": "Broad moss patches across masonry and terrace paving; a tall relief with interlocking curved forms."
+        },
+        {
+          "seconds": 30,
+          "detail": "High-contrast ivory angular meander on a dark jump-pad face."
+        },
+        {
+          "seconds": 55,
+          "detail": "Exposed hanging roots and moss around the stone supports and court."
+        },
+        {
+          "seconds": 60,
+          "detail": "Raised terrace paving, mossy wall courses and a framed square ornamental plaque."
+        },
+        {
+          "seconds": 70,
+          "detail": "Large trunks, canopy and undergrowth beyond the playable stonework."
+        },
+        {
+          "seconds": 85,
+          "detail": "Upper grilles, shaped stone supports and a sculptural ornament; these require geometry as well as materials."
+        }
+      ]
+    }
+  ]
 }

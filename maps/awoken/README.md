@@ -62,6 +62,9 @@ No texture pixels are copied from the video. Reference frames and video
 identity are recorded in [reference.json](reference.json).
 See [the polish notes](POLISH.md) for observations at specific video times
 and the geometry/material choices they informed.
+The additional Clutch Dash recording informs the
+[texture generation brief](TEXTURE_BRIEF.md), with priorities, dimensions,
+tiling rules and detailed descriptions for a coherent replacement pack.
 
 The video style restores 45 hanging-vine brushes as masked, nonblocking
 details, with a shared texture anchor instead of the Q2 UV offsets. It adds
