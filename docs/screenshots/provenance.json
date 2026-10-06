@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "captured_date": "2026-10-06",
+  "engine": "QSS-M",
+  "description": "Unmodified engine captures selected for the README. Source captures and QA reports are local, ignored build outputs.",
+  "screenshots": [
+    {
+      "file": "awoken-fte-vortex.png",
+      "sha256": "84f5709a7e5c3d3ae29d969fb22eba8ffc3d96399aaea6f2c303af2c96561c24",
+      "width": 1448,
+      "height": 1086,
+      "source": "out/engine-qa/awoken-goal-motion-v3/screenshots/qssm_awoken_vortex_10-06-2026-193753.png",
+      "qa_report": "out/engine-qa/awoken-goal-motion-v3/qa.json",
+      "qa_report_sha256": "0a2d1a90c16fa413585541fdc3ea9e50c214b23bc7f92338cfde428c0b9129f1",
+      "qa_passed": true,
+      "camera": {
+        "name": "vortex-frame-000",
+        "origin": [
+          768,
+          920,
+          -664
+        ],
+        "angles": [
+          46,
+          270,
+          0
+        ],
+        "settle_frames": 72
+      },
+      "artifacts": {
+        "awoken_vortex.bsp": "67cbe99eda11962bf763345c379d892245a20a41527d9879de45c3e95875a64a",
+        "awoken_vortex.lit": "05a13056e66fcd3cafd69a62fcd1077977b10c7fb5893da6bf0a5176f008fcf4"
+      },
+      "engine_sha256": "5f4350b9fe0cc395fad96e66992ca486e3cc6efb785a79d8c57f29a804073098",
+      "render": {
+        "width": 1448,
+        "height": 1086,
+        "fov": 70,
+        "fov_adapt": 1,
+        "gamma": 1,
+        "contrast": 1,
+        "gl_texturemode": "GL_LINEAR_MIPMAP_LINEAR",
+        "viewsize": 120,
+        "crosshair": 0,
+        "r_drawviewmodel": 0,
+        "r_fullbright": 0,
+        "r_drawflat": 0,
+        "r_lightmap": 0,
+        "gl_overbright": 1,
+        "gl_load24bit": 1,
+        "gl_max_size": 0,
+        "gl_picmip": 0,
+        "r_fastturb": 0,
+        "r_fastsky": 0,
+        "r_norefresh": 0
+      }
+    },
+    {
+      "file": "awoken-courtyard.png",
+      "sha256": "bc4af6a4bb4acdfab9cdf0bf7a6b4df21317d31eef28f4cc74d2974e80871671",
+      "width": 1280,
+      "height": 720,
+      "source": "out/engine-qa/awoken-textures-final-cameras/screenshots/qssm_awoken_10-06-2026-074634.png",
+      "qa_report": "out/engine-qa/awoken-textures-final-cameras/qa.json",
+      "qa_report_sha256": "763e57d43c7dec4b6ae9bc2ffec2ced353e2e585dbcac5065dd2bf04b072b434",
+      "qa_passed": true,
+      "camera": {
+        "name": "central-courtyard",
+        "origin": [
+          1744,
+          1088,
+          -320
+        ],
+        "angles": [
+          16,
+          160,
+          0
+        ]
+      },
+      "artifacts": {
+        "awoken.bsp": "cab6184a564637be5e8b10b9ebfee9084d8a90f53b3abe46a18114dedd3fa047",
+        "awoken.lit": "05a13056e66fcd3cafd69a62fcd1077977b10c7fb5893da6bf0a5176f008fcf4"
+      },
+      "engine_sha256": "fdcaea200f1dbb2a05ffca8edeccab41988ea6d2d218dd72243ef272bb1b8d3d",
+      "render": {
+        "width": 1280,
+        "height": 720,
+        "fov": 90,
+        "fov_adapt": 1,
+        "gamma": 1,
+        "contrast": 1,
+        "gl_texturemode": "GL_LINEAR_MIPMAP_LINEAR",
+        "viewsize": 120,
+        "crosshair": 0,
+        "r_drawviewmodel": 0,
+        "r_fullbright": 0,
+        "r_drawflat": 0,
+        "r_lightmap": 0,
+        "gl_overbright": 1,
+        "gl_load24bit": 1,
+        "gl_max_size": 0,
+        "gl_picmip": 0,
+        "r_fastturb": 0,
+        "r_fastsky": 0,
+        "r_norefresh": 0
+      }
+    },
+    {
+      "file": "awoken-balcony.png",
+      "sha256": "9d5012bf13495be3bf058c32fba6cfff861e70684cbad2f92e0cd61a43b6e3ea",
+      "width": 1280,
+      "height": 720,
+      "source": "out/engine-qa/awoken-textures-final-cameras/screenshots/qssm_awoken_10-06-2026-074644.png",
+      "qa_report": "out/engine-qa/awoken-textures-final-cameras/qa.json",
+      "qa_report_sha256": "763e57d43c7dec4b6ae9bc2ffec2ced353e2e585dbcac5065dd2bf04b072b434",
+      "qa_passed": true,
+      "camera": {
+        "name": "mega-balcony",
+        "origin": [
+          1552,
+          2048,
+          -400
+        ],
+        "angles": [
+          18,
+          230,
+          0
+        ]
+      },
+      "artifacts": {
+        "awoken.bsp": "cab6184a564637be5e8b10b9ebfee9084d8a90f53b3abe46a18114dedd3fa047",
+        "awoken.lit": "05a13056e66fcd3cafd69a62fcd1077977b10c7fb5893da6bf0a5176f008fcf4"
+      },
+      "engine_sha256": "fdcaea200f1dbb2a05ffca8edeccab41988ea6d2d218dd72243ef272bb1b8d3d",
+      "render": {
+        "width": 1280,
+        "height": 720,
+        "fov": 90,
+        "fov_adapt": 1,
+        "gamma": 1,
+        "contrast": 1,
+        "gl_texturemode": "GL_LINEAR_MIPMAP_LINEAR",
+        "viewsize": 120,
+        "crosshair": 0,
+        "r_drawviewmodel": 0,
+        "r_fullbright": 0,
+        "r_drawflat": 0,
+        "r_lightmap": 0,
+        "gl_overbright": 1,
+        "gl_load24bit": 1,
+        "gl_max_size": 0,
+        "gl_picmip": 0,
+        "r_fastturb": 0,
+        "r_fastsky": 0,
+        "r_norefresh": 0
+      }
+    },
+    {
+      "file": "awoken-relief.png",
+      "sha256": "288d1707c3a42cbb4fc2fece91162358ec34ed752ae4e1ddc9b48d5d002df199",
+      "width": 1280,
+      "height": 720,
+      "source": "out/engine-qa/awoken-textures-final-cameras/screenshots/qssm_awoken_10-06-2026-074650.png",
+      "qa_report": "out/engine-qa/awoken-textures-final-cameras/qa.json",
+      "qa_report_sha256": "763e57d43c7dec4b6ae9bc2ffec2ced353e2e585dbcac5065dd2bf04b072b434",
+      "qa_passed": true,
+      "camera": {
+        "name": "relief-close",
+        "origin": [
+          1280,
+          1584,
+          -432
+        ],
+        "angles": [
+          0,
+          146,
+          0
+        ]
+      },
+      "artifacts": {
+        "awoken.bsp": "cab6184a564637be5e8b10b9ebfee9084d8a90f53b3abe46a18114dedd3fa047",
+        "awoken.lit": "05a13056e66fcd3cafd69a62fcd1077977b10c7fb5893da6bf0a5176f008fcf4"
+      },
+      "engine_sha256": "fdcaea200f1dbb2a05ffca8edeccab41988ea6d2d218dd72243ef272bb1b8d3d",
+      "render": {
+        "width": 1280,
+        "height": 720,
+        "fov": 90,
+        "fov_adapt": 1,
+        "gamma": 1,
+        "contrast": 1,
+        "gl_texturemode": "GL_LINEAR_MIPMAP_LINEAR",
+        "viewsize": 120,
+        "crosshair": 0,
+        "r_drawviewmodel": 0,
+        "r_fullbright": 0,
+        "r_drawflat": 0,
+        "r_lightmap": 0,
+        "gl_overbright": 1,
+        "gl_load24bit": 1,
+        "gl_max_size": 0,
+        "gl_picmip": 0,
+        "r_fastturb": 0,
+        "r_fastsky": 0,
+        "r_norefresh": 0
+      }
+    }
+  ]
+}

@@ -10,6 +10,22 @@ Ember Cloister provides a stock-textured architectural reference with stairs,
 arches, a gallery, fixture lighting, fixed cameras, and movement probes.
 Polished gameplay maps still need art direction and playtesting.
 
+## Screenshots
+
+Awoken in QSS-M: the latest native FTE jump-pad vortex, followed by views
+of the map's stonework, moss, hanging vines, and water. These are unmodified
+engine captures; click an image to see its original resolution.
+
+[![Awoken jump pad surrounded by electric-blue FTE particle filaments and bright cyan-white sparks](docs/screenshots/awoken-fte-vortex.png)](docs/screenshots/awoken-fte-vortex.png)
+
+| Central courtyard | Mega balcony | Carved stone detail |
+| --- | --- | --- |
+| [![Awoken central courtyard with hanging vines and water below](docs/screenshots/awoken-courtyard.png)](docs/screenshots/awoken-courtyard.png) | [![Awoken balcony overlooking mossy stone walls and water](docs/screenshots/awoken-balcony.png)](docs/screenshots/awoken-balcony.png) | [![Close view of Awoken's carved stone relief and weathered masonry](docs/screenshots/awoken-relief.png)](docs/screenshots/awoken-relief.png) |
+
+See the [Awoken particle recipe](maps/awoken/PARTICLES.md) for the effect
+and [capture provenance](docs/screenshots/provenance.json) for camera,
+render settings, and verified screenshot/build hashes.
+
 ## First build
 
 Requires Python 3.10+ and the ericw compilers. The core uses only Python's
