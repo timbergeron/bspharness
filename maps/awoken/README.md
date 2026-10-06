@@ -1,9 +1,10 @@
-# Awoken for stock Quake 1
+# Awoken for Quake 1
 
 This recipe adapts **4Bidden's Quake 2 remake** into a BSP29 deathmatch arena
 with colored lighting. It retains the brush layout, eleven DM starts,
 vertical connections, four push pads, teleporter and void hazards. Materials
-come from local original Quake PAKs; Makkon assets are excluded. The Q2 BSP
+come from local original Quake PAKs; the video polish also uses original
+stone and vine art. Makkon assets are excluded. The Q2 BSP
 is preserved and decompiled on a working copy. [Reference metadata](reference.json)
 records the download, exact hash, credits, and secondary Xowoken inspection.
 
@@ -12,10 +13,11 @@ models make it a substantially different conversion job. The Q2 brush
 reference provides the geometry used here. This is a Q1 adaptation of that
 remake, rather than a claim of measured equivalence to the QC original.
 
-The [verified baseline](baseline.json) records the final BSP/LIT hashes,
+The [verified baseline](baseline.json) records the latest final BSP/LIT hashes,
 compiler and engine hashes, 23 passing movement probes, the actual DM
 spawn/item audit, and all five reviewed camera captures. The final BSP has
-7,631 faces and 4,453 clipnodes, with full VIS and colored lighting. All 62
+full VIS and colored lighting. The original [stock baseline](baselines/stock-v1.json)
+retains the first release's 7,631 faces and 4,453 clipnodes. All 62
 harness tests passed with compiler integration enabled. This establishes a
 playable build; a populated match remains necessary to assess balance.
 
@@ -40,8 +42,37 @@ python3 -m bspharness build src/awoken.map --profile draft \
 metadata to `src/`. Keep each draft revision in its own `--out` directory
 when comparing results.
 
+The default `--style stock` needs only the local stock WAD. For the current
+video-directed polish, unpack `dist/awoken-art-v1.zip` into the repository
+root to populate `assets/awoken/`, and extract `assets/palette.lmp` alongside
+the stock WAD. FFmpeg is needed only to decode/resample original PNG art and
+extract video references; the harness core still uses the Python standard
+library. Then run:
+
+```sh
+python3 maps/awoken/build.py --style video
+```
+
+[Art metadata](art.json) records all three built-in imagegen prompts and
+exact source hashes. `materials.py` converts them into a local WAD2 and
+authors periodic masonry joints, quiet flagstones, carved motifs, blue pad
+markings, green water and a light cloud sky. Texture sources and the WAD are
+included with the release's editable source; the compiled map embeds them.
+No texture pixels are copied from the video. Reference frames and video
+identity are recorded in [reference.json](reference.json).
+See [the polish notes](POLISH.md) for observations at specific video times
+and the geometry/material choices they informed.
+
+The video style restores 45 hanging-vine brushes as masked, nonblocking
+details, with a shared texture anchor instead of the Q2 UV offsets. It adds
+eleven shallow beveled wall reliefs without collision, keeps the original
+doorway profiles, and replaces the busy blue/brown materials with neutral
+stone and restrained green/cool lighting. Pad and teleport landmarks get
+blue light cues. Trees, bushes and grass remain omitted.
+
 The conversion maps every retained texture and gameplay class explicitly.
-It removes 150 Q2 alpha foliage/decal/mist brushes and five origin brushes,
+The stock style removes 150 Q2 alpha foliage/decal/mist brushes and five
+origin brushes; the video style restores 45 of those brushes using original vine art. It
 makes the five rotating ornaments static nonblocking details, and adapts
 ammo/health corner origins. Source emission produces exposed fixture
 lights; covered courts receive broad fill. Sun, sky, bounce and ambient
@@ -84,6 +115,18 @@ Use a fresh QA gamedir each time. The DM pass checks actual stock DM spawn
 logic and the quad; QSS-M disables positioning commands in DM, so authored
 routes and fixed cameras run separately in SP. Run movement without cameras
 for the faster 320x200 pass. All five camera images need visual review.
+
+Use `compare-qa` for the portable paired camera report. A standalone slider
+with the six inspected video frames is also available:
+
+```sh
+python3 maps/awoken/review.py /path/to/stock-camera-qa.json \
+  /path/to/polished-camera-qa.json --output dist/awoken-review.html
+```
+
+This export checks screenshot hashes, camera coordinates, engine identity,
+render settings and the reference frame hashes before embedding every
+image. The HTML opens offline and needs no adjacent image files.
 
 Record a visual review JSON with `artifacts` copied from the build manifest
 and a `cameras` object keyed by each camera name. Each entry needs

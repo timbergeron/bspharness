@@ -23,7 +23,49 @@
     "sha256": "72dd605521ed29f721d4995d83e1e693fa4f9ecd7344ffad9f784e8e1a4112c4",
     "use": "Inspected editable Q3 source and visual reference. Its patches and model entities are not imported. No geometry or textures from Xowoken are used in this conversion."
   },
-  "textures": "Locally extracted original Quake pak0/pak1 WAD2; generated clip/trigger tool textures. Makkon excluded.",
+  "textures": "Locally extracted original Quake PAK WAD2 plus original imagegen stone/slab/vine art and deterministic Quake-palette texture generators. Makkon excluded.",
   "tools": "Checksum-pinned ericw-tools 2.0.0-alpha11 bsputil/qbsp/vis/light",
-  "repository_policy": "Only original conversion code and provenance are tracked; reference geometry, PAKs, WADs, generated MAP/BSP/LIT and screenshots stay local. Upstream assets retain their own rights."
+  "repository_policy": "Only original conversion code and provenance are tracked; reference geometry, PAKs, WADs, generated MAP/BSP/LIT and screenshots stay local. Upstream assets retain their own rights.",
+  "video_reference": {
+    "schema": 1,
+    "file": "Quake Champions Ranked Duel with possible cheater - QuickTime_20261005192720.mp4",
+    "bytes": 44607641,
+    "sha256": "6db82695784c8c568929092609c36ad6f95110a6e3a0400b7cb2aad8dd30eb9c",
+    "duration_seconds": 642.914104,
+    "width": 640,
+    "height": 360,
+    "frames": [
+      {
+        "seconds": 0,
+        "file": "frame-000.png",
+        "sha256": "abf8b903de387253d89e3cfd760717a687d59f6442fae8ff42ef85a5a7dc59d8"
+      },
+      {
+        "seconds": 50,
+        "file": "frame-050.png",
+        "sha256": "1f506d52be264500b7a43eb0996250bdef5653ee49d17042db48a75bf995a02b"
+      },
+      {
+        "seconds": 80,
+        "file": "frame-080.png",
+        "sha256": "6d61912bf2be63442bfda6c64b5db0d6a86525c8348434ae0f6aa20a8804ae36"
+      },
+      {
+        "seconds": 150,
+        "file": "frame-150.png",
+        "sha256": "524c06971c84f4b19ca481b88b58ed3f833269c954bed3787c8484b1a8a06960"
+      },
+      {
+        "seconds": 360,
+        "file": "frame-360.png",
+        "sha256": "2b215912e8d60cfdb931ba4502fc6c858ae9589bed8af2f08fbd573d5a8f4359"
+      },
+      {
+        "seconds": 580,
+        "file": "frame-580.png",
+        "sha256": "a56c4b7d6ca70d6317a684323c06718541bf9024b1b4333b64a00fa5ef6ddce6"
+      }
+    ],
+    "use": "Visual authority for the current polish pass. Native frames at the recorded timestamps were inspected for masonry, angular frames, carved bands, vegetation, green water and blue pickup/teleport cues. No captured pixel texture is imported."
+  }
 }

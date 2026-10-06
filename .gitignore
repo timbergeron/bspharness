@@ -10,7 +10,9 @@ assets/**/*.zip
 assets/**/*.7z
 assets/**/*.tga
 assets/**/*.png
+assets/wads/*.json
 src/
 out/
 dist/
 .DS_Store
+*.mp4

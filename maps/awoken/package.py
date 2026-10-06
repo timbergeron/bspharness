@@ -15,6 +15,26 @@ from bspharness.pipeline import digest, package, verified_build
 def release(bsp, movement, deathmatch, cameras, review, output):
     bsp=Path(bsp).resolve()
     manifest=verified_build(bsp)
+    if manifest["profile"]!="final":
+        raise ValueError("Awoken release packaging requires the full-VIS final profile")
+    if digest(ROOT/"src/awoken.map")!=manifest["source_sha256"]:
+        raise ValueError("Current Awoken source must match the packaged build")
+    conversion=json.loads((ROOT/"src/awoken.conversion.json").read_text())
+    if conversion["generator_sha256"]!=digest(ROOT/"maps/awoken/build.py"):
+        raise ValueError("Regenerate Awoken after changing its conversion recipe")
+    art=None
+    if conversion.get("style")=="video":
+        art=json.loads((ROOT/"maps/awoken/art.json").read_text())
+        for source in art["sources"].values():
+            if digest(ROOT/"assets/awoken"/source["file"])!=source["sha256"]:
+                raise ValueError("Modified original texture source")
+        if (digest(ROOT/"assets/wads/awoken.wad")!=conversion["art_wad_sha256"] or
+                digest(ROOT/"maps/awoken/polish.py")!=conversion["polish_sha256"]):
+            raise ValueError("Modified polish geometry or texture WAD; regenerate and rebuild")
+        texture_manifest=json.loads((ROOT/"assets/wads/awoken.json").read_text())
+        if (texture_manifest["generator_sha256"]!=digest(ROOT/"maps/awoken/materials.py") or
+                texture_manifest["wad_sha256"]!=conversion["art_wad_sha256"]):
+            raise ValueError("Texture generator evidence is stale")
     paths={"movement":Path(movement),"deathmatch":Path(deathmatch),"cameras":Path(cameras)}
     reports={k:json.loads(p.read_text()) for k,p in paths.items()}
     for name,report in reports.items():
@@ -51,6 +71,14 @@ def release(bsp, movement, deathmatch, cameras, review, output):
         for suffix in ("routes.json","cameras.json","conversion.json"):
             z.write(ROOT/f"src/awoken.{suffix}",f"source/awoken.{suffix}")
         for shot in shots:z.write(shot["file"],f"screenshots/{shot['camera']}.png")
+        for filename in ("build.py","materials.py","polish.py","review.py","package.py",
+                         "art.json","README.md","POLISH.md"):
+            z.write(ROOT/"maps/awoken"/filename,"source/recipe/"+filename)
+        if art:
+            for source in art["sources"].values():
+                z.write(ROOT/"assets/awoken"/source["file"],"source/art/"+source["file"])
+            z.write(ROOT/"assets/wads/awoken.wad","source/wads/awoken.wad")
+            z.write(ROOT/"assets/wads/awoken.json","source/wads/awoken.json")
     # Also provide directly usable files next to the archive.
     folder=archive.with_suffix("");folder.mkdir(parents=True,exist_ok=True)
     for suffix in (".bsp",".lit"):shutil.copy2(bsp.with_suffix(suffix),folder/("awoken"+suffix))

@@ -121,7 +121,9 @@ compatibility and undeclared corners still require visual review.
 
 [Awoken](maps/awoken/README.md) is the first complete imported arena recipe:
 it recovers 4Bidden's Q2 brushwork, maps stock id1 materials and gameplay,
-and authors Q1 pad, teleport, spawn, and traversal checks. Reference assets
+and authors Q1 pad, teleport, spawn, and traversal checks. An optional video
+style adds original pale masonry and masked vines, carved reliefs, and
+reference-directed lighting. Reference assets
 and generated BSP/LIT files stay local.
 
 ```sh

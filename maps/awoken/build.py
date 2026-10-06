@@ -15,11 +15,13 @@ from bspharness.geometry import normalize, dot, vector
 from bspharness.pipeline import digest, resolve_tool, run_stage, write_json
 from bspharness.source import read
 from bspharness.wad import make_blockout
+from maps.awoken.materials import make_materials
+from maps.awoken.polish import carvings
 
 SOURCE_SHA256 = "17451ce49877375e4e0efdc4ba306be1044275fc7ec3c909c7cf76730f9bf251"
 
 
-def generate(reference, stock_wad, output):
+def generate(reference, stock_wad, output, style="video"):
     if digest(reference)!=SOURCE_SHA256:
         raise ValueError("This Awoken recipe expects the recorded 4Bidden Q2 reference BSP")
     work = ROOT/"out/references/awoken/conversion"
@@ -29,20 +31,25 @@ def generate(reference, stock_wad, output):
     run_stage([resolve_tool(ROOT/"tools/ericw/modern","bsputil"),"-decompile",original],
               work,work/"decompile.log",180)
     entities = read(original.with_suffix(".decompile.map"))
+    video = style == "video"
+    art_wad = make_materials() if video else None
     arena = Map("Awoken — Quake 1",shell="explicit",
-                **lighting_recipe(sun=300,sky=180,minlight=38,bounce=2,dirt=0.25))
+                **lighting_recipe(sun=120 if video else 300,sky=80 if video else 180,minlight=20 if video else 38,
+                                  bounce=1 if video else 2,dirt=0.35 if video else 0.25,
+                                  sun_color=(235,245,220) if video else (255,222,185),
+                                  sky_color=(190,215,235) if video else (165,195,235)))
     # ASCII engine metadata; original brushwork and gameplay positions remain.
     arena.worldspawn["message"] = "Awoken - Quake 1"
-    wall = Material("city4_2",repeat=(128,128))
-    stone = Material("stone1_7",repeat=(128,128))
-    rock = Material("rock3_7",repeat=(128,128))
-    floor = Material("ground1_6",repeat=(128,128))
-    trim = Material("metalt2_3",repeat=(64,64))
+    wall = Material("aw_stone",repeat=(256,256)) if video else Material("city4_2",repeat=(128,128))
+    stone = Material("aw_trim",repeat=(128,128)) if video else Material("stone1_7",repeat=(128,128))
+    rock = stone if video else Material("rock3_7",repeat=(128,128))
+    floor = Material("aw_pave",repeat=(128,128)) if video else Material("ground1_6",repeat=(128,128))
+    trim = Material("aw_trim",repeat=(128,128)) if video else Material("metalt2_3",repeat=(64,64))
     light = Material("tlight02",repeat=(64,64))
     materials = {
         "1und/grudbr1a":wall,"1und/rtnick2d":stone,"1und/rtbrockbm":rock,
         "1und/flo3":floor,"1und/flo4b":floor,"stark/brickfloor2":floor,
-        "1und/hrudgb":trim,"1und/grudsign2":Material("rune2_3",repeat=(64,64)),
+        "1und/hrudgb":trim,"1und/grudsign2":Material("aw_panel",repeat=(64,128)) if video else Material("rune2_3",repeat=(64,64)),
         "1und/grud1ctr":stone,"1und/gnotiley31":Material("afloor1_4",repeat=(128,128)),
         "1und/rtgnobr":stone,"1und/grud1atr":wall,"1und/pieaseds":trim,
         "1und/grud-br1":wall,"1und/rtgnobotd":stone,"1und/flo2a":floor,
@@ -52,8 +59,8 @@ def generate(reference, stock_wad, output):
     def material(f):
         if f.texture=="e1u1/clip":return "clip"
         if f.texture=="e1u1/trigger":return "trigger"
-        if f.flags&4 or f.texture=="e1u1/sky1":return "sky1"
-        if f.contents&32:return Material("*water0",repeat=(128,128))
+        if f.flags&4 or f.texture=="e1u1/sky1":return "sky_aw" if video else "sky1"
+        if f.contents&32:return Material("*aw_water" if video else "*water0",repeat=(128,128))
         if f.texture not in materials:raise ValueError(f"Unmapped source texture: {f.texture}")
         return materials[f.texture]
     changes = Counter()
@@ -66,6 +73,12 @@ def generate(reference, stock_wad, output):
                 changes["origin brushes removed"]+=1
                 continue
             if all(f.contents&268435456 and not f.contents&32 for f in source.faces):
+                if video and any(f.texture in ("stark/vine06","stark/dk_vines") for f in source.faces):
+                    vine = source.mapped(lambda f:Material("{aw_vine",repeat=(256,256),anchor=(0,0,-192))
+                                         if f.texture in ("stark/vine06","stark/dk_vines") else "skip")
+                    arena.detail(vine,mode="illusionary",_shadow="1")
+                    changes["nonblocking vine brushes restored"]+=1
+                    continue
                 changes["Q2 alpha foliage/decal brushes removed"]+=1
                 continue
             brush = source.mapped(material)
@@ -91,7 +104,9 @@ def generate(reference, stock_wad, output):
                             n = normalize(face.normal)
                             emitters.append((tuple(center[i]+n[i]*20 for i in range(3)),
                                              min(360,70+sqrt(max(0,raw.value))*10),
-                                             (175,205,255) if raw.texture=="e3u3/bluelite" else (255,220,175)))
+                                             (110,170,255) if video and raw.texture=="e3u3/bluelite" else
+                                             (175,205,255) if raw.texture=="e3u3/bluelite" else
+                                             (205,235,215) if video else (255,220,175)))
             else:
                 brushes.append(brush)
         if name=="worldspawn":continue
@@ -164,7 +179,20 @@ def generate(reference, stock_wad, output):
     for p in ((1408,1664,-580),(768,1120,-580),(1000,1120,-580),(1600,1152,-570),
               (1968,1552,-330),(1408,2048,-420),(768,1456,-340),(1312,736,-440),
               (1792,544,-440),(2500,1000,-420),(2400,1700,-450)):
-        arena.light(p,350,(210,225,255),delay="2",wait="0.7")
+        arena.light(p,350,(210,235,225) if video else (210,225,255),delay="2",wait="0.7")
+    ornaments = []
+    if video:
+        ornaments = carvings(arena,solids)
+        changes["beveled carved wall reliefs added"] = len(ornaments)
+        # Cool cues at the four lifts and teleporter, restrained against the
+        # neutral stone instead of making every doorway blue metal.
+        for x,y,z in ((1408,1908,-720),(768,844,-720),(684,1696,-720),(1904,1008,-700)):
+            arena.detail(box(x-40,y-40,z-16,x+40,y+40,z-15.5,texture=trim,
+                             top=Material("aw_pad",repeat=(128,128),anchor=(x-64,y+64,z))),
+                         mode="illusionary")
+            arena.light((x,y,z+88),200,(105,155,255),delay="2",wait="0.8")
+        arena.light((1652,1152,-652),250,(90,150,255),delay="2",wait="0.6")
+        arena.light((1408,1920,-652),200,(100,170,255),delay="2",wait="0.7")
     # Initial viewpoints are fixed in source coordinates for visual iteration.
     arena.camera("central-courtyard",(1744,1088,-320),(16,160,0))
     arena.camera("rocket-terrace",(1248,736,-536),(8,155,0))
@@ -209,13 +237,23 @@ def generate(reference, stock_wad, output):
                                  Bounds((2020,1256,-440),(2080,1304,-388))),Move(50)),
                   Bounds((2160,1256,-624),(2290,1304,-608))),
     ])
-    output=arena.write(output,[stock_wad,make_blockout(ROOT/"assets/wads/blockout.wad")])
+    if video:
+        # Pale stone needs substantially less light than the first dark stock
+        # palette. Scale every recovered/fill/landmark light consistently.
+        for keys,_ in arena.entities:
+            if keys["classname"]=="light":
+                keys["light"] = str(round(float(keys["light"])*0.45))
+    output=arena.write(output,[stock_wad,make_blockout(ROOT/"assets/wads/blockout.wad"),
+                               *([art_wad] if art_wad else [])])
     write_json(output.with_suffix(".cameras.json"),arena.cameras)
     write_json(output.with_suffix(".routes.json"),[r.metadata() for r in routes])
     write_json(output.with_suffix(".conversion.json"),{
         "reference_sha256":SOURCE_SHA256,"reference_author":"4Bidden","changes":dict(changes),
         "source_brushes":sum(len(e.brushes) for e in entities),"world_brushes":len(arena.details),
-        "entity_brushes":sum(len(b) for _,b in arena.entities),"generator_sha256":digest(__file__)})
+        "entity_brushes":sum(len(b) for _,b in arena.entities),"generator_sha256":digest(__file__),
+        "style":style,"carved_reliefs":ornaments,
+        "art_wad_sha256":digest(art_wad) if art_wad else None,
+        "polish_sha256":digest(ROOT/"maps/awoken/polish.py") if video else None})
     print(output)
 
 
@@ -224,4 +262,5 @@ if __name__=="__main__":
     p.add_argument("--reference",type=Path,default=ROOT/"out/references/awoken/q2-awoken-original.bsp")
     p.add_argument("--stock-wad",type=Path,default=ROOT/"assets/wads/id1.wad")
     p.add_argument("--output",type=Path,default=ROOT/"src/awoken.map")
-    a=p.parse_args();generate(a.reference,a.stock_wad,a.output)
+    p.add_argument("--style",choices=("stock","video"),default="stock")
+    a=p.parse_args();generate(a.reference,a.stock_wad,a.output,a.style)

@@ -5,10 +5,14 @@ Recovered Quake 2 remake brushwork: 4Bidden, credited in the original
 worldspawn as "Awoken --> By 4Bidden".
 Reference mirror: http://q2.packetflinger.com/dl/baseq2/maps/awoken.bsp
 
-Quake 1 conversion, stock material mapping, lighting and movement checks:
+Quake 1 conversion, material mapping, lighting and movement checks:
 bspharness (https://github.com/timbergeron/bspharness).
 Textures and stock gameplay: original Quake, id Software; extracted locally
-from the owner's pak0.pak/pak1.pak. No Makkon assets are included.
+from the owner's pak0.pak/pak1.pak. Video polish adds original imagegen
+stone/slab/vine sources and deterministic indexed masonry, paving, carved
+panels, lift markings, water and cloud sky. Prompts and source hashes are
+in source/recipe/art.json; original PNGs and the local WAD accompany the
+editable source. No captured video texture pixels or Makkon assets are used.
 Compilation: ericw-tools, pinned 2.0.0-alpha11.
 
 Xowoken r1 by AriosJentu was inspected as a secondary visual/source
@@ -18,7 +22,8 @@ Release page: https://forums.xonotic.org/showthread.php?tid=10192
 INSTALL
 Copy maps/awoken.bsp and maps/awoken.lit into your Quake game directory's
 maps/ folder. Keep the two files together. A modern Quake engine such as
-QSS-M is recommended. No custom QuakeC or external texture WAD is needed
+QSS-M or an engine with masked fence texture support is recommended for
+the hanging vines. No custom QuakeC or external texture WAD is needed
 to play this compiled BSP. A normal local Quake installation is required.
 
 For deathmatch, enter "deathmatch 1" then "map awoken" in the console, or
@@ -35,7 +40,11 @@ supply nails. Other weapons, health/mega, armor and quad use stock id1
 entities. Three pads angle toward their landing ledges to accommodate Q1
 air acceleration; the fourth already has a directed launch. Teleport and
 void-hurt brushes are retained. Rotating pad ornaments become nonblocking
-static details. Q2 alpha vegetation/decals/mist are omitted.
+static details. The video polish restores 45 vine brushes as masked,
+nonblocking details; trees, bushes, grass, alpha decals and mist stay omitted.
+Eleven beveled carved wall reliefs also have no collision. Neutral stone,
+green water, daylight and cool landmark lighting follow the user's supplied
+Awoken video reference. The original stock release is retained separately.
 
 Build, material seams, runtime entity checks, authored movement probes,
 actual DM spawn/item audit and reviewed camera evidence accompany this

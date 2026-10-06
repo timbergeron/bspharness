@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "reviewed_at_utc": "2026-10-06T01:15:39.368600+00:00",
+  "reference_sha256": "17451ce49877375e4e0efdc4ba306be1044275fc7ec3c909c7cf76730f9bf251",
+  "generator_sha256": "a314d95501a76d39bf7d8a5017fdedaab6c1b68048d28407caf644ec8f1fa1d8",
+  "source_sha256": "cc56c4db2a1e3347ce9ec34e971bc26578f0404fae6859e69b3d6893abf4cdcd",
+  "profile": "final",
+  "format": "bsp29",
+  "artifacts": {
+    "awoken.bsp": "780dcfc9b76478adf07fdb0a1bcd05d2207215a1ded0fda9b079cc61592840cb",
+    "awoken.lit": "e9514bdb66abcf5df849b94067314993b521c7f2fe1a5819de7ac73d9aeb6403"
+  },
+  "metrics": {
+    "faces": 7631,
+    "nodes": 5092,
+    "clipnodes": 4453,
+    "leaves": 3699,
+    "models": 11,
+    "visibility_bytes": 216305,
+    "lighting_bytes": 118124,
+    "textures_bytes": 105296,
+    "bsp_bytes": 1558724
+  },
+  "compiler_sha256": {
+    "qbsp": "0cb519a210c89c57f230cf684f2e5c7d05503bb4fd09822977de59df8d696ecd",
+    "vis": "3980aa0103d49a3ad45ee7dcdb53bdd074bf40380d637f1e2e096ae25dca0cf9",
+    "light": "69de8aa507850d137e7770a8c315d16b10cc1b9345b7dfb4966ee463e5a5ec48"
+  },
+  "engine_sha256": "fdcaea200f1dbb2a05ffca8edeccab41988ea6d2d218dd72243ef272bb1b8d3d",
+  "game_paks": {
+    "pak0.pak": "35a9c55e5e5a284a159ad2a62e0e8def23d829561fe2f54eb402dbc0a9a946af",
+    "pak1.pak": "94e355836ec42bc464e4cbe794cfb7b5163c6efa1bcc575622bb36475bf1cf30"
+  },
+  "movement": {
+    "passed": true,
+    "physics": {
+      "fps": 72,
+      "fixed_frame_seconds": 0.013888888888888888,
+      "sv_gravity": 800,
+      "sv_maxspeed": 320,
+      "sv_accelerate": 10,
+      "sv_friction": 4,
+      "sv_stopspeed": 100,
+      "sv_edgefriction": 2,
+      "mode": "stock single-player"
+    },
+    "routes": [
+      "dm-spawn-01",
+      "dm-spawn-02",
+      "dm-spawn-03",
+      "dm-spawn-04",
+      "dm-spawn-05",
+      "dm-spawn-06",
+      "dm-spawn-07",
+      "dm-spawn-08",
+      "dm-spawn-09",
+      "dm-spawn-10",
+      "dm-spawn-11",
+      "lower-crossing",
+      "rocket-terrace-walk",
+      "grenade-bridge-walk",
+      "mega-jump-pad",
+      "rocket-jump-pad",
+      "quad-jump-pad",
+      "grenade-jump-pad",
+      "lower-teleporter",
+      "quad-to-lightning-stairs",
+      "lightning-to-quad-stairs",
+      "rocket-to-center-stairs",
+      "grenade-to-nailgun-jump"
+    ],
+    "specification_sha256": "2c6e2ab11f9958f1a7ac32fceda28b9c43feae5d32cf994171ef0b257a9bb044"
+  },
+  "deathmatch": {
+    "passed": true,
+    "mode": "stock deathmatch",
+    "scope": "Initial stock deathmatch spawn/item audit; use a separate SP pass for movement and cameras"
+  },
+  "visual_review": {
+    "passed": true,
+    "cameras": {
+      "central-courtyard": {
+        "accepted": true,
+        "sha256": "fd88b5b41851b3fffbde1063965c744e5272acc879e0e2086b0ef4fd3514d175",
+        "notes": "Vertical ledges, framed openings and water court are visible; warm masonry and cool trim separate the surfaces. No missing faces or visible z-fighting in this view."
+      },
+      "rocket-terrace": {
+        "accepted": true,
+        "sha256": "ad7a51f2c5ffb4c139f8d41456e2087166b9c06530293abf4d41ae8eb8d55017",
+        "notes": "Archway and terrace route remain readable in shadow; health and ammunition are visible. No blocked view, missing faces or visible z-fighting."
+      },
+      "lower-arena": {
+        "accepted": true,
+        "sha256": "a8048efd0eb91d67984b85e52adad573348a7b435f8007fbe11b13847b1a97c2",
+        "notes": "Metal-framed passage and shallow water read clearly; the shaded SSG area and ammunition remain visible. No missing faces or visible z-fighting."
+      },
+      "mega-balcony": {
+        "accepted": true,
+        "sha256": "c444b05f4dcbdc4813e3bdf6901d201e335751d7f61613216a48ad1dec4725c4",
+        "notes": "Upper and lower openings, balcony ledges and pickups are visible. Warm masonry and cool trim distinguish the tiers; no missing surfaces or visible z-fighting."
+      },
+      "bridge": {
+        "accepted": true,
+        "sha256": "b13a08424edf293bdd05dd90c52dcafa20ec9d6653f4a971f84197e73effa5f4",
+        "notes": "Camera is outside the pillar. Foreground super nailgun/ammunition and the lit lower opening are visible; no missing surfaces or visible z-fighting. Upper wall remains intentionally shaded."
+      }
+    },
+    "specification_sha256": "7877277de8f898310735ad86d27a3bc9f0431c8377f1d699562995508b9a99fd"
+  },
+  "harness_tests": {
+    "integration": true,
+    "count": 62,
+    "passed": true
+  },
+  "scope": "Fixed-view lighting, material joins and geometry review. Scripted movement and initial actual deathmatch spawn/item checks accompany this review; a populated match remains necessary for combat timing and balance."
+}
