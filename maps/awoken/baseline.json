@@ -1,34 +1,34 @@
 {
   "schema": 1,
   "style": "video",
-  "reviewed_at_utc": "2026-10-06T03:19:28.548369+00:00",
+  "reviewed_at_utc": "2026-10-06T04:49:58.120458+00:00",
   "reference_sha256": "17451ce49877375e4e0efdc4ba306be1044275fc7ec3c909c7cf76730f9bf251",
-  "generator_sha256": "0ba336ff22dc1b07946eb6381acbfeeb9f27ca3d3aa3d90347abd9f575488701",
-  "material_generator_sha256": "88ffaabc9347120c5798a080397366043355949ccd50f41846a78abb52a470b2",
-  "polish_sha256": "44eadf90629ec46cb25743cfc169ed019f13f9b5ba74a44452a7852d1f384403",
-  "art_wad_sha256": "e1f0ced03fd76483e589b2b8e436803db0826ae54fb2a7bb7cd4d82fb92d4724",
+  "generator_sha256": "d73986e91e1830eaba5206c363f2ff97acd6b133234a0448c0c6312a1ebccede",
+  "material_generator_sha256": "8e0d281007c2b00b43abfa6d41b293953ef60b9a18bb65a42ea78d32d20d59cb",
+  "polish_sha256": "b60565245eb87fc01533519140c2768784471f151c41eace7068ceca110508b8",
+  "art_wad_sha256": "58310d1f6e7ca939033f33cd21b43c8a663c27d065560824a3e1031f8fb77841",
   "video_sha256": "6db82695784c8c568929092609c36ad6f95110a6e3a0400b7cb2aad8dd30eb9c",
-  "source_sha256": "31dfdf362cfa374055463029f20511f597a0bb06f0a4928257436a57808c36f5",
+  "source_sha256": "1d15c659a70c1d579f913df84e374bcb4b9aee9a87641c307e49ddc9c2dd51fc",
   "profile": "final",
   "format": "bsp29",
   "artifacts": {
-    "awoken.bsp": "5fa588c31584d847e4a9e47a9623184cccc38c33aa002523f55466aafe9aff76",
-    "awoken.lit": "862802ac997bdf928ba528c188629bfe9b4ee30455d02a14f85c92bccce7785d"
+    "awoken.bsp": "87e2973c819592b32a1fa9ff7e9ee4f0b98f142b9ee8aab6ca5ad3b919687d8c",
+    "awoken.lit": "292be3df78524a6ca2edff14afcde393b0f734d373af25665aab85bd8b7201df"
   },
   "metrics": {
-    "faces": 8706,
-    "nodes": 6045,
-    "clipnodes": 4453,
-    "leaves": 4638,
-    "models": 11,
-    "visibility_bytes": 244553,
-    "lighting_bytes": 207036,
-    "textures_bytes": 207296,
-    "bsp_bytes": 2167656
+    "faces": 12273,
+    "nodes": 8301,
+    "clipnodes": 6393,
+    "leaves": 6472,
+    "models": 13,
+    "visibility_bytes": 580881,
+    "lighting_bytes": 283420,
+    "textures_bytes": 381728,
+    "bsp_bytes": 3359124
   },
   "evidence": {
-    "seams.json": "ada48f65be38323a56c989bad8b3b275e603ac48d231e7a4a075d56d0481fd4f",
-    "awoken.materials.json": "139c595333269df9baac316362574aabcb196fcbb59d500ea338f166706cdd96"
+    "seams.json": "2ec5687f6f1f3ae2a1545d59b679c63a4cb6a4b266a38ceff0b9bf72c46844fb",
+    "awoken.materials.json": "821b8773578b22c029c7d77314f621278fbbc9595c5fe611e33841effedc2e93"
   },
   "compiler_sha256": {
     "qbsp": "0cb519a210c89c57f230cf684f2e5c7d05503bb4fd09822977de59df8d696ecd",
@@ -50,7 +50,7 @@
       "sv_accelerate": 10,
       "sv_friction": 4,
       "sv_stopspeed": 100,
-      "sv_edgefriction": 2,
+      "edgefriction": 2,
       "mode": "stock single-player"
     },
     "routes": [
@@ -76,9 +76,12 @@
       "quad-to-lightning-stairs",
       "lightning-to-quad-stairs",
       "rocket-to-center-stairs",
-      "grenade-to-nailgun-jump"
+      "grenade-to-nailgun-jump",
+      "lower-crossing-return",
+      "rocket-terrace-return",
+      "grenade-bridge-return"
     ],
-    "specification_sha256": "2c6e2ab11f9958f1a7ac32fceda28b9c43feae5d32cf994171ef0b257a9bb044"
+    "specification_sha256": "0f063caca7d8d65d6c70f543ea77ab241d5630723e44070f191a998458ac3ac8"
   },
   "deathmatch": {
     "passed": true,
@@ -90,41 +93,57 @@
     "cameras": {
       "central-courtyard": {
         "accepted": true,
-        "sha256": "3ff5fa5b2aa2c289f487df3a29c63cbd18d450ec4d9436ca1ecd51ba52a326db",
-        "notes": "Large neutral stone courses, carved reliefs and hanging vines are visible. Water court and framed openings remain readable; localized blue light gives contrast without the earlier global white clipping. No missing surfaces or opaque vine backdrops observed."
+        "sha256": "f90cc919b116e9f889b40e07c0794fb4d1523a8c3601829d45f07ae243a6d199",
+        "notes": "Layered cornices and framed reliefs read across the court. Flat masonry faces and slender support profiles stay distinct; the water court and both tiers remain visible. No missing surfaces, opaque vine backdrops or new joint gaps observed."
       },
       "rocket-terrace": {
         "accepted": true,
-        "sha256": "5f4fe23338d1c3dcc46b4e3311c6f8e12b1bb0ebc14becabbc39bd02fbcccdd3",
-        "notes": "Angular stone arch and quiet flagstones read clearly in the retained roof shadows. Health and ammunition remain visible; no blocked view or missing surfaces observed."
+        "sha256": "43d4772f8ee30e065551aa472fe88fd91d9395dbfd16b24db9dc7866eb41e164",
+        "notes": "The layered angular opening retains its proportions and clear width. Jamb faces meet the sloped header without nicked corners; the broad floor remains planar and pickups are visible in the retained roof shadows."
       },
       "lower-arena": {
         "accepted": true,
-        "sha256": "6abe06765922f8c5c88d9302e60560101c0a1d74a6b635bacc7436724f0ce4aa",
-        "notes": "Green water leads through the stone-framed opening toward the blue-lit lower area. SSG and ammunition remain visible; no missing surfaces or opaque foliage panels observed."
+        "sha256": "a628d983aa1a80150d9c6cc23a212c3e443475ef93f2bfc64c0419dc0bff77f1",
+        "notes": "The lower stone frame has clean corner transitions and readable depth. Green pond water leads to the blue-lit destination; weapons and ammunition remain visible. No missing faces or newly blocked opening observed."
       },
       "mega-balcony": {
         "accepted": true,
-        "sha256": "561a29ba04fd9e83de61ca66ecc446242b6cdb8a7bdbe49560b7386c86aff578",
-        "notes": "Upper and lower ledges, wall carving and masked hanging roots are visible. Bright cloud sky is visible through exterior openings; roof shadows and blue lower-court light distinguish the tiers. No missing surfaces or blocked camera observed."
+        "sha256": "f2b122730a22bad24fdba64f2e8f6e75992346d1e4110b7860bba7e970d3c877",
+        "notes": "Upper and lower walking ledges retain continuous caps and readable separation. Recessed relief and masked vines remain visible. Bright cloud sky and stock pickup models are retained; no missing map surfaces or new joint gaps observed."
       },
       "bridge": {
         "accepted": true,
-        "sha256": "0d3a385b10c194651de9e13ee45cff8e8a203b052762c56a103b2bea45c76498",
-        "notes": "Foreground SNG/ammunition and the upper pickup ledge are visible against quiet stone flooring. Blue light marks the lower gateway; nearby carving remains readable. No missing surfaces or blocked camera observed."
+        "sha256": "80d7f8f03bb382b4cfa75930c250678e24d95ad126579ebb7cb55a08202297fb",
+        "notes": "The bridge floor, adjacent wall courses and pickup ledge remain readable. Exposed ledge corners have clean profiles and the blue-lit lower gateway remains visible. No missing faces, blocked view or visible intersection artifacts observed."
+      },
+      "cornice-close": {
+        "accepted": true,
+        "sha256": "58520d3f58a3825f04c46a4344c8cc7cf6a145ba605fc91072833a9d45ec6946",
+        "notes": "The upper beam now has stepped lips and a recessed fascia with continuous shade bands. Slender supports and the lower reveal meet cleanly. Vines mask parts of the profile as intended; no gaps at the visible cornice joints observed."
+      },
+      "relief-close": {
+        "accepted": true,
+        "sha256": "f32b6de2f8385127642a6b599ceb02c09d9715865b8f491a453a6cbe6b574e9e",
+        "notes": "The carving sits behind a four-piece stone rim with visible side depth and a clean eased silhouette. The translucent waterfall shows vertical streaks and background stone, replacing the opaque green sheet. No frame gaps or missing faces observed."
+      },
+      "rocket-arch-close": {
+        "accepted": true,
+        "sha256": "baeaccc7127fadae5eb099fda2f2f06a3d5e9bbf4933ec2b543164ee9de16e1a",
+        "notes": "The nested trapezoidal headers and straight jambs preserve the angular reference silhouette. Exposed chamfers read clearly while their structural joints stay intact. No nicked header/jamb junctions, missing faces or blocked opening observed."
       }
     },
-    "specification_sha256": "7877277de8f898310735ad86d27a3bc9f0431c8377f1d699562995508b9a99fd"
+    "specification_sha256": "b2399d0bb783258bfedf4c2fac6f6a31b2bf3e54fe1c03073e988cf698e69f49"
   },
   "harness_tests": {
     "integration": true,
-    "count": 62,
+    "count": 68,
     "passed": true
   },
   "changes": {
-    "world brushes retained": 978,
+    "world brushes retained": 976,
     "Q2 alpha foliage/decal brushes removed": 105,
     "nonblocking vine brushes restored": 45,
+    "flowing waterfall brushes made translucent": 2,
     "info_player_start -> info_player_start": 1,
     "ammo_grenades -> item_rockets": 4,
     "armor shards removed": 9,
@@ -151,6 +170,9 @@
     "origin brushes removed": 5,
     "rotating ornaments made static": 5,
     "recovered exposed surface lights": 17,
+    "stone brushes with eased exposed edges": 245,
+    "exposed stone edges eased": 464,
+    "upper stone bands with recessed cornice profiles": 17,
     "beveled carved wall reliefs added": 11
   },
   "lighting": {
@@ -159,7 +181,97 @@
     "minlight": 20,
     "bounce": 1,
     "dirt": 0.35,
-    "point_light_factor": 0.45
+    "point_light_factor": 0.45,
+    "phong_angle": 30,
+    "phong_angle_concave": 1
   },
-  "scope": "Fixed-view geometry/material/lighting review, 23 scripted movement probes, and initial actual DM spawn/item audit. A populated match remains necessary for combat timing and balance. The Q2 remake provides the layout; this is a Q1 visual adaptation informed by the supplied QC footage."
+  "scope": "Eight inspected fixed views, 26 scripted movement probes and an initial actual stock DM spawn/item audit. A populated match remains necessary for combat timing and balance. This is a Q1 adaptation of the Q2 layout, with profile dimensions inferred from the supplied QC footage, rather than a measured reconstruction of the original.",
+  "geometry_sha256": "d535317061e1669db16c7fa912e2976f573542243535c9bb9459af9087a2f3ea",
+  "qa_generator_sha256": "3046e66e07e7e174a828985f989b3eee134fc6ec642961aa7cf881820cb50e82",
+  "budgets": {
+    "faces": 16000,
+    "clipnodes": 8500
+  },
+  "engine_version": "QSS-M 1.6.9",
+  "qa_controls": {
+    "open_passed": true,
+    "blocked_rejected": true,
+    "blocked_errors": [
+      "Route jump-ledge: FINISH: origin (0.0, -32.0, 24.0) is outside expected bounds"
+    ]
+  },
+  "geometry": {
+    "eased_brushes": 245,
+    "eased_edges": 464,
+    "profiled_cornices": 17,
+    "edge_profiles": {
+      "chamfer": 413,
+      "quarter-round": 51
+    },
+    "reliefs": 11,
+    "scope": "Exposed stone corners, slender supports, upper cornices, relief surrounds and the waterfall. New dimensions are inferred from native video frames and fitted to the recovered Q2 layout; exterior trees/statue remain omitted."
+  },
+  "verification_reports": {
+    "movement": {
+      "file": "out/engine-qa/awoken-geometry-final-movement-v2/qa.json",
+      "sha256": "eb6e5d28c231ed13308bc41a9e53256a8b7e8c3a57279d4b2822ef043b39885c"
+    },
+    "deathmatch": {
+      "file": "out/engine-qa/awoken-geometry-final-dm-v3/qa.json",
+      "sha256": "ab47cc4c0f6acab4281639af1825f1468ffaea657affb53ae2a1141166ccae7b"
+    },
+    "cameras": {
+      "file": "out/engine-qa/awoken-geometry-final-cameras-v2/qa.json",
+      "sha256": "7cb4da7e7834febee0b3561cea5e302e1dfbe464f6aa0c9f3392e8473536d2e8"
+    },
+    "before_cameras": {
+      "file": "out/engine-qa/awoken-geometry-before-cameras-v3/qa.json",
+      "sha256": "261af2085eb840fb5aad48c67ec9be778eff31a02ad9b2f210c19960e1c84fb3"
+    },
+    "visual_review": {
+      "file": "out/awoken/visual-review.json",
+      "sha256": "211996f1fb4184244c9b3fec4d84309fd49d7b5e485f7feffe87a68d6f67d060"
+    },
+    "control_open": {
+      "file": "out/engine-qa/awoken-geometry-qa-control-open/qa.json",
+      "sha256": "e0f71bf3e41bd675dd9b515a565a521e1d4726a131dd4916548a578e7a5b6a53"
+    },
+    "control_blocked": {
+      "file": "out/engine-qa/awoken-geometry-qa-control-blocked/qa.json",
+      "sha256": "3dedc89be6d635f77578dd5ad8601de9b655425fc73130ac6bb198812e3da834"
+    },
+    "unit_tests": {
+      "file": "out/awoken-geometry-unit-tests.log",
+      "sha256": "050f1dd5d6cf9d839882f084ca43a1836653814e8d970c0033ef97d188aa7425"
+    },
+    "integration_tests": {
+      "file": "out/awoken-geometry-integration-tests.log",
+      "sha256": "fa49e3b51fc2500fd0424f25b2b274c968f1a16c30c24c291674e1f668cf18ff"
+    },
+    "build": {
+      "file": "out/awoken/final/build.json",
+      "sha256": "d3508064e6789bbb8ff1695c6014ca7a5bb11cf1762f87394965c3784db32e66"
+    }
+  },
+  "comparison": {
+    "file": "dist/awoken-review.html",
+    "sha256": "ee968014c76e8dfb39d5a7701783f55d053ae98258bb1ee81d990bfd1e2dfc73",
+    "cameras": 8,
+    "embedded_video_frames": 10,
+    "before_artifacts": {
+      "awoken.bsp": "5fa588c31584d847e4a9e47a9623184cccc38c33aa002523f55466aafe9aff76",
+      "awoken.lit": "862802ac997bdf928ba528c188629bfe9b4ee30455d02a14f85c92bccce7785d"
+    }
+  },
+  "previous_baseline_sha256": "e4c4b87a08fa3eabcf9df983a35e63392d63ddc578439b568ef80d8e60c017cb",
+  "material_audit": {
+    "passed": true,
+    "checked_edges": 8020,
+    "errors": 0,
+    "warning_counts": {
+      "material_boundary": 507
+    },
+    "unchecked_wall_corners": 3464,
+    "scope": "Same-material shared-edge phase/density checks. Undeclared material transitions and corner wraps require visual review."
+  }
 }

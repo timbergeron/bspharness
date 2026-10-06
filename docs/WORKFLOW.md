@@ -92,7 +92,10 @@ step, `host_maxfps 72`, and 100-frame camera gaps make collection repeatable.
 `host_timescale 0` lets QSS-M honor `host_framerate`; setting timescale to 1
 would override the fixed step. QA pins stock gravity, maximum speed,
 acceleration, friction, stop speed and edge friction, and records local PAK
-hashes alongside the engine hash. Pass `--timeout 360` for a slow software
+hashes alongside the engine hash. The console variable for edge friction is
+`edgefriction`; `sv_edgefriction` is the C variable name, not a console setting.
+Rejected console commands fail QA even if the script completes.
+Pass `--timeout 360` for a slow software
 renderer. On Linux, a compatible SDL/Mesa setup may use
 `SDL_VIDEODRIVER=offscreen LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=2`.
 

@@ -42,7 +42,11 @@ air acceleration; the fourth already has a directed launch. Teleport and
 void-hurt brushes are retained. Rotating pad ornaments become nonblocking
 static details. The video polish restores 45 vine brushes as masked,
 nonblocking details; trees, bushes, grass, alpha decals and mist stay omitted.
-Eleven beveled carved wall reliefs also have no collision. Neutral stone,
+Eleven recessed relief assemblies have modeled stone surrounds and no
+collision. The geometry pass eases exposed stone corners and shapes
+seventeen upper cornices; their player collision is rebuilt from those
+visible profiles. The inherited waterfall uses original eight-frame
+animation and nonblocking translucent brush models. Geometry notes and the exact recipe accompany the source. Neutral stone,
 green water, daylight and cool landmark lighting follow the user's supplied
 Awoken video reference. The original stock release is retained separately.
 

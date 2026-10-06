@@ -49,6 +49,8 @@ class RouteTests(unittest.TestCase):
         self.assertIn("host_timescale 0",config)
         self.assertIn("sv_gravity 800",config)
         self.assertIn("sv_accelerate 10",config)
+        self.assertIn("edgefriction 2",config)
+        self.assertNotIn("sv_edgefriction",config)
         self.assertIn("gamma 1",config)
         with self.assertRaisesRegex(ValueError,"unique"):
             camera_config([camera,camera])
@@ -62,6 +64,12 @@ class RouteTests(unittest.TestCase):
                 Move(10,buttons)
         with self.assertRaises(ValueError):
             routes_from_json([self.route.metadata(),self.route.metadata()])
+
+    def test_rejected_console_setting_invalidates_completed_qa(self):
+        log=player_dump("BSPHARNESS_AUDIT","0 0 24")+"BSPHARNESS_QA_COMPLETE\n"
+        self.assertEqual(audit_log(log,[]),[])
+        self.assertEqual(audit_log(log+'Unknown command "sv_edgefriction"\n',[]),
+                         ["Engine rejected QA command: sv_edgefriction"])
 
     def test_item_checks_use_height_and_distinct_runtime_edicts(self):
         log = player_dump("BSPHARNESS_AUDIT","0 0 24")

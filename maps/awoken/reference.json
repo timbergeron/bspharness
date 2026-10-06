@@ -66,6 +66,63 @@
         "sha256": "a56c4b7d6ca70d6317a684323c06718541bf9024b1b4333b64a00fa5ef6ddce6"
       }
     ],
-    "use": "Visual authority for the current polish pass. Native frames at the recorded timestamps were inspected for masonry, angular frames, carved bands, vegetation, green water and blue pickup/teleport cues. No captured pixel texture is imported."
+    "use": "Visual authority for material and geometry passes. Native frames were inspected for layered angular doorway jambs, beveled supports, recessed wall bands, continuous ledge profiles, masonry, vines, water and landmark lighting. Dimensions of added profiles are inferred from footage and fitted to the recovered Q2 layout; no captured pixel texture is imported.",
+    "geometry_frames": [
+      {
+        "seconds": 25,
+        "file": "geometry-video/frame-025.png",
+        "sha256": "6a9ef90029df749c69558ee11589089d612941d52235b733030a93cfadf48d71"
+      },
+      {
+        "seconds": 45,
+        "file": "geometry-video/frame-045.png",
+        "sha256": "b2ba358f24de0cd97855948d77cafd13d75a1452589c16d20d3d90cde325ad08"
+      },
+      {
+        "seconds": 65,
+        "file": "geometry-video/frame-065.png",
+        "sha256": "2c2879f225404243cc2d10965841c44fd749b75ad3c807ffa54dccdba9434aca"
+      },
+      {
+        "seconds": 95,
+        "file": "geometry-video/frame-095.png",
+        "sha256": "c69d27f365824e729d0bc614b39db2c3836135107085c1b9f89f3ebdeb74e1bb"
+      },
+      {
+        "seconds": 115,
+        "file": "geometry-video/frame-115.png",
+        "sha256": "fdab6bf5108784c16f9f371d9f7d6d594ee159bc5e7b139a37fb79a2d715a1a7"
+      },
+      {
+        "seconds": 175,
+        "file": "geometry-video/frame-175.png",
+        "sha256": "cc522ccc270188a4d450a610e9fc8b5113955482dbe853e17f8a5fa79f30b79b"
+      },
+      {
+        "seconds": 225,
+        "file": "geometry-video/frame-225.png",
+        "sha256": "5efa164659c6ef57dd3e374761703cee86aa2d346a1a74619e04be2f15051c27"
+      },
+      {
+        "seconds": 295,
+        "file": "geometry-video/frame-295.png",
+        "sha256": "8e035016c2af84a4841ae4ed58073efe5c289ae067b8d2dcb1f3887499f82c60"
+      },
+      {
+        "seconds": 415,
+        "file": "geometry-video/frame-415.png",
+        "sha256": "07ce254487d58150324a92708f105f7ad5f4909e18113708c1b97d9e3c26e872"
+      },
+      {
+        "seconds": 505,
+        "file": "geometry-video/frame-505.png",
+        "sha256": "40717bbe1e6ba3bc295e320f88887892b504c4bc992d711b7f38470a031e88f7"
+      },
+      {
+        "seconds": 605,
+        "file": "geometry-video/frame-605.png",
+        "sha256": "954b86bc02a7b60450018aaec5e117f312244e7bb483350be96df1b780b2c327"
+      }
+    ]
   }
 }

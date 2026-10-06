@@ -25,15 +25,18 @@ the neutral material grain. Vines use a shared world anchor; recovered Q2
 offsets would break continuity where adjacent panels meet. `polish.py`
 places beveled carvings only on sufficiently large exposed wall faces. All
 new reliefs, pad markings and foliage are compiler illusionary details.
-The player collision count remains 4,453 clipnodes.
+That material pass retained 4,453 clipnodes. The later
+[geometry refinement](GEOMETRY.md) rebuilds collision for eased stone edges
+and shaped cornices, and gives the eleven carvings deeper modeled surrounds.
 
 The lighting recipe uses lower sun/sky values, one bounce, and a common
 0.45 factor on point lights. The pale albedo needs less illumination than
 the original dark stock palette. Cool cues identify the pad/teleporter
 areas while stone frames retain a consistent material treatment.
 
-Use the five original camera coordinates for before/after review. Final
-validation still requires all 23 movement probes, an actual deathmatch
+Keep the five original camera coordinates for before/after review. The
+geometry pass adds three close views and three return walks. Final
+validation requires all 26 movement probes, an actual deathmatch
 spawn/item audit, and reviewed screenshots bound to both BSP and LIT.
 The stock recipe and its first release baseline remain available. Trees,
 grass and bushes are not restored in this pass; populated match balance

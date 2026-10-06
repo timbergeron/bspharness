@@ -123,7 +123,8 @@ compatibility and undeclared corners still require visual review.
 it recovers 4Bidden's Q2 brushwork, maps stock id1 materials and gameplay,
 and authors Q1 pad, teleport, spawn, and traversal checks. An optional video
 style adds original pale masonry and masked vines, carved reliefs, and
-reference-directed lighting. Reference assets
+reference-directed lighting. Its geometry pass refines exposed stone
+edges, cornices and relief surrounds, with collision checks and close views. Reference assets
 and generated BSP/LIT files stay local.
 
 ```sh

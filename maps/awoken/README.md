@@ -14,10 +14,10 @@ reference provides the geometry used here. This is a Q1 adaptation of that
 remake, rather than a claim of measured equivalence to the QC original.
 
 The [verified baseline](baseline.json) records the latest final BSP/LIT hashes,
-compiler and engine hashes, 23 passing movement probes, the actual DM
-spawn/item audit, and all five reviewed camera captures. The final BSP has
+compiler and engine hashes, 26 passing movement probes, the actual DM
+spawn/item audit, and all eight reviewed camera captures. The final BSP has
 full VIS and colored lighting. The original [stock baseline](baselines/stock-v1.json)
-retains the first release's 7,631 faces and 4,453 clipnodes. All 62
+retains the first release's 7,631 faces and 4,453 clipnodes. All 68
 harness tests passed with compiler integration enabled. This establishes a
 playable build; a populated match remains necessary to assess balance.
 
@@ -65,10 +65,13 @@ and the geometry/material choices they informed.
 
 The video style restores 45 hanging-vine brushes as masked, nonblocking
 details, with a shared texture anchor instead of the Q2 UV offsets. It adds
-eleven shallow beveled wall reliefs without collision, keeps the original
-doorway profiles, and replaces the busy blue/brown materials with neutral
+eleven recessed relief assemblies without collision, refines exposed
+doorway edges and seventeen cornices, and replaces the busy blue/brown materials with neutral
 stone and restrained green/cool lighting. Pad and teleport landmarks get
-blue light cues. Trees, bushes and grass remain omitted.
+blue light cues. The inherited waterfall gets separate downward animation
+and translucency. Trees, bushes and grass remain omitted.
+See [the geometry notes](GEOMETRY.md) for profile dimensions, the exposure
+selection rules, retained collision joints, budgets and video observations.
 
 The conversion maps every retained texture and gameplay class explicitly.
 The stock style removes 150 Q2 alpha foliage/decal/mist brushes and five
@@ -88,15 +91,16 @@ Quad uses 1792 to exclude all SP skills while remaining available in DM.
 
 ## Verify and finish
 
-The recipe authors **23 movement probes**: all eleven spawn locations,
+The recipe authors **26 movement probes**: all eleven spawn locations,
 three main walks, four pad flights and landings, the teleporter, three stair
-legs, and a normal running jump/drop from GL to the lower nailgun area.
+legs, and a normal running jump/drop from GL to the lower nailgun area,
+and return walks across the lower court, rocket terrace and grenade bridge.
 Every route verifies collision, position, ground at start/finish, and health;
 flight/jump checkpoints also verify height. These use stock SP physics.
 
 ```sh
 python3 -m bspharness build src/awoken.map --profile final \
-  --max-faces 12000 --max-clipnodes 8000 --timeout 1800
+  --max-faces 16000 --max-clipnodes 8500 --timeout 1800
 python3 -m bspharness qa out/awoken/final/awoken.bsp \
   --routes src/awoken.routes.json --basedir /path/to/quake \
   --engine /path/to/QSS-M --gamedir awoken_final_movement --timeout 600
@@ -114,14 +118,14 @@ software rendering on Linux, prefix QA commands with
 Use a fresh QA gamedir each time. The DM pass checks actual stock DM spawn
 logic and the quad; QSS-M disables positioning commands in DM, so authored
 routes and fixed cameras run separately in SP. Run movement without cameras
-for the faster 320x200 pass. All five camera images need visual review.
+for the faster 320x200 pass. All eight camera images need visual review.
 
 Use `compare-qa` for the portable paired camera report. A standalone slider
-with the six inspected video frames is also available:
+with ten inspected video frames is also available:
 
 ```sh
-python3 maps/awoken/review.py /path/to/stock-camera-qa.json \
-  /path/to/polished-camera-qa.json --output dist/awoken-review.html
+python3 maps/awoken/review.py /path/to/previous-video-camera-qa.json \
+  /path/to/geometry-camera-qa.json --output dist/awoken-review.html
 ```
 
 This export checks screenshot hashes, camera coordinates, engine identity,
@@ -141,8 +145,8 @@ python3 maps/awoken/package.py \
   --review out/awoken/visual-review.json
 ```
 
-This validates every report against both BSP and LIT, includes all 23
-current route specifications, checks all five screenshot hashes, and
+This validates every report against both BSP and LIT, includes all 26
+current route specifications, checks all eight screenshot hashes, and
 requires the explicit review for those artifacts. It creates `dist/awoken.zip`
 with source, credits and evidence, plus directly usable files in
 `dist/awoken/`. The installation needs only `awoken.bsp` and

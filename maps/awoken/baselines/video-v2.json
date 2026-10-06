@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "style": "video",
+  "reviewed_at_utc": "2026-10-06T03:19:28.548369+00:00",
+  "reference_sha256": "17451ce49877375e4e0efdc4ba306be1044275fc7ec3c909c7cf76730f9bf251",
+  "generator_sha256": "0ba336ff22dc1b07946eb6381acbfeeb9f27ca3d3aa3d90347abd9f575488701",
+  "material_generator_sha256": "88ffaabc9347120c5798a080397366043355949ccd50f41846a78abb52a470b2",
+  "polish_sha256": "44eadf90629ec46cb25743cfc169ed019f13f9b5ba74a44452a7852d1f384403",
+  "art_wad_sha256": "e1f0ced03fd76483e589b2b8e436803db0826ae54fb2a7bb7cd4d82fb92d4724",
+  "video_sha256": "6db82695784c8c568929092609c36ad6f95110a6e3a0400b7cb2aad8dd30eb9c",
+  "source_sha256": "31dfdf362cfa374055463029f20511f597a0bb06f0a4928257436a57808c36f5",
+  "profile": "final",
+  "format": "bsp29",
+  "artifacts": {
+    "awoken.bsp": "5fa588c31584d847e4a9e47a9623184cccc38c33aa002523f55466aafe9aff76",
+    "awoken.lit": "862802ac997bdf928ba528c188629bfe9b4ee30455d02a14f85c92bccce7785d"
+  },
+  "metrics": {
+    "faces": 8706,
+    "nodes": 6045,
+    "clipnodes": 4453,
+    "leaves": 4638,
+    "models": 11,
+    "visibility_bytes": 244553,
+    "lighting_bytes": 207036,
+    "textures_bytes": 207296,
+    "bsp_bytes": 2167656
+  },
+  "evidence": {
+    "seams.json": "ada48f65be38323a56c989bad8b3b275e603ac48d231e7a4a075d56d0481fd4f",
+    "awoken.materials.json": "139c595333269df9baac316362574aabcb196fcbb59d500ea338f166706cdd96"
+  },
+  "compiler_sha256": {
+    "qbsp": "0cb519a210c89c57f230cf684f2e5c7d05503bb4fd09822977de59df8d696ecd",
+    "vis": "3980aa0103d49a3ad45ee7dcdb53bdd074bf40380d637f1e2e096ae25dca0cf9",
+    "light": "69de8aa507850d137e7770a8c315d16b10cc1b9345b7dfb4966ee463e5a5ec48"
+  },
+  "engine_sha256": "fdcaea200f1dbb2a05ffca8edeccab41988ea6d2d218dd72243ef272bb1b8d3d",
+  "game_paks": {
+    "pak0.pak": "35a9c55e5e5a284a159ad2a62e0e8def23d829561fe2f54eb402dbc0a9a946af",
+    "pak1.pak": "94e355836ec42bc464e4cbe794cfb7b5163c6efa1bcc575622bb36475bf1cf30"
+  },
+  "movement": {
+    "passed": true,
+    "physics": {
+      "fps": 72,
+      "fixed_frame_seconds": 0.013888888888888888,
+      "sv_gravity": 800,
+      "sv_maxspeed": 320,
+      "sv_accelerate": 10,
+      "sv_friction": 4,
+      "sv_stopspeed": 100,
+      "sv_edgefriction": 2,
+      "mode": "stock single-player"
+    },
+    "routes": [
+      "dm-spawn-01",
+      "dm-spawn-02",
+      "dm-spawn-03",
+      "dm-spawn-04",
+      "dm-spawn-05",
+      "dm-spawn-06",
+      "dm-spawn-07",
+      "dm-spawn-08",
+      "dm-spawn-09",
+      "dm-spawn-10",
+      "dm-spawn-11",
+      "lower-crossing",
+      "rocket-terrace-walk",
+      "grenade-bridge-walk",
+      "mega-jump-pad",
+      "rocket-jump-pad",
+      "quad-jump-pad",
+      "grenade-jump-pad",
+      "lower-teleporter",
+      "quad-to-lightning-stairs",
+      "lightning-to-quad-stairs",
+      "rocket-to-center-stairs",
+      "grenade-to-nailgun-jump"
+    ],
+    "specification_sha256": "2c6e2ab11f9958f1a7ac32fceda28b9c43feae5d32cf994171ef0b257a9bb044"
+  },
+  "deathmatch": {
+    "passed": true,
+    "mode": "stock deathmatch",
+    "scope": "Initial stock deathmatch spawn/item audit; use a separate SP pass for movement and cameras"
+  },
+  "visual_review": {
+    "passed": true,
+    "cameras": {
+      "central-courtyard": {
+        "accepted": true,
+        "sha256": "3ff5fa5b2aa2c289f487df3a29c63cbd18d450ec4d9436ca1ecd51ba52a326db",
+        "notes": "Large neutral stone courses, carved reliefs and hanging vines are visible. Water court and framed openings remain readable; localized blue light gives contrast without the earlier global white clipping. No missing surfaces or opaque vine backdrops observed."
+      },
+      "rocket-terrace": {
+        "accepted": true,
+        "sha256": "5f4fe23338d1c3dcc46b4e3311c6f8e12b1bb0ebc14becabbc39bd02fbcccdd3",
+        "notes": "Angular stone arch and quiet flagstones read clearly in the retained roof shadows. Health and ammunition remain visible; no blocked view or missing surfaces observed."
+      },
+      "lower-arena": {
+        "accepted": true,
+        "sha256": "6abe06765922f8c5c88d9302e60560101c0a1d74a6b635bacc7436724f0ce4aa",
+        "notes": "Green water leads through the stone-framed opening toward the blue-lit lower area. SSG and ammunition remain visible; no missing surfaces or opaque foliage panels observed."
+      },
+      "mega-balcony": {
+        "accepted": true,
+        "sha256": "561a29ba04fd9e83de61ca66ecc446242b6cdb8a7bdbe49560b7386c86aff578",
+        "notes": "Upper and lower ledges, wall carving and masked hanging roots are visible. Bright cloud sky is visible through exterior openings; roof shadows and blue lower-court light distinguish the tiers. No missing surfaces or blocked camera observed."
+      },
+      "bridge": {
+        "accepted": true,
+        "sha256": "0d3a385b10c194651de9e13ee45cff8e8a203b052762c56a103b2bea45c76498",
+        "notes": "Foreground SNG/ammunition and the upper pickup ledge are visible against quiet stone flooring. Blue light marks the lower gateway; nearby carving remains readable. No missing surfaces or blocked camera observed."
+      }
+    },
+    "specification_sha256": "7877277de8f898310735ad86d27a3bc9f0431c8377f1d699562995508b9a99fd"
+  },
+  "harness_tests": {
+    "integration": true,
+    "count": 62,
+    "passed": true
+  },
+  "changes": {
+    "world brushes retained": 978,
+    "Q2 alpha foliage/decal brushes removed": 105,
+    "nonblocking vine brushes restored": 45,
+    "info_player_start -> info_player_start": 1,
+    "ammo_grenades -> item_rockets": 4,
+    "armor shards removed": 9,
+    "weapon_machinegun -> weapon_nailgun": 1,
+    "ammo_bullets -> item_spikes": 6,
+    "info_player_deathmatch -> info_player_deathmatch": 11,
+    "ammo_shells -> item_shells": 7,
+    "weapon_rocketlauncher -> weapon_rocketlauncher": 1,
+    "ammo_rockets -> item_rockets": 3,
+    "item_health_large -> item_health": 9,
+    "ammo_cells -> item_spikes": 3,
+    "item_armor_combat -> item_armorInv": 1,
+    "weapon_railgun -> weapon_lightning": 1,
+    "item_health_mega -> item_health": 1,
+    "item_armor_jacket -> item_armor1": 2,
+    "weapon_grenadelauncher -> weapon_grenadelauncher": 1,
+    "vertical pads angled toward Q1 landing ledges": 3,
+    "item_quad -> item_artifact_super_damage": 1,
+    "item_armor_combat -> item_armor2": 1,
+    "ammo_slugs -> item_cells": 1,
+    "weapon_chaingun -> weapon_supernailgun": 1,
+    "weapon_hyperblaster -> weapon_supernailgun": 1,
+    "weapon_supershotgun -> weapon_supershotgun": 1,
+    "origin brushes removed": 5,
+    "rotating ornaments made static": 5,
+    "recovered exposed surface lights": 17,
+    "beveled carved wall reliefs added": 11
+  },
+  "lighting": {
+    "sun": 120,
+    "sky": 80,
+    "minlight": 20,
+    "bounce": 1,
+    "dirt": 0.35,
+    "point_light_factor": 0.45
+  },
+  "scope": "Fixed-view geometry/material/lighting review, 23 scripted movement probes, and initial actual DM spawn/item audit. A populated match remains necessary for combat timing and balance. The Q2 remake provides the layout; this is a Q1 visual adaptation informed by the supplied QC footage."
+}

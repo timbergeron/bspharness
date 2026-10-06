@@ -17,6 +17,7 @@ from bspharness.source import read
 from bspharness.wad import make_blockout
 from maps.awoken.materials import make_materials
 from maps.awoken.polish import carvings
+from maps.awoken.geometry import profiles
 
 SOURCE_SHA256 = "17451ce49877375e4e0efdc4ba306be1044275fc7ec3c909c7cf76730f9bf251"
 
@@ -40,6 +41,10 @@ def generate(reference, stock_wad, output, style="video"):
                                   sky_color=(190,215,235) if video else (165,195,235)))
     # ASCII engine metadata; original brushwork and gameplay positions remain.
     arena.worldspawn["message"] = "Awoken - Quake 1"
+    if video:
+        # Smooth the 22.5-degree support facets while keeping 45-degree
+        # frame chamfers and recessed architectural joints sharp.
+        arena.worldspawn.update(_phong_angle="30",_phong_angle_concave="1")
     wall = Material("aw_stone",repeat=(256,256)) if video else Material("city4_2",repeat=(128,128))
     stone = Material("aw_trim",repeat=(128,128)) if video else Material("stone1_7",repeat=(128,128))
     rock = stone if video else Material("rock3_7",repeat=(128,128))
@@ -64,7 +69,7 @@ def generate(reference, stock_wad, output, style="video"):
         if f.texture not in materials:raise ValueError(f"Unmapped source texture: {f.texture}")
         return materials[f.texture]
     changes = Counter()
-    emitters, solids = [], []
+    emitters, solids, cornices = [], [], []
     for entity in entities:
         name = entity.keys["classname"]
         brushes = []
@@ -81,7 +86,17 @@ def generate(reference, stock_wad, output, style="video"):
                     continue
                 changes["Q2 alpha foliage/decal brushes removed"]+=1
                 continue
+            if video and name=="worldspawn" and any(f.contents&32 and f.flags&64 for f in source.faces):
+                # Q2's flowing/translucent waterfall is a visual sheet, not
+                # another opaque green pool wall. Fitz/QSS alpha works with
+                # stock id1 QuakeC; texture animation supplies downward flow.
+                fall=source.mapped(Material("+0aw_fall",repeat=(128,256),anchor=(0,0,-192)))
+                arena.entity("func_illusionary",brushes=(fall,),alpha="0.42",_alpha="0.42",_shadow="0")
+                changes["flowing waterfall brushes made translucent"]+=1
+                continue
             brush = source.mapped(material)
+            if video and name=="worldspawn" and any(f.texture=="1und/hrudgb" for f in source.faces):
+                cornices.append(brush)
             if name=="worldspawn":
                 contents = source.faces[0].contents
                 if not contents&(64|65536|32):solids.append(brush)
@@ -181,7 +196,12 @@ def generate(reference, stock_wad, output, style="video"):
               (1792,544,-440),(2500,1000,-420),(2400,1700,-450)):
         arena.light(p,350,(210,235,225) if video else (210,225,255),delay="2",wait="0.7")
     ornaments = []
+    geometry = None
     if video:
+        geometry = profiles(arena,solids,cornices)
+        changes["stone brushes with eased exposed edges"] = geometry["eased_brushes"]
+        changes["exposed stone edges eased"] = geometry["eased_edges"]
+        changes["upper stone bands with recessed cornice profiles"] = geometry["profiled_cornices"]
         ornaments = carvings(arena,solids)
         changes["beveled carved wall reliefs added"] = len(ornaments)
         # Cool cues at the four lifts and teleporter, restrained against the
@@ -199,6 +219,10 @@ def generate(reference, stock_wad, output, style="video"):
     arena.camera("lower-arena",(1408,1696,-650),(8,180,0))
     arena.camera("mega-balcony",(1552,2048,-400),(18,230,0))
     arena.camera("bridge",(2312,1320,-552),(14,205,0))
+    if video:
+        arena.camera("cornice-close",(1456,1088,-384),(-22,180,0))
+        arena.camera("relief-close",(1280,1584,-432),(0,146,0))
+        arena.camera("rocket-arch-close",(1152,768,-536),(0,180,0))
     routes=[]
     for i,(keys,_) in enumerate(arena.entities):
         if keys["classname"]=="info_player_deathmatch":
@@ -238,6 +262,15 @@ def generate(reference, stock_wad, output, style="video"):
                   Bounds((2160,1256,-624),(2290,1304,-608))),
     ])
     if video:
+        # Check the newly profiled frames/ledge edges from both directions.
+        routes.extend([
+            WalkRoute("lower-crossing-return",(960,1664,-712),(0,0,0),(Move(190),),
+                      Bounds((1440,1640,-720),(1560,1688,-704))),
+            WalkRoute("rocket-terrace-return",(1280,736,-584),(0,180,0),(Move(205),),
+                      Bounds((640,712,-592),(760,760,-576))),
+            WalkRoute("grenade-bridge-return",(1952,1280,-456),(0,90,0),(Move(115),),
+                      Bounds((1920,1570,-464),(1984,1700,-448))),
+        ])
         # Pale stone needs substantially less light than the first dark stock
         # palette. Scale every recovered/fill/landmark light consistently.
         for keys,_ in arena.entities:
@@ -252,6 +285,8 @@ def generate(reference, stock_wad, output, style="video"):
         "source_brushes":sum(len(e.brushes) for e in entities),"world_brushes":len(arena.details),
         "entity_brushes":sum(len(b) for _,b in arena.entities),"generator_sha256":digest(__file__),
         "style":style,"carved_reliefs":ornaments,
+        "geometry":geometry,
+        "geometry_sha256":digest(ROOT/"maps/awoken/geometry.py") if video else None,
         "art_wad_sha256":digest(art_wad) if art_wad else None,
         "polish_sha256":digest(ROOT/"maps/awoken/polish.py") if video else None})
     print(output)

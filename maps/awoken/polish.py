@@ -1,12 +1,15 @@
-"""Small carved reliefs attached to recovered wall faces, without collision."""
+"""Recessed relief assemblies with modeled stone surrounds, without collision."""
 
 from math import sqrt
 
 from bspharness import Material
 from bspharness.geometry import Brush, Face, dot, normalize, vector
+from bspharness.kits import prism
+from maps.awoken.geometry import Solids, ease
 
 
 def carvings(arena, solids, limit=12):
+    world = Solids(solids)
     planes = [[(normalize(f.normal), f.points[1]) for f in b.faces] for b in solids]
     def buried(p):
         return any(all(dot(n, vector(p, o)) < -0.01 for n, o in faces) for faces in planes)
@@ -29,7 +32,7 @@ def carvings(arena, solids, limit=12):
             if not (600 < p[0] < 2350 and 700 < p[1] < 2150 and -660 < p[2] < -320):
                 continue
             corners = [tuple(p[i]+(u if i==across else v if i==2 else 0)
-                             for i in range(3)) for u in (-36,36) for v in (-68,68)]
+                             for i in range(3)) for u in (-42,42) for v in (-78,78)]
             if any(any(dot(q,vector(c,o)) > 1e-5 for q,o in boundary) or
                    buried(tuple(c[i]+n[i]*8 for i in range(3))) for c in corners):
                 continue
@@ -42,14 +45,24 @@ def carvings(arena, solids, limit=12):
             return [tuple(p[i]+(n[i]*depth if i==axis else u if i==across else v)
                           for i in range(3)) for u,v in ((-width,-height),(width,-height),
                                                         (width,height),(-width,height))]
-        back,front = ring(-0.5,36,68),ring(4,32,64)
+        back,front = ring(-0.5,36,68),ring(1,32,64)
         anchor = list(p);anchor[across]-=32;anchor[2]+=64
         panel = Material("aw_panel",repeat=(64,128),anchor=tuple(anchor))
         trim = Material("aw_trim",repeat=(128,128))
         faces = [Face(tuple(back[:3]),trim),Face(tuple(front[:3]),panel)]
         faces.extend(Face((back[i],back[(i+1)%4],front[(i+1)%4]),trim) for i in range(4))
-        arena.detail(Brush(faces,tuple(p[i]+n[i]*1.75 for i in range(3))),
+        arena.detail(Brush(faces,tuple(p[i]+n[i]*0.25 for i in range(3))),
                      mode="illusionary",_shadow="1")
+        # Four convex stone frame pieces leave the carved center recessed
+        # seven units behind the rim. This is modeled depth, not a painted bevel.
+        outer = [(p[across]+u,p[2]+v) for u,v in ((-40,-76),(40,-76),(40,76),(-40,76))]
+        inner = [(p[across]+u,p[2]+v) for u,v in ((-32,-64),(32,-64),(32,64),(-32,64))]
+        low,high = sorted((p[axis]-n[axis]*0.5,p[axis]+n[axis]*8))
+        for i in range(4):
+            j=(i+1)%4
+            rim=prism((outer[i],outer[j],inner[j],inner[i]),low,high,axis,trim)
+            rim,_=ease(rim,world)
+            arena.detail(rim,mode="illusionary",_shadow="1")
         placed.append(p)
         if len(placed) == limit:
             break

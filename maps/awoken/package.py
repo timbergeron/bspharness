@@ -29,7 +29,8 @@ def release(bsp, movement, deathmatch, cameras, review, output):
             if digest(ROOT/"assets/awoken"/source["file"])!=source["sha256"]:
                 raise ValueError("Modified original texture source")
         if (digest(ROOT/"assets/wads/awoken.wad")!=conversion["art_wad_sha256"] or
-                digest(ROOT/"maps/awoken/polish.py")!=conversion["polish_sha256"]):
+                digest(ROOT/"maps/awoken/polish.py")!=conversion["polish_sha256"] or
+                digest(ROOT/"maps/awoken/geometry.py")!=conversion["geometry_sha256"]):
             raise ValueError("Modified polish geometry or texture WAD; regenerate and rebuild")
         texture_manifest=json.loads((ROOT/"assets/wads/awoken.json").read_text())
         if (texture_manifest["generator_sha256"]!=digest(ROOT/"maps/awoken/materials.py") or
@@ -71,9 +72,11 @@ def release(bsp, movement, deathmatch, cameras, review, output):
         for suffix in ("routes.json","cameras.json","conversion.json"):
             z.write(ROOT/f"src/awoken.{suffix}",f"source/awoken.{suffix}")
         for shot in shots:z.write(shot["file"],f"screenshots/{shot['camera']}.png")
-        for filename in ("build.py","materials.py","polish.py","review.py","package.py",
-                         "art.json","README.md","POLISH.md"):
+        for filename in ("build.py","materials.py","polish.py","geometry.py","review.py","package.py",
+                         "art.json","baseline.json","README.md","POLISH.md","GEOMETRY.md"):
             z.write(ROOT/"maps/awoken"/filename,"source/recipe/"+filename)
+        for baseline in sorted((ROOT/"maps/awoken/baselines").glob("*.json")):
+            z.write(baseline,"source/recipe/baselines/"+baseline.name)
         if art:
             for source in art["sources"].values():
                 z.write(ROOT/"assets/awoken"/source["file"],"source/art/"+source["file"])

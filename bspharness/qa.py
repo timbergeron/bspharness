@@ -18,7 +18,7 @@ RENDER = {"width":1280,"height":720,"fov":90,"fov_adapt":1,
           "viewsize":120,"crosshair":0,"r_drawviewmodel":0,
           "r_fullbright":0,"r_drawflat":0,"r_lightmap":0,"gl_overbright":1}
 PHYSICS = {"sv_gravity":800,"sv_maxspeed":320,"sv_accelerate":10,
-           "sv_friction":4,"sv_stopspeed":100,"sv_edgefriction":2}
+           "sv_friction":4,"sv_stopspeed":100,"edgefriction":2}
 
 
 def waits(frames):
@@ -132,6 +132,10 @@ def position(entity):
 
 def audit_log(text, entities, skill=1, deathmatch=False):
     errors = []
+    # A rejected setting/command invalidates the claimed QA configuration,
+    # even when the rest of the script reaches its completion marker.
+    for command in sorted(set(re.findall(r'Unknown command\s+"([^"\n]+)"',text,re.I))):
+        errors.append("Engine rejected QA command: "+command)
     if "BSPHARNESS_QA_COMPLETE" not in text:
         errors.append("Engine did not complete the QA script")
     live = edicts(text)

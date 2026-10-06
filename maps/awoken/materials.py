@@ -102,6 +102,18 @@ def make_materials(output=ROOT/"assets/wads/awoken.wad", palette=ROOT/"assets/pa
                             0.7*cos((y+3*sin(x*pi/16))*pi/8))*0.6)
                   for y in range(64) for x in range(64))
     textures["*aw_water"] = miptex("*aw_water",64,64,water)
+    # Separate the falling sheet from the pond. Eight standard Quake texture
+    # frames move long vertical streaks downwards, with no external shader.
+    for frame in range(8):
+        pixels = bytearray()
+        for y in range(128):
+            v=(y-frame*16)%128
+            for x in range(128):
+                streak=sin(x*pi/8+0.2*sin(v*pi/32))
+                broken=sin((v+6*cos(x*pi/16))*pi/32)
+                pixels.append(max(7,min(13,10+round(streak*1.6+broken*0.7))))
+        name=f"+{frame}aw_fall"
+        textures[name] = miptex(name,128,128,pixels)
     sky = bytearray()
     for y in range(128):
         for x in range(256):
