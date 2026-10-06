@@ -1,0 +1,45 @@
+Awoken - Quake 1 adaptation
+
+Layout reference: Awoken from Quake Champions.
+Recovered Quake 2 remake brushwork: 4Bidden, credited in the original
+worldspawn as "Awoken --> By 4Bidden".
+Reference mirror: http://q2.packetflinger.com/dl/baseq2/maps/awoken.bsp
+
+Quake 1 conversion, stock material mapping, lighting and movement checks:
+bspharness (https://github.com/timbergeron/bspharness).
+Textures and stock gameplay: original Quake, id Software; extracted locally
+from the owner's pak0.pak/pak1.pak. No Makkon assets are included.
+Compilation: ericw-tools, pinned 2.0.0-alpha11.
+
+Xowoken r1 by AriosJentu was inspected as a secondary visual/source
+reference. No Xowoken geometry, models, or textures are imported.
+Release page: https://forums.xonotic.org/showthread.php?tid=10192
+
+INSTALL
+Copy maps/awoken.bsp and maps/awoken.lit into your Quake game directory's
+maps/ folder. Keep the two files together. A modern Quake engine such as
+QSS-M is recommended. No custom QuakeC or external texture WAD is needed
+to play this compiled BSP. A normal local Quake installation is required.
+
+For deathmatch, enter "deathmatch 1" then "map awoken" in the console, or
+select awoken when hosting a game. For an exploration pass use
+"deathmatch 0" then "map awoken". This is a deathmatch arena with eleven
+DM starts, not a single-player campaign level; there are no monsters or
+campaign exit. Quad is excluded from every SP skill and retained in DM.
+
+ADAPTATION
+This is a stock Q1 reinterpretation of the Q2 remake. The railgun becomes
+lightning, machinegun becomes nailgun, and chaingun/hyperblaster become
+super nailguns. Slugs become large cell packs; bullets and former cells
+supply nails. Other weapons, health/mega, armor and quad use stock id1
+entities. Three pads angle toward their landing ledges to accommodate Q1
+air acceleration; the fourth already has a directed launch. Teleport and
+void-hurt brushes are retained. Rotating pad ornaments become nonblocking
+static details. Q2 alpha vegetation/decals/mist are omitted.
+
+Build, material seams, runtime entity checks, authored movement probes,
+actual DM spawn/item audit and reviewed camera evidence accompany this
+local package. They establish the sampled routes and artifact identity;
+a populated match is still the next test for timing, tactics and balance.
+This is not an official Quake Champions release or an exact visual port.
+Original map and texture assets remain the property of their creators.

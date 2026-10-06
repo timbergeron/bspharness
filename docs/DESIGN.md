@@ -38,6 +38,9 @@ so a sky well and a wall can receive separate materials.
 face is oriented against an interior point, and brush construction rejects
 degenerate/nonconvex input. Valve 220 UV axes align to world directions.
 `Map.entity`, `Map.light`, and brush-entity lists handle Quake entities.
+Valve 220 source import retains Q2 face flags and source UVs until mapping.
+`Map(shell="explicit")` uses recovered structural solids without adding a
+room shell. Awoken exercises this path with stock Q1 materials and entities.
 
 `stairs`, `arch`, `column`, `beam`, and `trim_profile` supply modular
 architecture. Structural walking surfaces and partitions are explicit;
@@ -81,11 +84,12 @@ The compiler and runtime checks remain necessary.
    and clipnodes from the start.
 4. **Broader gameplay verification:** turning route sequences, connectivity
    analysis, teleporter/push-trigger checks, mod-specific expectations, and
-   multiplayer spawn/item audits. Current movement probes cover authored
-   samples with stock SP physics.
-5. **Surgical map edits:** structured MAP parsing and exact scoped transforms
-   for relighting, void safety, and geometry repairs; preserve imported
-   sources and compare compiled bounds against references.
+   populated multiplayer matches. Current probes cover authored samples
+   with stock SP physics, and a separate DM pass audits its initial spawn
+   and items. Awoken includes push-trigger and teleporter landing probes.
+5. **Surgical map edits:** broader MAP syntax and exact scoped transforms
+   for relighting, void safety, and geometry repairs. Valve 220 brush import
+   is available; preserve originals and compare bounds against references.
 6. **Visual iteration:** exposure variants, automated asset staging, and
    custom skybox/mod packaging. Separate
    automatic collection from a human visual review.

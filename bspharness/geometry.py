@@ -177,6 +177,29 @@ class Face:
 
 
 class Brush:
+    @classmethod
+    def from_planes(cls, faces):
+        """Import outward MAP planes whose defining points need not be vertices."""
+        brush = cls.__new__(cls)
+        brush.faces = tuple(faces)
+        if len(brush.faces)<4:
+            raise ValueError("A convex brush needs at least four planes")
+        normals = tuple(normalize(f.normal) for f in brush.faces)
+        # Vertices alone can describe the bottom of an uncapped solid. A
+        # feasible recession ray means these planes still extend to infinity.
+        for a,b in combinations(normals,2):
+            ray = cross(a,b)
+            if dot(ray,ray)<1e-12:continue
+            ray = normalize(ray)
+            if any(all(sign*dot(n,ray)<=1e-8 for n in normals) for sign in (-1,1)):
+                raise ValueError("Imported brush planes describe an unbounded volume")
+        vertices = brush.vertices
+        brush.interior = tuple(sum(p[i] for p in vertices)/len(vertices) for i in range(3))
+        if any(dot(normalize(f.normal),vector(brush.interior,f.points[1]))>=-1e-6
+               for f in brush.faces):
+            raise ValueError("Imported planes have no positive-volume interior")
+        return brush
+
     def __init__(self, faces, interior):
         self.faces = tuple(f.oriented(interior) for f in faces)
         self.interior = interior

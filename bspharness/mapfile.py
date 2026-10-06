@@ -38,10 +38,13 @@ class Air:
 
 
 class Map:
-    def __init__(self, title="BSP Harness", padding=64, **worldspawn):
+    def __init__(self, title="BSP Harness", padding=64, shell="rooms", **worldspawn):
         if padding < 64:
             raise ValueError("Use at least 64 units of seal padding")
         self.padding = padding
+        if shell not in ("rooms","explicit"):
+            raise ValueError("Map shell must be rooms or explicit")
+        self.shell = shell
         self.worldspawn = {"classname": "worldspawn", "message": title, **worldspawn}
         self.airs = []
         self.details = []
@@ -52,6 +55,8 @@ class Map:
         self.transitions = []
 
     def room(self, name, mins, maxs, palette=None, kind="room"):
+        if self.shell=="explicit":
+            raise ValueError("Explicit-shell maps use imported or authored structural brushes")
         if kind not in ("room", "sky", "window"):
             raise ValueError("Air kind must be room, sky, or window")
         if any(a.name == name for a in self.airs):
@@ -145,6 +150,8 @@ class Map:
         return result
 
     def world_brushes(self):
+        if self.shell=="explicit":
+            return []
         if not self.airs:
             raise ValueError("Declare at least one air volume")
         lo = tuple(min(a.bounds.mins[i] for a in self.airs)-self.padding for i in range(3))

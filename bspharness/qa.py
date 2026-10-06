@@ -17,6 +17,8 @@ RENDER = {"width":1280,"height":720,"fov":90,"fov_adapt":1,
           "gamma":1,"contrast":1,"gl_texturemode":"GL_LINEAR_MIPMAP_LINEAR",
           "viewsize":120,"crosshair":0,"r_drawviewmodel":0,
           "r_fullbright":0,"r_drawflat":0,"r_lightmap":0,"gl_overbright":1}
+PHYSICS = {"sv_gravity":800,"sv_maxspeed":320,"sv_accelerate":10,
+           "sv_friction":4,"sv_stopspeed":100,"sv_edgefriction":2}
 
 
 def waits(frames):
@@ -28,8 +30,12 @@ def dump(marker):
     return [f"echo {marker}_BEGIN","edict 1",f"echo {marker}_END"]
 
 
-def camera_config(cameras, routes=()):
-    if not cameras and not routes:
+def camera_config(cameras, routes=(), mode="sp"):
+    if mode not in ("sp","dm"):
+        raise ValueError("QA mode must be sp or dm")
+    if mode=="dm" and (cameras or routes):
+        raise ValueError("QSS-M disables test positioning in deathmatch; use DM for spawn/item audit and a separate SP pass for routes/cameras")
+    if not cameras and not routes and mode!="dm":
         raise ValueError("Supply at least one camera or movement route")
     if any(not isinstance(r,WalkRoute) for r in routes) or len({r.name for r in routes})!=len(routes):
         raise ValueError("Supply distinct WalkRoute objects")
@@ -44,6 +50,7 @@ def camera_config(cameras, routes=()):
         for value in (*camera["origin"],*camera["angles"]):
             number(value)
     lines = ["host_maxfps 72","host_framerate 0.013888889","host_timescale 0","cl_alwaysrun 0",
+             *(f"{key} {value}" for key,value in PHYSICS.items()),
              *(f"{key} {value}" for key,value in RENDER.items() if key not in ("width","height")),
              "con_notifytime 0","con_notifylines 0",'alias bh_w "wait;wait;wait;wait;wait;wait;wait;wait;wait;wait"',
              'alias bh_ww "bh_w;bh_w;bh_w;bh_w;bh_w"',
@@ -72,7 +79,7 @@ def camera_config(cameras, routes=()):
     return "\n".join(lines)+"\n"
 
 
-def prepare(bsp, cameras, basedir, gamedir="bspharness_qa", routes=()):
+def prepare(bsp, cameras, basedir, gamedir="bspharness_qa", routes=(), mode="sp"):
     bsp = Path(bsp).resolve()
     verified_build(bsp)
     if not re.fullmatch(r"[A-Za-z0-9_-]+",gamedir) or gamedir.casefold()=="id1":
@@ -85,7 +92,7 @@ def prepare(bsp, cameras, basedir, gamedir="bspharness_qa", routes=()):
     # are preserved, and old artifacts cannot count towards this QA pass.
     if game.exists():
         raise ValueError(f"QA gamedir already exists: {game}; choose a fresh --gamedir")
-    config = camera_config(cameras,routes)
+    config = camera_config(cameras,routes,mode)
     (game/"maps").mkdir(parents=True)
     (game/"configs").mkdir()
     for suffix in (".bsp",".lit"):
@@ -123,7 +130,7 @@ def position(entity):
     return result
 
 
-def audit_log(text, entities, skill=1):
+def audit_log(text, entities, skill=1, deathmatch=False):
     errors = []
     if "BSPHARNESS_QA_COMPLETE" not in text:
         errors.append("Engine did not complete the QA script")
@@ -145,9 +152,9 @@ def audit_log(text, entities, skill=1):
     candidates,expected_items = [],[]
     for expected in entities:
         name = expected.get("classname","")
-        # SP QA intentionally does not audit DM-only spawns/items. Stock
-        # spawnflags 2048 excludes an entity from single-player.
-        if not name.startswith(("item_","weapon_")) or int(expected.get("spawnflags","0"))&(2048|(256,512,1024)[min(2,skill)]):
+        # Stock 2048 means NOT_DEATHMATCH. Skill exclusions apply only in SP.
+        excluded = 2048 if deathmatch else (256,512,1024)[min(2,skill)]
+        if not name.startswith(("item_","weapon_")) or int(expected.get("spawnflags","0"))&excluded:
             continue
         try:
             point = position(expected)
@@ -223,12 +230,21 @@ def audit_routes(text, routes):
     return results
 
 
-def run(bsp, cameras, basedir, engine, gamedir="bspharness_qa", timeout=90, routes=()):
-    game = prepare(bsp,cameras,basedir,gamedir,routes)
+def run(bsp, cameras, basedir, engine, gamedir="bspharness_qa", timeout=90, routes=(), mode="sp"):
+    if mode not in ("sp","dm"):
+        raise ValueError("QA mode must be sp or dm")
+    manifest = verified_build(bsp)
+    game = prepare(bsp,cameras,basedir,gamedir,routes,mode)
+    tested_bsp = game/"maps"/Path(bsp).name
+    if any(digest(game/"maps"/name)!=sha for name,sha in manifest["artifacts"].items()):
+        raise ValueError("Build artifacts changed while staging engine QA")
     engine = Path(engine).resolve()
+    # Collision/entity passes do not need publication-size rendering. Fixed
+    # physics timing is unchanged; camera passes retain the pinned resolution.
+    width,height = (RENDER["width"],RENDER["height"]) if cameras else (320,200)
     command = [str(engine),"-basedir",str(Path(basedir).resolve()),"-game",gamedir,
-               "-window","-width","1280","-height","720","-condebug","-nomouse",
-               "-nosound","+deathmatch","0","+skill","1","+map",Path(bsp).stem]
+               "-window","-width",str(width),"-height",str(height),"-condebug","-nomouse",
+               "-nosound","+deathmatch","1" if mode=="dm" else "0","+skill","1","+map",Path(bsp).stem]
     errors,code = [],None
     start = time.monotonic()
     with (game/"engine.log").open("w") as log:
@@ -246,20 +262,23 @@ def run(bsp, cameras, basedir, engine, gamedir="bspharness_qa", timeout=90, rout
     for marker in ("Mod_LoadNodes","invalid leaf","not 16 aligned","fell out of level","Host_Error","Sys_Error"):
         if marker.casefold() in text.casefold():
             errors.append("Engine reported "+marker)
-    errors.extend(audit_log(text,BSP(bsp).entities()))
+    errors.extend(audit_log(text,BSP(tested_bsp).entities(),deathmatch=mode=="dm"))
     route_results = audit_routes(text,routes)
     errors.extend(f"Route {r['name']}: {error}" for r in route_results for error in r["errors"])
     shots = sorted((game/"screenshots").glob("*.png"))
     if len(shots) != len(cameras):
         errors.append(f"Expected {len(cameras)} screenshots, found {len(shots)}")
-    report = {"schema":1,"passed":not errors,"errors":errors,"bsp_sha256":digest(bsp),
-              "artifacts":verified_build(bsp)["artifacts"],"routes":route_results,
-              "physics":{"fps":72,"fixed_frame_seconds":1/72,"mode":"stock single-player"},
+    report = {"schema":1,"passed":not errors,"errors":errors,"bsp_sha256":digest(tested_bsp),
+              "artifacts":manifest["artifacts"],"routes":route_results,
+              "physics":{"fps":72,"fixed_frame_seconds":1/72,**PHYSICS,
+                         "mode":"stock deathmatch" if mode=="dm" else "stock single-player"},
+              "game_paks":{p.name:digest(p) for p in sorted((Path(basedir)/"id1").glob("*.pak"))},
               "engine_sha256":digest(engine),"command":command,"exit_code":code,
               "seconds":round(time.monotonic()-start,3),"gamedir":str(game),
-              "render":RENDER,
+              "render":{**RENDER,"width":width,"height":height},
               "screenshots":[{"camera":c["name"],"view":c,"file":str(s),"sha256":digest(s)} for c,s in zip(cameras,shots)],
               "visual_review":"pending; open the screenshots to review lighting and geometry",
-              "scope":"Authored movement probes and spawn/item audit; full gameplay and unsampled routes require playtesting"}
+              "scope":("Initial stock deathmatch spawn/item audit; use a separate SP pass for movement and cameras" if mode=="dm" else
+                       "Authored movement probes and spawn/item audit; full gameplay and unsampled routes require playtesting")}
     write_json(game/"qa.json",report)
     return game/"qa.json",report

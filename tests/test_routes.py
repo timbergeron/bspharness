@@ -1,8 +1,14 @@
 from dataclasses import replace
+from pathlib import Path
+import shutil
+import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 from bspharness import Bounds, Move, WalkRoute
-from bspharness.qa import audit_log, audit_routes, camera_config
+from bspharness.qa import audit_log, audit_routes, camera_config, run
+from bspharness.pipeline import digest
 from bspharness.routes import routes_from_json
 
 
@@ -41,6 +47,8 @@ class RouteTests(unittest.TestCase):
         self.assertIn("-forward",config)
         self.assertIn("host_framerate 0.013888889",config)
         self.assertIn("host_timescale 0",config)
+        self.assertIn("sv_gravity 800",config)
+        self.assertIn("sv_accelerate 10",config)
         self.assertIn("gamma 1",config)
         with self.assertRaisesRegex(ValueError,"unique"):
             camera_config([camera,camera])
@@ -65,3 +73,50 @@ class RouteTests(unittest.TestCase):
         self.assertTrue(audit_log(log,[item,item]))
         self.assertEqual(audit_log(log,[{**item,"origin":"128 0 216","spawnflags":"512"}]),[])
         self.assertTrue(audit_log(log.replace("health 100","health nan"),[]))
+
+    def test_deathmatch_exclusions_differ_from_single_player_skill_flags(self):
+        log=player_dump("BSPHARNESS_AUDIT","0 0 24")+"BSPHARNESS_QA_COMPLETE\n"
+        item={"classname":"weapon_rocketlauncher","origin":"128 0 24"}
+        self.assertTrue(audit_log(log,[{**item,"spawnflags":"2048"}]))
+        self.assertEqual(audit_log(log,[{**item,"spawnflags":"2048"}],deathmatch=True),[])
+        self.assertEqual(audit_log(log,[{**item,"spawnflags":"1792"}]),[])
+        self.assertTrue(audit_log(log,[{**item,"spawnflags":"1792"}],deathmatch=True))
+        self.assertIn("edicts",camera_config([],mode="dm"))
+        with self.assertRaisesRegex(ValueError,"separate SP"):
+            camera_config([],routes=[self.route],mode="dm")
+
+    def test_running_qa_keeps_its_staged_artifacts_when_original_is_rebuilt(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);bsp=root/'test.bsp';bsp.write_bytes(b'original BSP')
+            lit=bsp.with_suffix('.lit');lit.write_bytes(b'original LIT')
+            engine=root/'engine';engine.write_bytes(b'test engine')
+            artifacts={p.name:digest(p) for p in (bsp,lit)}
+            game=root/'qa';(game/'maps').mkdir(parents=True)
+            for p in (bsp,lit):shutil.copy2(p,game/'maps'/p.name)
+            item={"classname":"weapon_rocketlauncher","origin":"128 0 24"}
+            log=player_dump('BSPHARNESS_AUDIT','0 0 24').replace(
+                'BSPHARNESS_AUDIT_END',"EDICT 2:\nclassname weapon_rocketlauncher\norigin '128 0 6'\nBSPHARNESS_AUDIT_END")
+            def engine_run(command,**options):
+                bsp.write_bytes(b'rebuilt BSP');lit.write_bytes(b'rebuilt LIT')
+                options['stdout'].write(log+'BSPHARNESS_QA_COMPLETE\n')
+                return SimpleNamespace(returncode=0)
+            def loaded(path):
+                # Rebuilding changed the original's entity list as well.
+                items=[item] if Path(path).read_bytes()==b'original BSP' else [
+                    {"classname":"weapon_lightning","origin":"256 0 24"}]
+                return SimpleNamespace(entities=lambda:items)
+            with patch('bspharness.qa.verified_build',return_value={"artifacts":artifacts}), \
+                 patch('bspharness.qa.prepare',return_value=game), \
+                 patch('bspharness.qa.subprocess.run',side_effect=engine_run), \
+                 patch('bspharness.qa.BSP',side_effect=loaded):
+                _,report=run(bsp,[],root,engine,mode='dm')
+            self.assertTrue(report['passed'],report['errors'])
+            self.assertEqual(report['bsp_sha256'],artifacts['test.bsp'])
+            self.assertEqual(report['artifacts'],artifacts)
+            self.assertNotEqual(report['bsp_sha256'],digest(bsp))
+            self.assertEqual(report['render']['width'],320)
+            (game/'maps/test.lit').write_bytes(b'changed during staging')
+            with patch('bspharness.qa.verified_build',return_value={"artifacts":artifacts}), \
+                 patch('bspharness.qa.prepare',return_value=game), \
+                 self.assertRaisesRegex(ValueError,'changed while staging'):
+                run(bsp,[],root,engine,mode='dm')

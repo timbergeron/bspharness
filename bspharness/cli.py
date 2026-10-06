@@ -54,6 +54,7 @@ def main(argv=None):
     cameras.add_argument("--engine",type=Path,required=True)
     cameras.add_argument("--gamedir",default="bspharness_qa")
     cameras.add_argument("--timeout",type=int,default=90)
+    cameras.add_argument("--mode",choices=("sp","dm"),default="sp")
     comparison = commands.add_parser("compare-qa",help="Create a portable before/after camera review")
     comparison.add_argument("before",type=Path)
     comparison.add_argument("after",type=Path)
@@ -99,7 +100,7 @@ def main(argv=None):
         elif args.command=="qa":
             routes = routes_from_json(json.loads(args.routes.read_text())) if args.routes else ()
             path,report = qa.run(args.bsp,json.loads(args.cameras.read_text()) if args.cameras else [],
-                                 args.basedir,args.engine,args.gamedir,args.timeout,routes)
+                                 args.basedir,args.engine,args.gamedir,args.timeout,routes,args.mode)
             print(path)
             if not report["passed"]:
                 print("\n".join(report["errors"]),file=sys.stderr)

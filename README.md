@@ -119,6 +119,11 @@ compatibility and undeclared corners still require visual review.
 
 ## Engine QA and packaging
 
+[Awoken](maps/awoken/README.md) is the first complete imported arena recipe:
+it recovers 4Bidden's Q2 brushwork, maps stock id1 materials and gameplay,
+and authors Q1 pad, teleport, spawn, and traversal checks. Reference assets
+and generated BSP/LIT files stay local.
+
 ```sh
 python3 -m bspharness qa out/atrium/final/atrium.bsp \
   --cameras src/atrium.cameras.json --engine /path/to/QSS-M \
@@ -140,6 +145,9 @@ releases. Custom skyboxes or mod dependencies need separate asset packaging.
 Material builds also include their hash-verified contract and seam report.
 Use `compare-qa before/qa.json after/qa.json --output out/comparison-01`
 to collect hash-checked, named before/after camera views for visual review.
+For an actual stock deathmatch spawn/item audit, use `qa --mode dm` without
+routes or cameras. QSS-M disables positioning commands in deathmatch;
+run a separate SP pass to check collision and collect fixed views.
 
 ## Repository guide
 
@@ -147,6 +155,7 @@ to collect hash-checked, named before/after camera views for visual review.
 | --- | --- |
 | `bspharness/` | Geometry, MAP/WAD/PAK/BSP readers, compilation, QA, packaging |
 | `examples/` | Tracked generators and map credits |
+| `maps/` | Imported arena conversion recipes and reference provenance |
 | `configs/` | Compile profiles and pinned tool downloads/hashes |
 | `assets/wads/` | Local, untracked texture libraries |
 | `src/`, `out/`, `dist/` | Generated sources, compile evidence, release archives |

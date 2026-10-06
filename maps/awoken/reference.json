@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "design": "Awoken from Quake Champions",
+  "geometry_reference": {
+    "title": "Awoken --> By 4Bidden",
+    "author": "4Bidden",
+    "url": "http://q2.packetflinger.com/dl/baseq2/maps/awoken.bsp",
+    "file": "q2-awoken-original.bsp",
+    "format": "Quake 2 IBSP38",
+    "bytes": 2821136,
+    "sha256": "17451ce49877375e4e0efdc4ba306be1044275fc7ec3c909c7cf76730f9bf251",
+    "source_brushes": 1217,
+    "decompiled_brushes": 1222,
+    "note": "The awoken_v2.bsp mirror download was byte-identical. Original BSP is preserved locally; conversion operates on a copy."
+  },
+  "secondary_reference": {
+    "title": "Xowoken r1",
+    "author": "AriosJentu",
+    "release_page": "https://forums.xonotic.org/showthread.php?tid=10192",
+    "download": "https://drive.usercontent.google.com/download?id=1Gae3SQHAvesIjaOnGu1hvI7eVTdOJsuL&export=download",
+    "file": "xowoken_r1.zip",
+    "bytes": 26489951,
+    "sha256": "72dd605521ed29f721d4995d83e1e693fa4f9ecd7344ffad9f784e8e1a4112c4",
+    "use": "Inspected editable Q3 source and visual reference. Its patches and model entities are not imported. No geometry or textures from Xowoken are used in this conversion."
+  },
+  "textures": "Locally extracted original Quake pak0/pak1 WAD2; generated clip/trigger tool textures. Makkon excluded.",
+  "tools": "Checksum-pinned ericw-tools 2.0.0-alpha11 bsputil/qbsp/vis/light",
+  "repository_policy": "Only original conversion code and provenance are tracked; reference geometry, PAKs, WADs, generated MAP/BSP/LIT and screenshots stay local. Upstream assets retain their own rights."
+}

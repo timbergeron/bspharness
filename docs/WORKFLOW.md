@@ -90,7 +90,9 @@ QA waits for the player to land, dumps edicts, and runs optional movement
 probes before enabling god/noclip for screenshots. A fixed 1/72-second
 step, `host_maxfps 72`, and 100-frame camera gaps make collection repeatable.
 `host_timescale 0` lets QSS-M honor `host_framerate`; setting timescale to 1
-would override the fixed step. Pass `--timeout 360` for a slow software
+would override the fixed step. QA pins stock gravity, maximum speed,
+acceleration, friction, stop speed and edge friction, and records local PAK
+hashes alongside the engine hash. Pass `--timeout 360` for a slow software
 renderer. On Linux, a compatible SDL/Mesa setup may use
 `SDL_VIDEODRIVER=offscreen LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=2`.
 
@@ -98,9 +100,23 @@ The stock SP audit checks a live player with full health and `FL_ONGROUND`,
 and checks item/weapon classnames near expected XYZ positions. Each expected
 item needs a distinct runtime edict, so one pickup cannot stand in for two.
 The 24-unit tolerance accounts for stock origin shifts and items falling
-onto floors. Entities excluded from SP or normal skill are skipped.
-Dynamic items, custom mods, multiplayer spawn logic, and unsampled routes
-need further checks.
+onto floors. The SP audit honors the current skill exclusion bit. Stock
+spawnflag 2048 means NOT_DEATHMATCH; it does not exclude an item from SP.
+Use flags 256+512+1024 (1792) to exclude an entity from all SP skills.
+
+An actual stock deathmatch audit is available separately:
+
+```sh
+python3 -m bspharness qa out/awoken/final/awoken.bsp --mode dm \
+  --engine /path/to/QSS-M --basedir /path/to/quake --gamedir awoken_dm_pass1
+```
+
+QSS-M disables `setpos` in deathmatch, so this mode accepts no routes or
+cameras. It checks the initial actual DM spawn and all expected DM items,
+including the quad. Probe every DM spawn location with a separate SP
+collision pass. These checks do not simulate a populated multiplayer match
+or prove mod-specific rules or balance. Route/entity passes without cameras
+render at 320x200; camera passes retain 1280x720 and identical physics timing.
 The report explicitly leaves visual review pending. Review every screenshot
 for darkness, blocked passages, material alignment, sky, and z-fighting.
 
@@ -147,6 +163,22 @@ Build both with the draft profile. Run movement-only QA by omitting
 QA report and exit 1. Preserve this negative control when changing QA.
 These probes supplement movement/combat playtesting; they do not prove
 every possible route or mod's physics.
+
+## Recover brush references
+
+`bsputil -decompile reference.bsp` writes `reference.decompile.map`. Preserve
+the original and work on a copy. `bspharness.source.read` accepts Valve 220
+planes/axes and optional Quake 2 contents/surface/value fields. It preserves
+source texture paths and UVs until an explicit material mapping is applied.
+Legacy texture projections, Q3 brush definitions, and patches are rejected.
+
+Use `Map(shell="explicit")` and `SourceBrush.mapped(...)` to supply recovered
+structural brushes. This mode adds no enclosing box; a missing structural
+wall must still produce a compiler leak. Plane intersections recover brush
+vertices, and unbounded/zero-volume plane sets fail. Decide which contents
+become structural, compiler detail, water, clip, or trigger geometry; remap
+gameplay entities and item origins deliberately. Format conversion alone
+does not adapt movement or textures. See [Awoken](../maps/awoken/README.md).
 
 ## Compare camera passes
 

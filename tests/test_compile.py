@@ -11,6 +11,7 @@ from bspharness.bsp import BSP
 from bspharness.pipeline import ROOT, build, digest, package, verified_build
 from bspharness.seams import bsp_surfaces
 from bspharness.collision import EMPTY, SOLID, Hull
+from bspharness.source import read
 from bspharness.wad import make_blockout, miptex, write_wad
 
 
@@ -218,6 +219,26 @@ class CompileTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Build budget exceeded"):
             build(self.source,self.root/"budget","draft",budgets={"faces":1})
         self.assertFalse((result.parent/"build.json").exists())
+
+    def test_imported_explicit_shell_seals_without_generated_room_geometry(self):
+        imported=read(self.source)
+        arena=Map("Imported test",shell="explicit",_minlight="16")
+        arena.structural(*(b.mapped(lambda f:f.texture) for b in imported[0].brushes))
+        for entity in imported[1:]:
+            keys=entity.keys.copy();name=keys.pop("classname");origin=keys.pop("origin",None)
+            arena.entity(name,tuple(map(float,origin.split())) if origin else None,**keys)
+        source=arena.write(self.root/"imported.map",[self.wad])
+        for fmt in ("bsp29","bsp2","2psb"):
+            result=build(source,self.root/f"import-{fmt}","draft",fmt)
+            self.assertTrue(BSP(result).validate(fmt)["passed"])
+            self.assertEqual(Hull(BSP(result)).contents((0,0,24.1)),EMPTY)
+        # Removing an outer structural wall must expose a leak, not trigger
+        # an automatically generated box that conceals the missing geometry.
+        before=len(arena.details)
+        arena.details=[b for b in arena.details if min(p[0] for p in b.vertices)<255.9]
+        self.assertLess(len(arena.details),before)
+        source=arena.write(source,[self.wad])
+        with self.assertRaises(ValueError):build(source,self.root/"import-leaked","draft")
 
 
 if __name__=="__main__":
