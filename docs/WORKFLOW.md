@@ -239,8 +239,9 @@ remains 10; Awoken's particle views use 72 for about one second of warmup.
 Long paths and staggered emissions can require additional settling and later
 motion samples. This setting is retained in the shot's view evidence.
 See [the particle guide](PARTICLES.md) for native count syntax, explicit effect
-chains, velocity-aligned strokes, finite successors, and visual checks that
-catch silently ignored fields.
+chains, velocity-aligned strokes, finite successors, ramp timing, one-shot
+timelines, random and multi-site triggering, and visual checks that catch
+silently ignored fields.
 
 Builds snapshot the declared files into `runtime/`. `verified_build`, engine
 QA and packaging verify those hashes; QA stages the snapshot instead of
